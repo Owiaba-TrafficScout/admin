@@ -37,5 +37,11 @@ class DatabaseSeeder extends Seeder
 
 
         License::factory(10)->create();
+
+        $users = User::all();
+
+        $users->each(function ($user) {
+            $user->projects()->attach(Project::all()->random());
+        });
     }
 }
