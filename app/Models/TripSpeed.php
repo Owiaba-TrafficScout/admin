@@ -9,4 +9,6 @@ class TripSpeed extends Model
 {
     /** @use HasFactory<\Database\Factories\TripSpeedFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
