@@ -18,7 +18,7 @@ class TripStopFactory extends Factory
     public function definition(): array
     {
         return [
-            'trip_id' => Trip::factory(),
+            'trip_id' => random_int(1, 10),
             'location_x' => $this->faker->randomFloat(2, 0, 100),
             'location_y' => $this->faker->randomFloat(2, 0, 100),
             'stop_time' => $this->faker->dateTime(),

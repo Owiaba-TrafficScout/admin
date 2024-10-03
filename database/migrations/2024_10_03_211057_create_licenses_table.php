@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->integer('user_cap');
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->double('price');
             $table->integer('duration');
             $table->timestamps();

@@ -20,6 +20,7 @@ class LicenseFactory extends Factory
             'name' => fake()->name(),
             'description' => fake()->sentence(),
             'user_cap' => random_int(1, 100),
+            'user_id' => random_int(1, 10),
             'price' => random_int(1, 100),
             'duration' => random_int(1, 100),
         ];

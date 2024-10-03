@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TripSpeed extends Model
@@ -13,8 +14,8 @@ class TripSpeed extends Model
 
     protected $guarded = [];
 
-    public function trips(): HasMany
+    public function trip(): BelongsTo
     {
-        return $this->hasMany(Trip::class);
+        return $this->belongsTo(Trip::class);
     }
 }
