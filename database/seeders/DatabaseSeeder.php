@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CarStatus;
 use App\Models\CarType;
 use App\Models\Project;
 use App\Models\User;
@@ -20,5 +21,7 @@ class DatabaseSeeder extends Seeder
         Project::factory(10)->create();
 
         CarType::factory(10)->create();
+
+        CarStatus::factory(3)->create();
     }
 }
