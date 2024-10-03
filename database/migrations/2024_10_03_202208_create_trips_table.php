@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
+            $table->string('title', 255);
+            $table->text('description');
+            $table->foreignId('user_id');
+            $table->string('group_code', 255);
+            $table->foreignId('car_id');
+            $table->foreignId('project_id');
+            $table->timestamp('start_time');
+            $table->timestamp('end_time');
+            $table->foreignId('trip_status_id');
             $table->timestamps();
         });
     }
