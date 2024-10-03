@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Role::factory(3)->create();
+
+        //Roles must come first before user
         User::factory(10)->create();
 
         Project::factory(10)->create();
@@ -27,7 +30,5 @@ class DatabaseSeeder extends Seeder
         CarStatus::factory(3)->create();
 
         Car::factory(10)->create();
-
-        Role::factory(3)->create();
     }
 }
