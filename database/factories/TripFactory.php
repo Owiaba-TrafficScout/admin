@@ -2,6 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Car;
+use App\Models\Project;
+use App\Models\TripSpeed;
+use App\Models\TripStop;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +22,15 @@ class TripFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(3),
+            'description' => $this->faker->sentence(),
+            'user_id' =>  User::factory(),
+            'group_code' => $this->faker->word(),
+            'car_id' => Car::factory(),
+            'project_id' => Project::factory(),
+            'start_time' => $this->faker->dateTime(),
+            'end_time' => $this->faker->dateTime(),
+            'trip_status_id' => rand(1, 3),
         ];
     }
 }

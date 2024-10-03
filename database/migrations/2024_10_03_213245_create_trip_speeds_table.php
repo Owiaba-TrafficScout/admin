@@ -17,7 +17,7 @@ return new class extends Migration
             $table->double('location_x');
             $table->double('location_y');
             $table->double('velocity');
-            $table->bool('is_traffic');
+            $table->boolean('is_traffic');
             $table->timestamps();
         });
     }
