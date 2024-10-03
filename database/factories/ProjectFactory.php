@@ -17,7 +17,10 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->sentence(),
+            'description' => fake()->paragraph(),
+            'start_date' => fake()->date(),
+            'end_date' => fake()->date(),
         ];
     }
 }
