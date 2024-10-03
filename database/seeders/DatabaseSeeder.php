@@ -8,6 +8,7 @@ use App\Models\CarType;
 use App\Models\License;
 use App\Models\Project;
 use App\Models\Role;
+use App\Models\TripStatus;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,5 +39,7 @@ class DatabaseSeeder extends Seeder
         CarStatus::factory(3)->create();
 
         Car::factory(10)->create();
+
+        TripStatus::factory(3)->create();
     }
 }

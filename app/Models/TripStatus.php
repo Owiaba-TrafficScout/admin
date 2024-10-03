@@ -9,4 +9,6 @@ class TripStatus extends Model
 {
     /** @use HasFactory<\Database\Factories\TripStatusFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
