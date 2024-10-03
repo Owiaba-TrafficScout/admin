@@ -16,4 +16,9 @@ class Car extends Model
     {
         return $this->belongsTo(CarStatus::class, 'car_status_id');
     }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(CarType::class, 'car_type_id');
+    }
 }
