@@ -17,7 +17,11 @@ class LicenseFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'description' => fake()->sentence(),
+            'user_cap' => random_int(1, 100),
+            'price' => random_int(1, 100),
+            'duration' => random_int(1, 100),
         ];
     }
 }

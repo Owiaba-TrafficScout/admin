@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Car;
 use App\Models\CarStatus;
 use App\Models\CarType;
+use App\Models\License;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\User;
@@ -22,6 +23,8 @@ class DatabaseSeeder extends Seeder
 
         //Roles must come first before user
         User::factory(10)->create();
+
+        License::factory(10)->create();
 
         Project::factory(10)->create();
 

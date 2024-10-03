@@ -9,4 +9,6 @@ class License extends Model
 {
     /** @use HasFactory<\Database\Factories\LicenseFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
