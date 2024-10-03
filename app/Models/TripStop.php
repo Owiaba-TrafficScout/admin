@@ -9,4 +9,6 @@ class TripStop extends Model
 {
     /** @use HasFactory<\Database\Factories\TripStopFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }

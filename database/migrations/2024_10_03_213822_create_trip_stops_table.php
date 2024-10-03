@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('trip_stops', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('trip_id')->references('id')->on('trips')->cascadeOnDelete();
+            $table->double('location_x');
+            $table->double('location_y');
+            $table->string('stop_time');
+            $table->text('description');
             $table->timestamps();
         });
     }
