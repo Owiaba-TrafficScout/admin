@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\CarStatus;
 use App\Models\CarType;
 use App\Models\Project;
+use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,5 +27,7 @@ class DatabaseSeeder extends Seeder
         CarStatus::factory(3)->create();
 
         Car::factory(10)->create();
+
+        Role::factory(3)->create();
     }
 }
