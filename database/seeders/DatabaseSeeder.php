@@ -22,9 +22,14 @@ class DatabaseSeeder extends Seeder
         Role::factory(3)->create();
 
         //Roles must come first before user
-        User::factory(10)->create();
+        $users = User::factory(10)->create();
 
         License::factory(10)->create();
+
+        //write this after licences
+        $users->each(function ($user) {
+            $user->licenses()->attach(License::inRandomOrder()->first());
+        });
 
         Project::factory(10)->create();
 
