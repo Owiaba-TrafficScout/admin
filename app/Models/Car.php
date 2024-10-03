@@ -9,4 +9,5 @@ class Car extends Model
 {
     /** @use HasFactory<\Database\Factories\CarFactory> */
     use HasFactory;
+    protected $guarded = [];
 }

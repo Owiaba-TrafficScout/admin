@@ -17,7 +17,10 @@ class CarFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'car_type_id' => rand(1, 10),
+            'car_status_id' => rand(1, 3),
+            'car_number' => $this->faker->uuid(),
+            'last_maintenance_date' => $this->faker->date(),
         ];
     }
 }
