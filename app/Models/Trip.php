@@ -14,18 +14,28 @@ class Trip extends Model
 
     protected $guarded = [];
 
-    public function status()
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(TripStatus::class);
+        return $this->belongsTo(TripStatus::class, 'trip_status_id');
     }
 
-    public function speed(): BelongsTo
+    public function speeds(): HasMany
     {
-        return $this->belongsTo(TripSpeed::class);
+        return $this->hasMany(TripSpeed::class);
     }
 
     public function stops(): HasMany
     {
         return $this->hasMany(TripStop::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function car(): BelongsTo
+    {
+        return $this->belongsTo(Car::class);
     }
 }
