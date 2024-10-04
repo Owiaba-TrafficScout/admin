@@ -12,7 +12,7 @@ class Trip extends Model
     /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
 
-    protected $with = ['status', 'user', 'car', 'project'];
+    protected $with = ['status', 'user', 'car', 'project', 'speeds', 'stops'];
 
     protected $guarded = [];
 

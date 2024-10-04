@@ -2,6 +2,8 @@
 import FilterRadios from '@/Components/trips/FilterRadios.vue';
 import SearchForm from '@/Components/trips/SearchForm.vue';
 import { computed, defineProps, ref } from 'vue';
+import Speeds from './Speeds.vue';
+import Stops from './Stops.vue';
 const props = defineProps({
     items:
         {
@@ -70,6 +72,16 @@ const handleFilter = (filter) => {
                             End
                         </th>
                         <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            Stops
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            Speeds
+                        </th>
+                        <th
                             class="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white"
                         >
                             Status
@@ -97,6 +109,16 @@ const handleFilter = (filter) => {
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
                                 {{ new Date(item.end_time).toLocaleString() }}
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                <Stops :stops="item.stops" />
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                <Speeds :speeds="item.speeds" />
                             </p>
                         </td>
                         <td class="px-4 py-5">
