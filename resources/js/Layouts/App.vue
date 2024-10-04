@@ -25,6 +25,10 @@ import {
 import { Input } from '@/Components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
 import { Link } from '@inertiajs/vue3';
+
+defineProps<{
+    page: string;
+}>();
 </script>
 
 <template>
@@ -218,7 +222,9 @@ import { Link } from '@inertiajs/vue3';
             </header>
             <main class="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                 <div class="flex items-center">
-                    <h1 class="text-lg font-semibold md:text-2xl">Inventory</h1>
+                    <h1 class="text-lg font-semibold capitalize md:text-2xl">
+                        {{ page }}
+                    </h1>
                 </div>
                 <div
                     class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
