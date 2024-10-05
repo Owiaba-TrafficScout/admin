@@ -1,5 +1,4 @@
 <script setup>
-import FilterRadios from '@/Components/trips/FilterRadios.vue';
 import SearchForm from '@/Components/trips/SearchForm.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
@@ -55,7 +54,6 @@ const handleFilter = (filter) => {
     >
         <div class="mb-5 flex items-center justify-between">
             <SearchForm @search="handleSearch" />
-            <FilterRadios @filter="handleFilter" />
         </div>
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">
