@@ -23,4 +23,10 @@ class CarTypeController extends Controller
 
         return redirect()->back();
     }
+
+    public function destroy(CarType $car_type)
+    {
+        $car_type->delete();
+        return redirect()->back();
+    }
 }
