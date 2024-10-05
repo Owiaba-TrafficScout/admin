@@ -19,7 +19,7 @@ interface Stop {
 </script>
 
 <template>
-    <Popover style="width: 100vw; height: auto">
+    <Popover>
         <PopoverTrigger as-child>
             <Button variant="outline"> Stops </Button>
         </PopoverTrigger>

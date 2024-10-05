@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     // Trips routes
     Route::get('/trips', [TripController::class, 'index'])->name('trips.index');
     Route::patch('/trips/{trip}', [TripController::class, 'update'])->name('trips.update');
+    Route::delete('/trips/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
 });
 
 require __DIR__ . '/auth.php';

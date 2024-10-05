@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DataTable from '@/Components/trips/data-table.vue';
 import Layout from '@/Layouts/App.vue';
+import { provide } from 'vue';
 export interface Trip {
     id: number;
     title: string;
@@ -16,7 +17,7 @@ export interface Trip {
     updated_at: string;
 }
 
-interface TripStatus {
+export interface TripStatus {
     id: number;
     name: string;
 }
@@ -36,9 +37,12 @@ interface User {
     name: string;
 }
 
-defineProps<{
+let props = defineProps<{
     trips: Trip[];
+    statuses: TripStatus[];
 }>();
+
+provide('trip_statuses', props.statuses);
 </script>
 
 <template>

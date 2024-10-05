@@ -8,14 +8,8 @@ import {
 } from '@/Components/ui/tooltip';
 
 defineProps<{
-    buttonText: {
-        type: String;
-        required: true;
-    };
-    content: {
-        type: String;
-        required: true;
-    };
+    buttonText: string;
+    content: string;
 }>();
 </script>
 
