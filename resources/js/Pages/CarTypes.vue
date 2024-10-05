@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import DataTable from '@/Components/projects/data-table.vue';
+import Layout from '@/Layouts/App.vue';
+export interface CarType {
+    id: number;
+    name: string;
+    description: string;
+}
+
+defineProps<{
+    car_types: CarType[];
+}>();
+</script>
+
+<template>
+    <Layout page="Projects">
+        <DataTable :items="car_types" />
+    </Layout>
+</template>

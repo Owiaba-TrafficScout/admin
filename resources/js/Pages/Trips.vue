@@ -2,6 +2,7 @@
 import DataTable from '@/Components/trips/data-table.vue';
 import Layout from '@/Layouts/App.vue';
 import { provide } from 'vue';
+import { CarType } from './CarTypes.vue';
 import { Project } from './Projects.vue';
 export interface Trip {
     id: number;
@@ -27,11 +28,6 @@ interface Car {
     id: number;
     car_number: string;
     type: CarType;
-}
-
-interface CarType {
-    id: number;
-    name: string;
 }
 
 export interface User {
