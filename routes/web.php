@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CarTypeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TripController;
@@ -44,6 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');
     Route::patch('/car-types/{car_type}', [CarTypeController::class, 'update'])->name('car-types.update');
     Route::delete('/car-types/{car_type}', [CarTypeController::class, 'destroy'])->name('car-types.destroy');
+
+    //payments routes
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::patch('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
+    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 });
 
 require __DIR__ . '/auth.php';

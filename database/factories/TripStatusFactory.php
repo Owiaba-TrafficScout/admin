@@ -16,8 +16,9 @@ class TripStatusFactory extends Factory
      */
     public function definition(): array
     {
+        $statuses = ['active', 'inactive', 'completed'];
         return [
-            'name' => fake()->word()
+            'name' => fake()->unique()->randomElement($statuses),
         ];
     }
 }

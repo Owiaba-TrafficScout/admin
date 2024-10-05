@@ -1,12 +1,9 @@
 <script setup>
 import SearchForm from '@/Components/SearchForm.vue';
-import FilterRadios from '@/Components/trips/FilterRadios.vue';
+import FilterRadios from '@/Components/payments/FilterRadios.vue';
 import { useForm } from '@inertiajs/vue3';
-import { computed, defineProps, ref } from 'vue';
-import Tooltip from '../Tooltip.vue';
+import { computed, defineProps, inject, ref } from 'vue';
 import Edit from './Edit.vue';
-import Speeds from './Speeds.vue';
-import Stops from './Stops.vue';
 
 const props = defineProps({
     items:
@@ -24,18 +21,20 @@ const handleSearch = (s) => {
 const handleDelete = (id) => {
     const form = useForm({});
     if (confirm('Are you sure you want to delete this item?')) {
-        form.delete(route('trips.destroy', id));
+        form.delete(route('payments.destroy', id));
     }
 };
 const filteredItems = computed(() => {
     if (search.value != '')
         return props.items.filter((item) => {
             return (
-                item.title.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.description
                     .toLowerCase()
                     .includes(search.value.toLowerCase()) ||
-                item.group_code
+                item.user.name
+                    .toLowerCase()
+                    .includes(search.value.toLowerCase()) ||
+                item.project.name
                     .toLowerCase()
                     .includes(search.value.toLowerCase()) ||
                 item.status.name.toLowerCase() === search.value.toLowerCase()
@@ -45,14 +44,20 @@ const filteredItems = computed(() => {
 });
 
 const handleFilter = (filter) => {
-    if (filter === 'active') {
-        search.value = 'active';
-    } else if (filter === 'inactive') {
-        search.value = 'inactive';
+    if (filter === 'pending') {
+        search.value = 'pending';
+    } else if (filter === 'paid') {
+        search.value = 'paid';
+    } else if (filter === 'failed') {
+        search.value = 'failed';
+    } else if (filter === 'canceled') {
+        search.value = 'canceled';
     } else {
         search.value = '';
     }
 };
+
+const statuses = inject('statuses');
 </script>
 
 <template>
@@ -61,7 +66,7 @@ const handleFilter = (filter) => {
     >
         <div class="mb-5 flex items-center justify-between">
             <SearchForm @search="handleSearch" />
-            <FilterRadios @filter="handleFilter" />
+            <FilterRadios @filter="handleFilter" :statuses="statuses" />
         </div>
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">
@@ -70,7 +75,7 @@ const handleFilter = (filter) => {
                         <th
                             class="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11"
                         >
-                            Title
+                            User
                         </th>
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
@@ -80,32 +85,18 @@ const handleFilter = (filter) => {
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            Car Type
+                            Amount
                         </th>
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            User
+                            Description
                         </th>
+
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            Start
-                        </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            End
-                        </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Stops
-                        </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Speeds
+                            Date
                         </th>
                         <th
                             class="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white"
@@ -123,9 +114,8 @@ const handleFilter = (filter) => {
                     <tr v-for="item in filteredItems" :key="item.id">
                         <td class="px-4 py-5 pl-9 xl:pl-11">
                             <h5 class="font-medium text-black dark:text-white">
-                                {{ item.title }}
+                                {{ item.user.name }}
                             </h5>
-                            <p class="text-sm">{{ item.group_code }}</p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
@@ -134,47 +124,31 @@ const handleFilter = (filter) => {
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                <Tooltip
-                                    :tooltip-content="item.car.car_number"
-                                    :display-text="item.car.type.name"
-                                />
+                                {{ item.amount }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.user.name }}
+                                {{ item.description }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ new Date(item.start_time).toLocaleString() }}
-                            </p>
-                        </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                {{ new Date(item.end_time).toLocaleString() }}
-                            </p>
-                        </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                <Stops :stops="item.stops" />
-                            </p>
-                        </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                <Speeds :speeds="item.speeds" />
+                                {{ new Date(item.date).toLocaleString() }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p
                                 class="inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium"
                                 :class="{
-                                    'bg-gray-500 text-gray-500':
-                                        item.status.name === 'completed',
+                                    'bg-yellow-500 text-yellow-500':
+                                        item.status.name === 'pending',
                                     'bg-red-500 text-red-500':
-                                        item.status.name === 'inactive',
+                                        item.status.name === 'failed',
                                     'bg-green-500 text-green-500':
-                                        item.status.name === 'active',
+                                        item.status.name === 'paid',
+                                    'bg-slate-500 text-slate-500':
+                                        item.status.name === 'canceled',
                                 }"
                             >
                                 {{ item.status.name }}
@@ -182,7 +156,7 @@ const handleFilter = (filter) => {
                         </td>
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :trip="item">
+                                <Edit :payment="item">
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"
