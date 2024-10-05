@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {
+    Banknote,
     Bell,
     Car,
     CircleUser,
     Home,
     LineChart,
+    Map,
     Menu,
     Package,
     Package2,
@@ -75,13 +77,8 @@ defineProps<{
                             }"
                             class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                         >
-                            <ShoppingCart class="h-4 w-4" />
+                            <Map class="h-4 w-4" />
                             Trips
-                            <Badge
-                                class="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-                            >
-                                6
-                            </Badge>
                         </Link>
                         <Link
                             :href="route('projects.index')"
@@ -101,7 +98,7 @@ defineProps<{
                             :href="route('payments.index')"
                             class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
                         >
-                            <Car class="h-4 w-4" />
+                            <Banknote class="h-4 w-4" />
                             Payments
                         </Link>
                         <Link
