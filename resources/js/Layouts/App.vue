@@ -85,7 +85,7 @@ defineProps<{
                             </Badge>
                         </Link>
                         <Link
-                            href="#"
+                            :href="route('projects.index')"
                             class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
                         >
                             <Package class="h-4 w-4" />

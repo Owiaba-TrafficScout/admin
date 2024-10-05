@@ -3,10 +3,8 @@ import FilterRadios from '@/Components/trips/FilterRadios.vue';
 import SearchForm from '@/Components/trips/SearchForm.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
-import Tooltip from '../Tooltip.vue';
-import Edit from './Edit.vue';
-import Speeds from './Speeds.vue';
-import Stops from './Stops.vue';
+import Trips from './Trips.vue';
+import Users from './Users.vue';
 
 const props = defineProps({
     items:
@@ -31,14 +29,10 @@ const filteredItems = computed(() => {
     if (search.value != '')
         return props.items.filter((item) => {
             return (
-                item.title.toLowerCase().includes(search.value.toLowerCase()) ||
+                item.name.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.description
                     .toLowerCase()
-                    .includes(search.value.toLowerCase()) ||
-                item.group_code
-                    .toLowerCase()
-                    .includes(search.value.toLowerCase()) ||
-                item.status.name.toLowerCase() === search.value.toLowerCase()
+                    .includes(search.value.toLowerCase())
             );
         });
     return props.items;
@@ -70,23 +64,14 @@ const handleFilter = (filter) => {
                         <th
                             class="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11"
                         >
-                            Title
+                            Name
                         </th>
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            Project
+                            Description
                         </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Car Type
-                        </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            User
-                        </th>
+
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
@@ -100,17 +85,12 @@ const handleFilter = (filter) => {
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            Stops
+                            Trips
                         </th>
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
-                            Speeds
-                        </th>
-                        <th
-                            class="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Status
+                            Users
                         </th>
                         <th
                             class="px-4 py-4 font-medium text-black dark:text-white"
@@ -123,66 +103,39 @@ const handleFilter = (filter) => {
                     <tr v-for="item in filteredItems" :key="item.id">
                         <td class="px-4 py-5 pl-9 xl:pl-11">
                             <h5 class="font-medium text-black dark:text-white">
-                                {{ item.title }}
+                                {{ item.name }}
                             </h5>
-                            <p class="text-sm">{{ item.group_code }}</p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.project.name }}
+                                {{ item.description }}
                             </p>
                         </td>
+
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                <Tooltip
-                                    :tooltip-content="item.car.car_number"
-                                    :display-text="item.car.type.name"
-                                />
+                                {{ new Date(item.start_date).toLocaleString() }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.user.name }}
+                                {{ new Date(item.end_date).toLocaleString() }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ new Date(item.start_time).toLocaleString() }}
+                                <Trips :trips="item.trips" />
                             </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ new Date(item.end_time).toLocaleString() }}
+                                <Users :users="item.users" />
                             </p>
                         </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                <Stops :stops="item.stops" />
-                            </p>
-                        </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                <Speeds :speeds="item.speeds" />
-                            </p>
-                        </td>
-                        <td class="px-4 py-5">
-                            <p
-                                class="inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium"
-                                :class="{
-                                    'bg-yellow-500 text-yellow-500':
-                                        item.status.name === 'libero',
-                                    'bg-red-500 text-red-500':
-                                        item.status.name === 'inactive',
-                                    'bg-green-500 text-green-500':
-                                        item.status.name === 'active',
-                                }"
-                            >
-                                {{ item.status.name }}
-                            </p>
-                        </td>
+
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :trip="item">
+                                <Edit :project="item">
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"
