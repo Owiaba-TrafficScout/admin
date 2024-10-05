@@ -16,8 +16,9 @@ class PaymentStatusFactory extends Factory
      */
     public function definition(): array
     {
+        $statuses = ['pending', 'paid', 'failed', 'canceled'];
         return [
-            //
+            'name' => $this->faker->unique()->randomElement($statuses),
         ];
     }
 }

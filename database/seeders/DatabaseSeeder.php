@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\CarStatus;
 use App\Models\CarType;
 use App\Models\License;
+use App\Models\PaymentStatus;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Trip;
@@ -43,5 +44,7 @@ class DatabaseSeeder extends Seeder
         $users->each(function ($user) {
             $user->projects()->attach(Project::all()->random());
         });
+
+        PaymentStatus::factory(4)->create();
     }
 }
