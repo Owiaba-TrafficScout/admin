@@ -37,16 +37,6 @@ const filteredItems = computed(() => {
         });
     return props.items;
 });
-
-const handleFilter = (filter) => {
-    if (filter === 'active') {
-        search.value = 'active';
-    } else if (filter === 'inactive') {
-        search.value = 'inactive';
-    } else {
-        search.value = '';
-    }
-};
 </script>
 
 <template>

@@ -23,7 +23,7 @@ defineProps<{
             >
                 <div class="xl:px-7.5 px-4 py-6 md:px-6">
                     <h4 class="text-xl font-bold text-black dark:text-white">
-                        Trip users
+                        Project users
                     </h4>
                 </div>
 
