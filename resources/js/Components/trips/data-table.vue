@@ -2,6 +2,7 @@
 import FilterRadios from '@/Components/trips/FilterRadios.vue';
 import SearchForm from '@/Components/trips/SearchForm.vue';
 import { computed, defineProps, ref } from 'vue';
+import Tooltip from '../Tooltip.vue';
 import Speeds from './Speeds.vue';
 import Stops from './Stops.vue';
 const props = defineProps({
@@ -64,6 +65,16 @@ const handleFilter = (filter) => {
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
+                            Car Type
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            User
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
                             Start
                         </th>
                         <th
@@ -100,6 +111,19 @@ const handleFilter = (filter) => {
                                 {{ item.title }}
                             </h5>
                             <p class="text-sm">{{ item.group_code }}</p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                <Tooltip
+                                    :content="item.car.car_number"
+                                    :buttonText="item.car.type.name"
+                                />
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                {{ item.user.name }}
+                            </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
