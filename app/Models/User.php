@@ -43,7 +43,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+    protected $with = ['role'];
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
