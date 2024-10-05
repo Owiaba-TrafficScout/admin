@@ -13,6 +13,8 @@ class Payment extends Model
 
     protected $guarded = [];
 
+    protected $with = ['user', 'project', 'status'];
+
     public function status(): BelongsTo
     {
         return $this->belongsTo(PaymentStatus::class, 'payment_status_id');
