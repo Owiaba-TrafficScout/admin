@@ -13,4 +13,14 @@ class CarTypeController extends Controller
         $car_types = CarType::all();
         return Inertia::render('CarTypes', ['car_types' => $car_types]);
     }
+
+    public function update(Request $request, CarType $car_type)
+    {
+        $car_type->update($request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]));
+
+        return redirect()->back();
+    }
 }

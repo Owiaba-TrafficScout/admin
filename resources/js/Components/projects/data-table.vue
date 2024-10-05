@@ -3,6 +3,8 @@ import SearchForm from '@/Components/trips/SearchForm.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Edit from './Edit.vue';
+import Trips from './Trips.vue';
+import Users from './Users.vue';
 
 const props = defineProps({
     items:
@@ -58,6 +60,27 @@ const filteredItems = computed(() => {
                         >
                             Description
                         </th>
+
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            Start
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            End
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            Trips
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
+                            Users
+                        </th>
                         <th
                             class="px-4 py-4 font-medium text-black dark:text-white"
                         >
@@ -79,8 +102,29 @@ const filteredItems = computed(() => {
                         </td>
 
                         <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                {{ new Date(item.start_date).toLocaleString() }}
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                {{ new Date(item.end_date).toLocaleString() }}
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                <Trips :trips="item.trips" />
+                            </p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-black dark:text-white">
+                                <Users :users="item.users" />
+                            </p>
+                        </td>
+
+                        <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :car_type="item">
+                                <Edit :project="item">
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"

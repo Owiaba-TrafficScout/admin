@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DataTable from '@/Components/projects/data-table.vue';
+import DataTable from '@/Components/cartypes/data-table.vue';
 import Layout from '@/Layouts/App.vue';
 export interface CarType {
     id: number;
