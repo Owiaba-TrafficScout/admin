@@ -6,6 +6,7 @@ use App\Models\Car;
 use App\Models\CarStatus;
 use App\Models\CarType;
 use App\Models\License;
+use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\Project;
 use App\Models\Role;
@@ -46,5 +47,7 @@ class DatabaseSeeder extends Seeder
         });
 
         PaymentStatus::factory(4)->create();
+
+        Payment::factory(20)->create();
     }
 }
