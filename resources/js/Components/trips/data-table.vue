@@ -1,6 +1,6 @@
 <script setup>
+import SearchForm from '@/Components/SearchForm.vue';
 import FilterRadios from '@/Components/trips/FilterRadios.vue';
-import SearchForm from '@/Components/trips/SearchForm.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Tooltip from '../Tooltip.vue';

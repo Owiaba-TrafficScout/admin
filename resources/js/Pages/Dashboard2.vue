@@ -6,7 +6,7 @@ import Layout from '@/Layouts/App.vue';
 </script>
 
 <template>
-    <Layout>
+    <Layout page="Dashboard">
         <div class="flex flex-col items-center gap-1 text-center">
             <h3 class="text-2xl font-bold tracking-tight">
                 You have no products

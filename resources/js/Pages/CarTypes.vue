@@ -13,7 +13,7 @@ defineProps<{
 </script>
 
 <template>
-    <Layout page="Projects">
+    <Layout page="Car Types">
         <DataTable :items="car_types" />
     </Layout>
 </template>

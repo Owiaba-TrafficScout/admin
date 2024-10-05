@@ -1,5 +1,5 @@
 <script setup>
-import SearchForm from '@/Components/trips/SearchForm.vue';
+import SearchForm from '@/Components/SearchForm.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Edit from './Edit.vue';
