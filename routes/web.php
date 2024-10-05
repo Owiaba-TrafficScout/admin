@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TripController;
@@ -38,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    //Cartype routes
+    Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');
 });
 
 require __DIR__ . '/auth.php';
