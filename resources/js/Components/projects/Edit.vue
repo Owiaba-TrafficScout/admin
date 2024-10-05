@@ -15,37 +15,31 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/Components/ui/popover';
-import { Trip, TripStatus } from '@/Pages/Trips.vue';
+import { Project } from '@/Pages/Projects.vue';
 import { useForm } from '@inertiajs/vue3';
-import { inject } from 'vue';
 
 const props = defineProps<{
-    trip: Trip;
+    project: Project;
 }>();
 
 const emit = defineEmits(['update']);
 
 const form = useForm({
-    title: props.trip.title,
-    description: props.trip.description,
-    group_code: props.trip.group_code,
-    start_time: props.trip.start_time,
-    end_time: props.trip.end_time,
-    trip_status_id: props.trip.status.id,
+    name: props.project.name,
+    description: props.project.description,
+    start_date: props.project.start_date,
+    end_date: props.project.end_date,
 });
 
 const submit = () => {
     // dynamicaly post to update or store rout
-    form.patch(route('trips.update', props.trip.id), {
+    form.patch(route('projects.update', props.project.id), {
         onSuccess: () => {
             form.reset();
             emit('update');
         },
     });
 };
-
-// inject trip statuses
-const statuses = inject<TripStatus[]>('trip_statuses');
 </script>
 
 <template>
@@ -57,24 +51,24 @@ const statuses = inject<TripStatus[]>('trip_statuses');
             <form @submit.prevent="submit">
                 <Card class="w-full max-w-sm">
                     <CardHeader>
-                        <CardTitle class="text-2xl"> Edit Trip </CardTitle>
+                        <CardTitle class="text-2xl"> Edit Project </CardTitle>
                         <CardDescription> Update fields below </CardDescription>
                     </CardHeader>
                     <CardContent class="grid gap-4">
                         <div class="grid gap-2">
-                            <Label for="title">Title</Label>
+                            <Label for="title">Name</Label>
                             <Input
                                 id="title"
                                 type="text"
-                                v-model="form.title"
+                                v-model="form.name"
                                 required
                             />
-                            <div v-if="form.errors.title">
-                                {{ form.errors.title }}
+                            <div v-if="form.errors.name">
+                                {{ form.errors.name }}
                             </div>
                         </div>
                         <div class="grid gap-2">
-                            <Label for="description">description</Label>
+                            <Label for="description">Description</Label>
                             <textarea
                                 name="description"
                                 id="description"
@@ -85,64 +79,27 @@ const statuses = inject<TripStatus[]>('trip_statuses');
                             </div>
                         </div>
                         <div class="grid gap-2">
-                            <Label for="group_code">Group Code</Label>
+                            <Label for="start_date">Start Date</Label>
                             <Input
-                                id="group_code"
-                                type="text"
-                                v-model="form.group_code"
+                                id="start_date"
+                                type="date"
+                                v-model="form.start_date"
                                 required
                             />
-                            <div v-if="form.errors.group_code">
-                                {{ form.errors.group_code }}
+                            <div v-if="form.errors.start_date">
+                                {{ form.errors.start_date }}
                             </div>
                         </div>
                         <div class="grid gap-2">
-                            <Label for="start_time">Start Time</Label>
+                            <Label for="end_date">End Date</Label>
                             <Input
-                                id="start_time"
-                                type="datetime"
-                                v-model="form.start_time"
+                                id="end_date"
+                                type="date"
+                                v-model="form.end_date"
                                 required
                             />
-                            <div v-if="form.errors.start_time">
-                                {{ form.errors.start_time }}
-                            </div>
-                        </div>
-                        <div class="grid gap-2">
-                            <Label for="end_time">End Time</Label>
-                            <Input
-                                id="end_time"
-                                type="datetime"
-                                v-model="form.end_time"
-                                required
-                            />
-                            <div v-if="form.errors.end_time">
-                                {{ form.errors.end_time }}
-                            </div>
-                        </div>
-                        <div class="grid gap-2">
-                            <Label for="trip_status_id">Status</Label>
-                            <select
-                                id="trip_status_id"
-                                v-model="form.trip_status_id"
-                                required
-                            >
-                                <template
-                                    v-for="status in statuses"
-                                    :key="status.id"
-                                >
-                                    <option
-                                        :value="status.id"
-                                        :selected="
-                                            form.trip_status_id == status.id
-                                        "
-                                    >
-                                        {{ status.name }}
-                                    </option>
-                                </template>
-                            </select>
-                            <div v-if="form.errors.trip_status_id">
-                                {{ form.errors.trip_status_id }}
+                            <div v-if="form.errors.end_date">
+                                {{ form.errors.end_date }}
                             </div>
                         </div>
                     </CardContent>
