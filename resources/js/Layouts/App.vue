@@ -26,10 +26,15 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
 import { Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
+
+const classes = ref(
+    'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+);
 </script>
 
 <template>
@@ -71,42 +76,55 @@ defineProps<{
                         </Link>
                         <Link
                             :href="route('trips.index')"
-                            :class="{
-                                'bg-muted text-primary':
-                                    route().current('trips.index'),
-                            }"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('trips.index'),
+                                },
+                                classes,
+                            ]"
                         >
                             <Map class="h-4 w-4" />
                             Trips
                         </Link>
                         <Link
                             :href="route('projects.index')"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('projects.index'),
+                                },
+                                classes,
+                            ]"
                         >
                             <Package class="h-4 w-4" />
                             Projects
                         </Link>
                         <Link
                             :href="route('car-types.index')"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('car-types.index'),
+                                },
+                                classes,
+                            ]"
                         >
                             <Car class="h-4 w-4" />
                             Car Types
                         </Link>
                         <Link
                             :href="route('payments.index')"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('payments.index'),
+                                },
+                                classes,
+                            ]"
                         >
                             <Banknote class="h-4 w-4" />
                             Payments
-                        </Link>
-                        <Link
-                            href="#"
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                        >
-                            <LineChart class="h-4 w-4" />
-                            Analytics
                         </Link>
                     </nav>
                 </div>
