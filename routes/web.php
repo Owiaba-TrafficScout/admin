@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TripController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/trips', [TripController::class, 'index'])->name('trips.index');
     Route::patch('/trips/{trip}', [TripController::class, 'update'])->name('trips.update');
     Route::delete('/trips/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
+
+    //Projects routes
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 });
 
 require __DIR__ . '/auth.php';
