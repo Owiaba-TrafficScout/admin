@@ -22,7 +22,7 @@ const handleSearch = (s) => {
 const handleDelete = (id) => {
     const form = useForm({});
     if (confirm('Are you sure you want to delete this item?')) {
-        form.delete(route('trips.destroy', id));
+        form.delete(route('projects.destroy', id));
     }
 };
 const filteredItems = computed(() => {

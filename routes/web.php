@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     //Projects routes
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 });
 
 require __DIR__ . '/auth.php';

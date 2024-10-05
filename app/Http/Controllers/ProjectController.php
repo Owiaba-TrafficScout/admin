@@ -25,4 +25,10 @@ class ProjectController extends Controller
 
         return redirect()->back();
     }
+
+    public function destroy(Project $project)
+    {
+        $project->delete();
+        return redirect()->back();
+    }
 }
