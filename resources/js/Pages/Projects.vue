@@ -12,7 +12,7 @@ export interface Project {
     users: User[];
 }
 
-let props = defineProps<{
+defineProps<{
     projects: Project[];
 }>();
 </script>
