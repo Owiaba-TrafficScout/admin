@@ -15,7 +15,6 @@ class Project extends Model
     protected $guarded = [];
 
 
-
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);
@@ -24,5 +23,10 @@ class Project extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
