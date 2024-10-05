@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from '@/Components/ui/button';
 import {
     Tooltip,
     TooltipContent,
@@ -8,8 +7,8 @@ import {
 } from '@/Components/ui/tooltip';
 
 defineProps<{
-    buttonText: string;
-    content: string;
+    displayText: string;
+    tooltipContent: string;
 }>();
 </script>
 
@@ -17,10 +16,10 @@ defineProps<{
     <TooltipProvider>
         <Tooltip>
             <TooltipTrigger as-child>
-                <Button variant="outline"> {{ buttonText }} </Button>
+                <p>{{ displayText }}</p>
             </TooltipTrigger>
             <TooltipContent>
-                <p>{{ content }}</p>
+                <p>{{ tooltipContent }}</p>
             </TooltipContent>
         </Tooltip>
     </TooltipProvider>
