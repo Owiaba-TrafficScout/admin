@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TripsExport;
 use App\Models\Trip;
 use App\Models\TripStatus;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TripController extends Controller
 {
@@ -35,5 +37,10 @@ class TripController extends Controller
     {
         $trip->delete();
         return redirect()->back();
+    }
+
+    public function exportTripsToExcel()
+    {
+        return Excel::download(new TripsExport, 'trips.xlsx');
     }
 }

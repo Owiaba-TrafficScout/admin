@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
 
     //Paystack payemnt routes
     Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
+
+    //Export to excel
+    //---Trips-------//
+    Route::get('/export-trips', [TripController::class, 'exportTripsToExcel'])->name('export.trips');
 });
 
 require __DIR__ . '/auth.php';
