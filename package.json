@@ -29,6 +29,7 @@
         "vue-tsc": "^2.0.24"
     },
     "dependencies": {
+        "@paystack/inline-js": "^2.20.3",
         "@radix-icons/vue": "^1.0.0",
         "@tanstack/vue-table": "^8.20.5",
         "@vueuse/core": "^11.1.0",
