@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
 
         $users->each(function ($user) {
             $user->projects()->attach(Project::all()->random());
+            $user->licenses()->attach(License::all()->random());
         });
 
         PaymentStatus::factory(4)->create();

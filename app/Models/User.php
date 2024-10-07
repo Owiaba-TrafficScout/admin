@@ -49,9 +49,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function licenses(): HasMany
+    public function licenses(): BelongsToMany
     {
-        return $this->hasMany(License::class);
+        return $this->belongsToMany(License::class);
     }
 
     public function trips(): HasMany
