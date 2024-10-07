@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -17,6 +18,8 @@ Route::get('/', function () {
     ]);
 });
 
+//get all Licences
+Route::get('/licenses', [LicenseController::class, 'index'])->name('licenses.index');
 
 
 // Route::get('/dashboard', function () {
@@ -49,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
     Route::patch('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+
+    //Paystack payemnt routes
 });
+Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
+Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
 
 require __DIR__ . '/auth.php';

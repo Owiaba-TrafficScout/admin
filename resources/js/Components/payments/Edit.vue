@@ -109,7 +109,7 @@ const statuses = inject('statuses') as { id: number; name: string }[];
                                 id="payment_status_id"
                                 v-model="form.payment_status_id"
                                 required
-                            >
+                                >
                                 <template
                                     v-for="status in statuses"
                                     :key="status.id"
