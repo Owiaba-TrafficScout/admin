@@ -54,8 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
     //Paystack payemnt routes
+    Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
 });
-Route::get('/pay', [PaymentController::class, 'pay'])->name('pay');
-Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
 
 require __DIR__ . '/auth.php';

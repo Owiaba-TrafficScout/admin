@@ -16,7 +16,6 @@ interface License {
     price: number;
     description: string;
 }
-
 const selected_licenses: Ref<License[]> = ref([]);
 
 const selected = computed(() => {
@@ -25,19 +24,31 @@ const selected = computed(() => {
     });
 });
 
+const totalPayable = computed(() => {
+    return selected_licenses.value.reduce((acc, license) => {
+        return acc + license.price;
+    }, 0);
+});
+
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
     license_ids: selected,
+    amount: totalPayable,
 });
+
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => {
             form.reset('password', 'password_confirmation');
         },
     });
+};
+
+const nameWithPrice = (license: License) => {
+    return `${license.name} - GHS${license.price}`;
 };
 </script>
 
@@ -114,8 +125,8 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <label class="typo__label">Simple select / dropdown</label>
-                <div class="flex gap-3">
+                <label class="typo__label">Select Your Licenses</label>
+                <div class="flex flex-col gap-3">
                     <Multiselect
                         v-model="selected_licenses"
                         :options="licenses"
@@ -124,7 +135,7 @@ const submit = () => {
                         :clear-on-select="false"
                         :preserve-search="true"
                         placeholder="Select licenses"
-                        label="name"
+                        :custom-label="nameWithPrice"
                         track-by="id"
                     >
                         <template #selection="{ values, isOpen }">
@@ -137,12 +148,13 @@ const submit = () => {
                         </template>
                     </Multiselect>
 
-                    <Link
-                        :href="route('pay')"
-                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                    <PrimaryButton
+                        class="ms-4"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
                     >
-                        Pay
-                    </Link>
+                        Pay {{ 'GHS' + totalPayable }} and Register
+                    </PrimaryButton>
                 </div>
             </div>
 
@@ -153,14 +165,6 @@ const submit = () => {
                 >
                     Already registered?
                 </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Register
-                </PrimaryButton>
             </div>
         </form>
     </GuestLayout>

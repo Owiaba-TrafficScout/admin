@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\PaymentStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
@@ -37,22 +38,6 @@ class PaymentController extends Controller
         return redirect()->back();
     }
 
-    public function pay()
-    {
-        $data = array(
-            "amount" => 700 * 100,
-            "reference" => '4g4g5485g8545jg8gj',
-            "email" => 'user@mail.com',
-            "currency" => "GHS",
-            "orderID" => 23456,
-        );
-        try {
-            return Paystack::getAuthorizationUrl($data)->redirectNow();
-        } catch (\Exception $e) {
-            dd($e);
-            return redirect()->back()->withErrors(['error' => 'Could not initiate Paystack payment. Please try again.']);
-        }
-    }
 
     public function handleGatewayCallback()
     {
@@ -61,8 +46,6 @@ class PaymentController extends Controller
             //Payment was successful
             //update database
             $data = $paymentDetails['data'];
-
-            dd($data);
 
             return redirect()->route('payments.index')->with('success', 'Payment successful!');
         } else {

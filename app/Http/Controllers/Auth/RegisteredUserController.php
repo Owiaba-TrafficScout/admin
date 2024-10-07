@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PaymentController;
 use App\Models\License;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -10,9 +11,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Unicodeveloper\Paystack\Facades\Paystack;
 
 class RegisteredUserController extends Controller
 {
@@ -32,13 +35,14 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'license_ids' => 'required|exists:licenses,id|array'
+            'license_ids' => 'required|exists:licenses,id|array',
+            'amount' => 'required|numeric'
         ]);
 
         $user = User::create([
@@ -47,12 +51,27 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // $user->licenses()->attach($request->license_ids);
+        $user->licenses()->attach($request->license_ids);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Generate the payment URL using the Paystack route and redirect to it
+        $data = [
+            "amount" => $request->amount * 100, // Paystack expects the amount in kobo/cents
+            "reference" => Paystack::genTranxRef(),
+            "email" => $request->email,
+            "currency" => "GHS",
+            "orderID" => 23456,
+        ];
+
+        try {
+            $authorizationUrl = Paystack::getAuthorizationUrl($data)->url;
+            return Inertia::location($authorizationUrl); // Properly handle the redirect using Inertia
+        } catch (\Exception $e) {
+            Log::error('Paystack payment initiation failed: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Could not initiate Paystack payment. Please try again.']);
+        }
     }
 }
