@@ -7,14 +7,18 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class TripsExport implements FromCollection, WithHeadings, WithMapping
+class TripSheetExport implements FromCollection, WithHeadings, WithMapping
 {
-    /**
-     * @return \Illuminate\Support\Collection
-     */
+    private $tripId;
+
+    public function __construct($tripId)
+    {
+        $this->tripId = $tripId;
+    }
+
     public function collection()
     {
-        return Trip::all();
+        return Trip::where('id', $this->tripId)->get();
     }
 
     public function map($trip): array
@@ -30,12 +34,8 @@ class TripsExport implements FromCollection, WithHeadings, WithMapping
             $trip->start_time,
             $trip->end_time,
             $trip->status->name,
-            $trip->stops->pluck('stop_time')->implode(', '),
-            // Include related TripSpeeds data (concatenate if there are multiple speeds)
-            $trip->speeds->pluck('velocity')->implode(', '),
         ];
     }
-
     public function headings(): array
     {
         return [
@@ -49,8 +49,6 @@ class TripsExport implements FromCollection, WithHeadings, WithMapping
             'Start Time',
             'End Time',
             'Status',
-            'Stops',
-            'Speeds',
         ];
     }
 }

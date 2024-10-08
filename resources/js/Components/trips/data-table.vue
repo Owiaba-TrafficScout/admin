@@ -235,7 +235,10 @@ const handleFilter = (filter) => {
                                     </svg>
                                 </button>
 
-                                <button class="hover:text-primary">
+                                <a
+                                    class="hover:text-primary"
+                                    :href="route('export.trip', item.id)"
+                                >
                                     <svg
                                         class="fill-current"
                                         width="18"
@@ -253,7 +256,7 @@ const handleFilter = (filter) => {
                                             fill=""
                                         />
                                     </svg>
-                                </button>
+                                </a>
                             </div>
                         </td>
                     </tr>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TripMultiSheetExport;
 use App\Exports\TripsExport;
 use App\Models\Trip;
 use App\Models\TripStatus;
@@ -42,5 +43,10 @@ class TripController extends Controller
     public function exportTripsToExcel()
     {
         return Excel::download(new TripsExport, 'trips.xlsx');
+    }
+
+    public function exportTripToExcel($tripId)
+    {
+        return Excel::download(new TripMultiSheetExport($tripId), 'trip-details.xlsx');
     }
 }

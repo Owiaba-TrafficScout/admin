@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     //Export to excel
     //---Trips-------//
     Route::get('/export-trips', [TripController::class, 'exportTripsToExcel'])->name('export.trips');
+    Route::get('/export-trip/{tripId}', [TripController::class, 'exportTripToExcel'])->name('export.trip');
 });
 
 require __DIR__ . '/auth.php';
