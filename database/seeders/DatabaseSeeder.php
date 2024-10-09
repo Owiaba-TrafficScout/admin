@@ -25,8 +25,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::factory(3)->create();
-
+        $roles = ["system admin", 'project admin', 'enumerator'];
+        foreach ($roles as $role) {
+            Role::factory()->create(['name' => $role]);
+        }
         CarType::factory(10)->create();
 
         CarStatus::factory(3)->create();
