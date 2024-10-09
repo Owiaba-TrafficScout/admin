@@ -16,8 +16,10 @@ class RoleFactory extends Factory
      */
     public function definition(): array
     {
+        $roles = ["system admin", 'project admin', 'enumerator'];
+        //inside pick first unique element from $roles
         return [
-            'name' => $this->faker->unique()->word,
+            'name' => $this->faker->unique()->randomElement($roles),
         ];
     }
 }
