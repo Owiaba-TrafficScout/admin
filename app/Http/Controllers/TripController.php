@@ -42,13 +42,13 @@ class TripController extends Controller
             'trip_status_id' => 'required',
         ]);
         $trip->update($attributes);
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Trip updated.');
     }
 
     public function destroy(Trip $trip)
     {
         $trip->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Trip deleted.');
     }
 
     public function exportTripsToExcel()
