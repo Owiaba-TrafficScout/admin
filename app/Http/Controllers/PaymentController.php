@@ -32,13 +32,13 @@ class PaymentController extends Controller
             'amount' => 'required|numeric',
             'description' => 'required|string',
         ]));
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Payment updated.');
     }
 
     public function destroy(Payment $payment)
     {
         $payment->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Payment deleted.');
     }
 
 
@@ -50,11 +50,9 @@ class PaymentController extends Controller
             //update database
             $data = $paymentDetails['data'];
 
-            return redirect()->route('payments.index')->with('success', 'Payment successful!');
+            return redirect()->route('payment.success', ['success' => true]);
         } else {
-            dd(false);
-            //Payment failed or was canceled
-            return redirect()->route('home')->withErrors(['error' => 'Payment failed or was canceled']);
+            return redirect()->route('payment.success', ['success' => false]);
         }
     }
 }

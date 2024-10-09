@@ -21,12 +21,12 @@ class CarTypeController extends Controller
             'description' => 'required|string',
         ]));
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Car Type updated.');
     }
 
     public function destroy(CarType $car_type)
     {
         $car_type->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Car Type deleted.');
     }
 }

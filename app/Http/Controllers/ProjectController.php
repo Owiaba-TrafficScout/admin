@@ -28,12 +28,12 @@ class ProjectController extends Controller
             'end_date' => 'required|date',
         ]));
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Project updated.');
     }
 
     public function destroy(Project $project)
     {
         $project->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Project deleted.');
     }
 }
