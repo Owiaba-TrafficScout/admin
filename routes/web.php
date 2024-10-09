@@ -12,12 +12,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//     ]);
-// });
+Route::get('/payment/{success}', function ($success) {
+    return Inertia::render('Welcome', ['success' => $success]);
+})->name('payment.success');
+
+Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
@@ -27,9 +26,7 @@ Route::get('/', function () {
 Route::get('/licenses', [LicenseController::class, 'index'])->name('licenses.index');
 
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('dashboard');
 
 
@@ -64,7 +61,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
     //Paystack payemnt routes
-    Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallback'])->name('paystack');
 
     //Export to excel
     //---Trips-------//
