@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Trip;
 use App\Models\TripSpeed;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -11,7 +12,13 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        return TripSpeed::all();
+        $speeds = TripSpeed::all();
+        if (auth()->user()->isProjectAdmin()) {
+            $projectIds = auth()->user()->projects->pluck('id');
+            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
+            $speeds = TripSpeed::whereIn('trip_id', $tripIds)->get();
+        }
+        return $speeds;
     }
 
     public function map($tripSpeed): array

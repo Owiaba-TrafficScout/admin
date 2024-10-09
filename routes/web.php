@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -51,6 +52,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');
     Route::patch('/car-types/{car_type}', [CarTypeController::class, 'update'])->name('car-types.update');
     Route::delete('/car-types/{car_type}', [CarTypeController::class, 'destroy'])->name('car-types.destroy');
+
+    //Cartype routes
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     //payments routes
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');

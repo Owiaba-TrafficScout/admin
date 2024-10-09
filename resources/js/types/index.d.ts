@@ -2,7 +2,13 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    role: { id: number; name: string };
     email_verified_at?: string;
+}
+
+export interface FlashMessage {
+    success?: string;
+    error?: string;
 }
 
 export type PageProps<
@@ -11,4 +17,5 @@ export type PageProps<
     auth: {
         user: User;
     };
+    flash: FlashMessage;
 };

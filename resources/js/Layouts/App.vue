@@ -14,6 +14,8 @@ import {
     Users,
 } from 'lucide-vue-next';
 
+import Alert from '@/Components/ui/alert/Alert.vue';
+import AlertDescription from '@/Components/ui/alert/AlertDescription.vue';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
@@ -128,6 +130,23 @@ const classes = ref(
                             <Banknote class="h-4 w-4" />
                             Payments
                         </Link>
+                        <Link
+                            :href="route('users.index')"
+                            v-if="
+                                $page.props.auth.user.role.name ===
+                                'system admin'
+                            "
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('payments.index'),
+                                },
+                                classes,
+                            ]"
+                        >
+                            <Users class="h-4 w-4" />
+                            Users
+                        </Link>
                     </nav>
                 </div>
             </div>
@@ -233,6 +252,23 @@ const classes = ref(
                 </DropdownMenu>
             </header>
             <main class="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+                <div>
+                    <Alert v-if="$page.props.flash.error" variant="destructive">
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>
+                            {{ $page.props.flash.error }}
+                        </AlertDescription>
+                    </Alert>
+                    <Alert
+                        v-else-if="$page.props.flash.success"
+                        class="border border-green-500 text-green-500"
+                    >
+                        <AlertTitle>Done</AlertTitle>
+                        <AlertDescription>
+                            {{ $page.props.flash.success }}
+                        </AlertDescription>
+                    </Alert>
+                </div>
                 <div class="flex items-center">
                     <h1 class="text-lg font-semibold capitalize md:text-2xl">
                         {{ page }}

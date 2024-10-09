@@ -14,7 +14,13 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
      */
     public function collection()
     {
-        return Trip::all();
+        $trips = Trip::all();
+
+        if (auth()->user()->isProjectAdmin()) {
+            $projectIds = auth()->user()->projects->pluck('id');
+            $trips = Trip::whereIn('project_id', $projectIds)->get();
+        }
+        return $trips;
     }
 
     public function map($trip): array

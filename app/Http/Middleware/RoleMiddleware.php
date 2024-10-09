@@ -13,8 +13,12 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    //create a role middleware
+    public function handle(Request $request, Closure $next, $role)
     {
+        if (!$request->user()->role->name == $role) {
+            abort(403);
+        }
         return $next($request);
     }
 }
