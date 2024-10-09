@@ -14,7 +14,6 @@ class Project extends Model
 
     protected $guarded = [];
 
-
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);

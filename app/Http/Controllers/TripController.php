@@ -14,7 +14,18 @@ class TripController extends Controller
 {
     public function index()
     {
-        $trips = Trip::all();
+        $trips = null;
+        if (auth()->user()->isSystemAdmin()) {
+            $trips = Trip::all();
+        } else {
+            //i want to retrieve all trips with project id same as the user's project id
+            //I'll get all user's project ids
+            $projectIds = auth()->user()->projects->pluck('id');
+
+            //retrieve all trips with project id same as the user's project id
+            $trips = Trip::whereIn('project_id', $projectIds)->get();
+        }
+
         $statuses = TripStatus::all();
         return Inertia::render('Trips', ['trips' => $trips, 'statuses' => $statuses]);
     }

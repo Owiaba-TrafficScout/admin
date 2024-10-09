@@ -10,7 +10,12 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all()->load(['users', 'trips']);
+        $projects = [];
+        if (auth()->user()->isSystemAdmin()) {
+            $projects = Project::all()->load(['trips', 'users']);
+        } else {
+            $projects = auth()->user()->projects->load(['trips', 'users']);
+        }
         return Inertia::render('Projects', ['projects' => $projects]);
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -67,5 +68,22 @@ class User extends Authenticatable
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function isSystemAdmin(): bool
+    {
+        //convert role name to lowercase and compare
+        return Str::lower($this->role->name) === 'system admin';
+    }
+
+    public function isProjectAdmin(): bool
+    {
+        //convert role name to lowercase and compare
+        return Str::lower($this->role->name) === 'project admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isSystemAdmin() || $this->isProjectAdmin();
     }
 }

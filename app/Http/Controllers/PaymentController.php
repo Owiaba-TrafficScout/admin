@@ -15,6 +15,9 @@ class PaymentController extends Controller
     {
         $payments = Payment::all();
         $statuses = PaymentStatus::all();
+        if (auth()->user()->isProjectAdmin()) {
+            $payments = Payment::whereIn('project_id', auth()->user()->projects->pluck('id'))->get();
+        }
         return Inertia::render('Payments', [
             'payments' => $payments,
             'statuses' => $statuses,
