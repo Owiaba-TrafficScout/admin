@@ -1,6 +1,6 @@
 <script setup>
 import SearchForm from '@/Components/SearchForm.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Edit from './Edit.vue';
 
@@ -13,14 +13,30 @@ const props = defineProps({
 });
 
 const search = ref('');
+const authUser = usePage().props.auth.user;
+
 const handleSearch = (s) => {
     search.value = s;
 };
 
 const handleDelete = (id) => {
     const form = useForm({});
-    if (confirm('Are you sure you want to delete this item?')) {
-        form.delete(route('users.destroy', id));
+    if (authUser.role.name == 'project admin') {
+        if (
+            confirm(
+                'Are you sure you want Remove This Person from your Projects?',
+            )
+        ) {
+            form.delete(route('users.destroy', id));
+        }
+    } else {
+        if (
+            confirm(
+                'Are you sure you want To Delete This person? This is irreversible',
+            )
+        ) {
+            form.delete(route('users.destroy', id));
+        }
     }
 };
 const filteredItems = computed(() => {
@@ -91,7 +107,13 @@ const filteredItems = computed(() => {
 
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :user="item">
+                                <Edit
+                                    :user="item"
+                                    v-if="
+                                        $page.props.auth.user.role.name ==
+                                        'system admin'
+                                    "
+                                >
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"

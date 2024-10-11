@@ -16,6 +16,7 @@ import {
 
 import Alert from '@/Components/ui/alert/Alert.vue';
 import AlertDescription from '@/Components/ui/alert/AlertDescription.vue';
+import AlertTitle from '@/Components/ui/alert/AlertTitle.vue';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
@@ -132,10 +133,6 @@ const classes = ref(
                         </Link>
                         <Link
                             :href="route('users.index')"
-                            v-if="
-                                $page.props.auth.user.role.name ===
-                                'system admin'
-                            "
                             :class="[
                                 {
                                     'bg-muted text-primary':
