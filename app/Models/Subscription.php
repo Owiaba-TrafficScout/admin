@@ -18,7 +18,7 @@ class Subscription extends Model
      * Get the tenant that owns the subscription.
      */
 
-    protected function tenant(): BelongsTo
+    public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
     }
@@ -27,7 +27,7 @@ class Subscription extends Model
      * Get the subscription plan associated with the subscription.
      */
 
-    protected function subscriptionPlan(): BelongsTo
+    public function subscriptionPlan(): BelongsTo
     {
         return $this->belongsTo(SubscriptionPlan::class, 'plan_id');
     }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Project extends Model
 {
@@ -33,5 +34,13 @@ class Project extends Model
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
+    }
+
+    /**
+     * Get the tenant through the subscription.
+     */
+    public function tenant(): HasOneThrough
+    {
+        return $this->hasOneThrough(Tenant::class, Subscription::class, 'id', 'id', 'subscription_id', 'tenant_id');
     }
 }

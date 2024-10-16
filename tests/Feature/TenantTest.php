@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,4 +49,23 @@ it('has one current subscription', function () {
 
     //assert tenant has no subscription
     expect($tenant->currentSubscription->id)->toBe($activeSubscription->id);
+});
+
+it('can get all projects for the tenant', function () {
+    // Create a tenant
+    $tenant = Tenant::factory()->create();
+
+    // Create subscriptions for the tenant
+    $subscription1 = Subscription::factory()->create(['tenant_id' => $tenant->id]);
+    $subscription2 = Subscription::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create projects for the subscriptions
+    $project1 = Project::factory()->create(['subscription_id' => $subscription1->id]);
+    $project2 = Project::factory()->create(['subscription_id' => $subscription2->id]);
+
+    // Assert that the projects relationship returns the correct projects
+    $projects = $tenant->projects;
+
+    expect($projects)->toHaveCount(2);
+    expect($projects->pluck('id'))->toContain($project1->id, $project2->id);
 });

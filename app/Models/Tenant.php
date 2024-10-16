@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Tenant extends Model
@@ -28,5 +29,13 @@ class Tenant extends Model
     public function currentSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class)->where('status_id', 1);
+    }
+
+    /**
+     * Get all projects for the tenant.
+     */
+    public function projects(): HasManyThrough
+    {
+        return $this->through('subscriptions')->has('projects');
     }
 }
