@@ -118,7 +118,10 @@ const filteredItems = computed(() => {
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                <Users :users="item.users" />
+                                <Users
+                                    :users="item.users"
+                                    :projectId="item.id"
+                                />
                             </p>
                         </td>
 

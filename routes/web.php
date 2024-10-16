@@ -44,6 +44,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::post('/projects/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
 
     //Cartype routes
     Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');

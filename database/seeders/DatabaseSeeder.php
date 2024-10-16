@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\Project;
 use App\Models\Role;
+use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripSpeed;
 use App\Models\TripStatus;
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Tenant::factory(10)->create();
         $roles = ["system admin", 'project admin', 'enumerator'];
         foreach ($roles as $role) {
             Role::factory()->create(['name' => $role]);

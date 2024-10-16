@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -35,5 +36,16 @@ class ProjectController extends Controller
     {
         $project->delete();
         return redirect()->back()->with('success', 'Project deleted.');
+    }
+
+    public function removeUser(Request $request, Project $project, User $user)
+    {
+        if (auth()->user()->id == $user->id) {
+            return redirect()->back()->with('error', 'You can\'t remove yourself from the project.');
+        } else if (auth()->user()->isProjectAdmin() && $user->isProjectAdmin()) {
+            return redirect()->back()->with('error', 'You can\'t remove a project admin from the project.');
+        }
+        $project->users()->detach($user);
+        return redirect()->back()->with('success', 'User removed from project.');
     }
 }
