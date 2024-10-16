@@ -57,7 +57,6 @@ class DatabaseSeeder extends Seeder
         $users = User::all();
 
         $users->each(function ($user) {
-            $user->projects()->attach(Project::all()->random());
             $user->licenses()->attach(License::all()->random());
         });
 
