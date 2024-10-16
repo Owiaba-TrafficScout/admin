@@ -9,6 +9,7 @@ use App\Models\License;
 use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\Role;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
@@ -37,6 +38,9 @@ class DatabaseSeeder extends Seeder
         foreach ($roles as $role) {
             Role::factory()->create(['name' => $role]);
         }
+
+        ProjectUser::factory(10)->create();
+
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com
         User::factory()->create(['email' => 'project@gmail.com', 'role_id' => 2, 'password' => bcrypt('password')]);
         User::factory()->create(['email' => 'system@gmail.com', 'role_id' => 1, 'password' => bcrypt('password')]);

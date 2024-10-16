@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,15 @@ class ProjectUserFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'project_id' => Project::factory(),
+            'user_id' => User::factory(),
+            'role_id' => fake()->numberBetween(1, 3),
+            'joined_at' => now(),
         ];
+    }
+
+    public function withRole(int $roleId): self
+    {
+        return $this->state(fn() => ['role_id' => $roleId]);
     }
 }

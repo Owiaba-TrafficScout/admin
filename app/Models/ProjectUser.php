@@ -9,4 +9,6 @@ class ProjectUser extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectUserFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
