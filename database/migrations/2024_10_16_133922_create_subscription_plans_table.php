@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->decimal('price', 19, 4);
+            $table->integer('max_projects');
+            $table->integer('max_users_per_project');
+            $table->json('features');
             $table->timestamps();
         });
     }

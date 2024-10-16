@@ -16,8 +16,14 @@ class SubscriptionPlanFactory extends Factory
      */
     public function definition(): array
     {
+        $subscriptionPlans = ['Basic', 'Pro', 'Enterprise'];
         return [
-            //
+            'name' => fake()->unique()->randomElement($subscriptionPlans),
+            'slug' => $this->faker->unique()->slug,
+            'price' => $this->faker->randomFloat(4, 0, 9999),
+            'max_projects' => $this->faker->randomNumber(),
+            'max_users_per_project' => $this->faker->randomNumber(),
+            'features' => json_encode(['feature1', 'feature2', 'feature3']),
         ];
     }
 }
