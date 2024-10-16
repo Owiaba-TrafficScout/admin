@@ -16,8 +16,10 @@ class SubscriptionStatusFactory extends Factory
      */
     public function definition(): array
     {
+        $statuses = ['active', 'canceled', 'past_due'];
         return [
-            //
+            'name' => $this->faker->randomElement($statuses),
+            'slug' => $this->faker->slug(),
         ];
     }
 }

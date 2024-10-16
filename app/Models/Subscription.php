@@ -9,4 +9,6 @@ class Subscription extends Model
 {
     /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }
