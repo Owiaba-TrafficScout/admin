@@ -60,10 +60,7 @@ class User extends Authenticatable
         return $this->hasMany(Trip::class);
     }
 
-    public function projects(): BelongsToMany
-    {
-        return $this->belongsToMany(Project::class);
-    }
+
 
     public function payments(): HasMany
     {
