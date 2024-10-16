@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\Project;
 use App\Models\Role;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionStatus;
 use App\Models\Tenant;
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         Tenant::factory(10)->create();
         SubscriptionPlan::factory(3)->create();
         SubscriptionStatus::factory(3)->create();
+        Subscription::factory(10)->create();
         $roles = ["system admin", 'project admin', 'enumerator'];
         foreach ($roles as $role) {
             Role::factory()->create(['name' => $role]);

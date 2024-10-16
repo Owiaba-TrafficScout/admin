@@ -17,7 +17,12 @@ class SubscriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'plan_id' => fake()->numberBetween(1, 3),
+            'tenant_id' => fake()->unique()->numberBetween(1, 10),
+            'trial_ends_at' => fake()->dateTimeBetween('-1 month', '+1 month'),
+            'start_date' => fake()->dateTimeBetween('-1 month', '+1 month'),
+            'end_date' => fake()->dateTimeBetween('+1 month', '+2 month'),
+            'status_id' => fake()->numberBetween(1, 3),
         ];
     }
 }
