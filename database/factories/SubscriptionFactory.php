@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,7 @@ class SubscriptionFactory extends Factory
     {
         return [
             'plan_id' => fake()->numberBetween(1, 3),
-            'tenant_id' => fake()->unique()->numberBetween(1, 10),
+            'tenant_id' => Tenant::factory(),
             'trial_ends_at' => fake()->dateTimeBetween('-1 month', '+1 month'),
             'start_date' => fake()->dateTimeBetween('-1 month', '+1 month'),
             'end_date' => fake()->dateTimeBetween('+1 month', '+2 month'),

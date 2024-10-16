@@ -29,9 +29,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(SubscriptionStatusSeeder::class);
         Tenant::factory(10)->create();
         SubscriptionPlan::factory(3)->create();
-        SubscriptionStatus::factory(3)->create();
         Subscription::factory(10)->create();
         $roles = ["system admin", 'project admin', 'enumerator'];
         foreach ($roles as $role) {

@@ -21,6 +21,7 @@ class ProjectFactory extends Factory
             'description' => fake()->paragraph(),
             'start_date' => fake()->date(),
             'end_date' => fake()->date(),
+            'subscription_id' => \App\Models\Subscription::factory(),
         ];
     }
 }
