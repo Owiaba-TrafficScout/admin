@@ -39,7 +39,6 @@ class DatabaseSeeder extends Seeder
             Role::factory()->create(['name' => $role]);
         }
 
-        ProjectUser::factory(10)->create();
 
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com
         User::factory()->create(['email' => 'project@gmail.com', 'role_id' => 2, 'password' => bcrypt('password')]);

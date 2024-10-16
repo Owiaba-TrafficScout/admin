@@ -61,7 +61,6 @@ class User extends Authenticatable
     }
 
 
-
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
@@ -82,5 +81,16 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->isSystemAdmin() || $this->isProjectAdmin();
+    }
+
+    /**
+     * The projects that the user belongs to.
+     */
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_users')
+            ->using(ProjectUser::class)
+            ->withPivot(['id', 'role_id', 'joined_at'])
+            ->withTimestamps();
     }
 }

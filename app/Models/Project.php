@@ -40,4 +40,15 @@ class Project extends Model
     {
         return $this->hasOneThrough(Tenant::class, Subscription::class, 'id', 'id', 'subscription_id', 'tenant_id');
     }
+
+    /**
+     * The users that belong to the project.
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_users')
+            ->using(ProjectUser::class)
+            ->withPivot(['id', 'role_id', 'joined_at'])
+            ->withTimestamps();
+    }
 }
