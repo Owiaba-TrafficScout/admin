@@ -2,6 +2,11 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class)->beforeEach(function () {
+    $this->seed(); // This will run DatabaseSeeder by default
+});
 
 test('password can be updated', function () {
     $user = User::factory()->create();

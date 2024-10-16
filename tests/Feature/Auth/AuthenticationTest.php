@@ -1,6 +1,12 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class)->beforeEach(function () {
+    $this->seed(); // This will run DatabaseSeeder by default
+});
+
 
 test('login screen can be rendered', function () {
     $response = $this->get('/login');
@@ -9,12 +15,13 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create(['role_id' => 1]);
 
     $response = $this->post('/login', [
         'email' => $user->email,
         'password' => 'password',
     ]);
+
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
