@@ -24,4 +24,12 @@ class ProjectUser extends Pivot
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the role associated with this project-user relationship.
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

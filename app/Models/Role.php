@@ -13,8 +13,11 @@ class Role extends Model
 
     protected $guarded = [];
 
-    public function users(): HasMany
+    /**
+     * Get all the project-user relationships associated with this role.
+     */
+    public function projectUsers(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(ProjectUser::class);
     }
 }

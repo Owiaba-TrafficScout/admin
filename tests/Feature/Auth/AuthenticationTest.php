@@ -15,7 +15,7 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create(['role_id' => 1]);
+    $user = User::factory()->create();
 
     $response = $this->post('/login', [
         'email' => $user->email,
