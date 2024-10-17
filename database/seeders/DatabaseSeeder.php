@@ -53,13 +53,6 @@ class DatabaseSeeder extends Seeder
         TripStop::factory(10)->create();
 
 
-        License::factory(10)->create();
-
-        $users = User::all();
-
-        $users->each(function ($user) {
-            $user->licenses()->attach(License::all()->random());
-        });
 
         PaymentStatus::factory(4)->create();
 

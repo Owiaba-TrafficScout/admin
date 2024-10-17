@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -21,9 +20,6 @@ Route::get('/paystack/callback', [PaymentController::class, 'handleGatewayCallba
 Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
-
-//get all Licences
-Route::get('/licenses', [LicenseController::class, 'index'])->name('licenses.index');
 
 
 

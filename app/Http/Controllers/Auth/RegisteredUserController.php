@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PaymentController;
-use App\Models\License;
+use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -24,9 +24,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        $licenses = License::all();
+        $subscriptionPlans = SubscriptionPlan::all();
         return Inertia::render('Auth/Register', [
-            'licenses' => $licenses,
+            'subscriptionPlans' => $subscriptionPlans,
         ]);
     }
 
@@ -38,28 +38,22 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'org_name' => 'required|string|max:255',
+            'org_email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'license_ids' => 'required|exists:licenses,id|array',
-            'amount' => 'required|numeric'
+            'plan_id' => 'required|exists:subscription_plans,id',
+            'amount' => 'required|numeric|min:1',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // Store validated data in the session
+        session(['user_registration_data' => request()->validated()]);
 
-        $user->licenses()->attach($request->license_ids);
-
-        event(new Registered($user));
-
-        Auth::login($user);
 
         // Generate the payment URL using the Paystack route and redirect to it
         $data = [
-            "amount" => $request->amount * 100, // Paystack expects the amount in kobo/cents
+            "amount" => $request->amount * 100, // Paystack expects the amount in pesewas
             "reference" => Paystack::genTranxRef(),
             "email" => $request->email,
             "currency" => "GHS",

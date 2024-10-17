@@ -45,10 +45,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function licenses(): BelongsToMany
-    {
-        return $this->belongsToMany(License::class);
-    }
 
     public function trips(): HasMany
     {

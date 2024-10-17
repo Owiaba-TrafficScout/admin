@@ -6,37 +6,26 @@ import TextInput from '@/Components/TextInput.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
 
-defineProps<{ licenses: License[] }>();
+defineProps<{ subscriptionPlans: SubscriptionPlan[] }>();
 
-interface License {
+interface SubscriptionPlan {
     id: number;
     name: string;
     price: number;
-    description: string;
 }
-const selected_licenses: Ref<License[]> = ref([]);
-
-const selected = computed(() => {
-    return selected_licenses.value.map((license) => {
-        return license.id;
-    });
-});
-
-const totalPayable = computed(() => {
-    return selected_licenses.value.reduce((acc, license) => {
-        return acc + license.price;
-    }, 0);
-});
+const selected_plan: Ref<SubscriptionPlan> = ref({ id: 0, name: '', price: 0 });
 
 const form = useForm({
+    org_name: '',
+    org_email: '',
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    license_ids: selected,
-    amount: totalPayable,
+    plan_id: selected_plan.value.id,
+    amount: selected_plan.value.price,
 });
 
 const submit = () => {
@@ -47,8 +36,8 @@ const submit = () => {
     });
 };
 
-const nameWithPrice = (license: License) => {
-    return `${license.name} - GHS${license.price}`;
+const nameWithPrice = (plan: SubscriptionPlan) => {
+    return `${plan.name} - GHS${plan.price}`;
 };
 </script>
 
@@ -57,6 +46,36 @@ const nameWithPrice = (license: License) => {
         <Head title="Register" />
 
         <form @submit.prevent="submit">
+            <div>
+                <InputLabel for="org_name" value="Organization Name" />
+
+                <TextInput
+                    id="org_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.org_name"
+                    required
+                    autofocus
+                    autocomplete="org_name"
+                />
+
+                <InputError class="mt-2" :message="form.errors.org_name" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="org_email" value="Organization's Email" />
+
+                <TextInput
+                    id="org_email"
+                    type="org_email"
+                    class="mt-1 block w-full"
+                    v-model="form.org_email"
+                    required
+                    autocomplete="org_email"
+                />
+
+                <InputError class="mt-2" :message="form.errors.org_email" />
+            </div>
             <div>
                 <InputLabel for="name" value="Name" />
 
@@ -82,7 +101,7 @@ const nameWithPrice = (license: License) => {
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />
@@ -125,16 +144,15 @@ const nameWithPrice = (license: License) => {
             </div>
 
             <div class="mt-4">
-                <label class="typo__label">Select Your Licenses</label>
+                <label class="typo__label">Select Your Plan</label>
                 <div class="flex flex-col gap-3">
                     <Multiselect
-                        v-model="selected_licenses"
-                        :options="licenses"
-                        multiple
+                        v-model="selected_plan"
+                        :options="subscriptionPlans"
                         :close-on-select="false"
                         :clear-on-select="false"
                         :preserve-search="true"
-                        placeholder="Select licenses"
+                        placeholder="Select plan"
                         :custom-label="nameWithPrice"
                         track-by="id"
                     >
@@ -153,7 +171,7 @@ const nameWithPrice = (license: License) => {
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >
-                        Pay {{ 'GHS' + totalPayable }} and Register
+                        Pay {{ 'GHS' + selected_plan.price }} and Register
                     </PrimaryButton>
                 </div>
             </div>
