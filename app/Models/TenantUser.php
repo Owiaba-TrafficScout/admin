@@ -10,4 +10,7 @@ class TenantUser extends Pivot
 {
     /** @use HasFactory<\Database\Factories\TenantUserFactory> */
     use HasFactory;
+
+    protected $table = 'tenant_user';
+    protected $guarded = [];
 }

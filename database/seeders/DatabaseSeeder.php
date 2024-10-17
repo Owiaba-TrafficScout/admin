@@ -15,6 +15,7 @@ use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionStatus;
 use App\Models\Tenant;
+use App\Models\TenantUser;
 use App\Models\Trip;
 use App\Models\TripSpeed;
 use App\Models\TripStatus;
@@ -37,6 +38,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RoleSeeder::class);
         $this->call(TenantRoleSeeder::class);
+
+        TenantUser::factory(10)->create();
 
 
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com

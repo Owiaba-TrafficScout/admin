@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('tenant_user', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('tenant_role_id')->constrained();
+            $table->unique(['tenant_id', 'user_id']);
             $table->timestamps();
         });
     }
