@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         Subscription::factory(10)->create();
 
         $this->call(RoleSeeder::class);
+        $this->call(TenantRoleSeeder::class);
 
 
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com
