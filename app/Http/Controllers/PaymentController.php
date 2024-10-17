@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\PaymentStatus;
+use App\Models\SubscriptionStatus;
 use App\Models\Tenant;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -82,6 +83,7 @@ class PaymentController extends Controller
                 'trial_ends_at' => now()->addDays(7),
                 'start_date' => now(),
                 'end_date' => now()->addMonths(12),
+                'status_id' => SubscriptionStatus::where('name', 'active')->first()->id,
             ]);
 
             //Automatically log in the user

@@ -38,4 +38,12 @@ class Tenant extends Model
     {
         return $this->through('subscriptions')->has('projects');
     }
+
+    /**
+     * Get all users for the tenant.
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
 }

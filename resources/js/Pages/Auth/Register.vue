@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 defineProps<{ subscriptionPlans: SubscriptionPlan[] }>();
 
@@ -16,6 +16,13 @@ interface SubscriptionPlan {
     price: number;
 }
 const selected_plan: Ref<SubscriptionPlan> = ref({ id: 0, name: '', price: 0 });
+const amount = computed(() => {
+    return selected_plan.value.price;
+});
+
+const planId = computed(() => {
+    return selected_plan.value.id;
+});
 
 const form = useForm({
     org_name: '',
@@ -24,8 +31,8 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
-    plan_id: selected_plan.value.id,
-    amount: selected_plan.value.price,
+    plan_id: planId,
+    amount: amount,
 });
 
 const submit = () => {
@@ -171,7 +178,7 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >
-                        Pay {{ 'GHS' + selected_plan.price }} and Register
+                        Pay {{ 'GHS' + form.amount }} and Register
                     </PrimaryButton>
                 </div>
             </div>

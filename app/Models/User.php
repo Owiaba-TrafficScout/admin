@@ -104,4 +104,12 @@ class User extends Authenticatable
     {
         return $this->adminProjects()->exists();
     }
+
+    /**
+     * The tenant that the user belongs to.
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }
