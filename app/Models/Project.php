@@ -46,9 +46,21 @@ class Project extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'project_users')
+        return $this->belongsToMany(User::class, 'project_user')
             ->using(ProjectUser::class)
             ->withPivot(['id', 'role_id', 'joined_at'])
             ->withTimestamps();
+    }
+
+    /**
+     * Get all project admins.
+     */
+    public function admins()
+    {
+        return $this->belongsToMany(User::class, 'project_user')
+            ->using(ProjectUser::class)
+            ->withPivot(['id', 'role_id', 'joined_at'])
+            ->withTimestamps()
+            ->wherePivot('role_id', Role::where('name', 'project admin')->first()->id);
     }
 }

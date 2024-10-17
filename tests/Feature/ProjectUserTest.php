@@ -75,3 +75,21 @@ test('detach a project from a user', function () {
     // Assert that the project is not associated with the user
     expect($user->projects->contains($project))->toBeFalse();
 });
+
+test("Associate a User to a Project with a Role", function () {
+    // Retrieve the project, user, and role instances
+    $project = Project::factory()->create();
+    $user = User::factory()->create();
+    $role = Role::where('name', 'project admin')->first();
+
+    // Attach the user to the project with the specified role
+    $project->users()->attach($user->id, [
+        'role_id' => $role->id,
+        'joined_at' => now(),
+    ]);
+
+    // Assert that the user is associated with the project with the specified role
+    expect($project->users->contains($user))->toBeTrue();
+    expect($project->users->first()->pivot->role_id)->toBe($role->id);
+    expect($project->users->first()->pivot->role->name)->toBe($role->name);
+});

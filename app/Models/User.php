@@ -83,9 +83,29 @@ class User extends Authenticatable
      */
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_users')
+        return $this->belongsToMany(Project::class, 'project_user')
             ->using(ProjectUser::class)
             ->withPivot(['id', 'role_id', 'joined_at'])
             ->withTimestamps();
+    }
+
+    /**
+     * The projects where the user is an admin.
+     */
+    public function adminProjects()
+    {
+        return $this->belongsToMany(Project::class)
+            ->using(ProjectUser::class)
+            ->withPivot(['id', 'role_id', 'joined_at'])
+            ->withTimestamps()
+            ->wherePivot('role_id', Role::where('name', 'project admin')->first()->id);
+    }
+
+    /**
+     * Check if the user is an admin in any project.
+     */
+    public function isAdminInAnyProject()
+    {
+        return $this->adminProjects()->exists();
     }
 }

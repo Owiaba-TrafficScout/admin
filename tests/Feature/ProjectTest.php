@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Project;
+use App\Models\Role;
 use App\Models\Subscription;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class)->beforeEach(function () {
@@ -31,4 +33,26 @@ it('can get the tenant through the subscription', function () {
     $relatedTenant = $project->tenant;
 
     expect($relatedTenant->id)->toBe($tenant->id);
+});
+
+it('can get all project admins', function () {
+    // Create a project
+    $project = Project::factory()->create();
+
+    // Create a user
+    $user = User::factory()->create();
+
+    // Create a role
+    $role = Role::where('name', 'project admin')->first();
+
+    // Attach the user to the project with the specified role
+    $project->users()->attach($user->id, [
+        'role_id' => $role->id,
+        'joined_at' => now(),
+    ]);
+
+    // Assert that the project admins relationship returns the correct user
+    $projectAdmins = $project->admins;
+
+    expect($projectAdmins->contains($user))->toBeTrue();
 });

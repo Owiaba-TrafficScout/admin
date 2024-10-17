@@ -11,8 +11,10 @@ class ProjectUser extends Pivot
     /** @use HasFactory<\Database\Factories\ProjectUserFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $table = 'project_user';
 
+    protected $guarded = [];
+    protected $with = ['role'];
     public $incrementing = true;
 
     public function project(): BelongsTo
