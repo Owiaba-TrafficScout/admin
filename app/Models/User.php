@@ -66,7 +66,7 @@ class User extends Authenticatable
     public function isProjectAdmin(): bool
     {
         //convert role name to lowercase and compare
-        return Str::lower($this->role->name) === 'project admin';
+        return Str::lower($this->role->name) === 'admin';
     }
 
     public function isAdmin(): bool
@@ -94,7 +94,7 @@ class User extends Authenticatable
             ->using(ProjectUser::class)
             ->withPivot(['id', 'role_id', 'joined_at'])
             ->withTimestamps()
-            ->wherePivot('role_id', Role::where('name', 'project admin')->first()->id);
+            ->wherePivot('role_id', Role::where('name', 'admin')->first()->id);
     }
 
     /**

@@ -43,7 +43,7 @@ class ProjectController extends Controller
         if (auth()->user()->id == $user->id) {
             return redirect()->back()->with('error', 'You can\'t remove yourself from the project.');
         } else if (auth()->user()->isProjectAdmin() && $user->isProjectAdmin()) {
-            return redirect()->back()->with('error', 'You can\'t remove a project admin from the project.');
+            return redirect()->back()->with('error', 'You can\'t remove a admin from the project.');
         }
         $project->users()->detach($user);
         return redirect()->back()->with('success', 'User removed from project.');

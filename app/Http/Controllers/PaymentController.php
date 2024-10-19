@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\SubscriptionStatus;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class PaymentController extends Controller
             ]);
 
             //create user
-            $user = $tenant->users()->create([
+            $user = User::create([
                 'name' => $user_data['name'],
                 'email' => $user_data['email'],
                 'password' => Hash::make($user_data['password']),
@@ -80,11 +81,15 @@ class PaymentController extends Controller
             //create subscription
             $subscription = $tenant->subscriptions()->create([
                 'plan_id' => $user_data['plan_id'],
-                'trial_ends_at' => now()->addDays(7),
+                'trial_ends_at' => null,
                 'start_date' => now(),
                 'end_date' => now()->addMonths(12),
                 'status_id' => SubscriptionStatus::where('name', 'active')->first()->id,
             ]);
+
+            //associate user to tenant
+
+            $tenant->users()->syncWithoutDetaching([$user->id => ['tenant_role_id' => env('TENANT_ADMIN_ROLE_ID')]]);
 
             //Automatically log in the user
 

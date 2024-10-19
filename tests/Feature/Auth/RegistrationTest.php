@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use App\Events\Registered;
 use GuzzleHttp\Psr7\Uri;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 use Unicodeveloper\Paystack\Facades\Paystack;
@@ -52,25 +53,25 @@ test('registration screen can be rendered', function () {
 //         'plan_id' => $plan->id,
 //     ]);
 
-//     // Mock the Paystack payment data
-//     $paymentDetails = [
-//         'status' => 'success',
-//         'data' => [
-//             'reference' => 'test_reference',
-//             'amount' => 10000,
-//             'currency' => 'GHS',
-//             'customer' => [
-//                 'email' => 'user@example.com',
+//     // Use Laravel's facade mocking to mock the Paystack facade
+//     Paystack::shouldReceive('getPaymentData')
+//         ->once()
+//         ->andReturn([
+//             'status' => 'success',
+//             'data' => [
+//                 'reference' => 'test_reference',
+//                 'amount' => 10000,
+//                 'currency' => 'GHS',
+//                 'customer' => [
+//                     'email' => 'user@example.com',
+//                 ],
 //             ],
-//         ],
-//     ];
-
-//     // // Mock the Paystack facade
-//     // Paystack::shouldReceive(Uri::class . '::getPaymentData')
-//     //     ->andReturn($paymentDetails);
+//         ]);
 
 //     // Simulate the Paystack callback request
-//     $response = $this->get('/paystack/callback');
+//     // $response = $this->get('http://localhost:8000/paystack/callback?reference=test_reference');
+//     // Simulate the Paystack callback request
+//     // $response = $this->get('/paystack/callback');
 
 //     // Assert that the tenant and user are created
 //     $this->assertDatabaseHas('tenants', [

@@ -75,7 +75,7 @@ class Project extends Model
     }
 
     /**
-     * Get all project admins.
+     * Get all admins.
      */
     public function admins()
     {
@@ -83,6 +83,6 @@ class Project extends Model
             ->using(ProjectUser::class)
             ->withPivot(['id', 'role_id', 'joined_at'])
             ->withTimestamps()
-            ->wherePivot('role_id', Role::where('name', 'project admin')->first()->id);
+            ->wherePivot('role_id', Role::where('name', 'admin')->first()->id);
     }
 }

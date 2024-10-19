@@ -31,8 +31,8 @@ class UserController extends Controller
     {
         if ($user->role->name === 'system admin') {
             return redirect()->back()->with("error", "You can't update the system admin");
-        } else if ($user->role->name = 'project admin' && auth()->user()->role->name !== 'system admin') {
-            return redirect()->back()->with("error", "You can't update the project admin");
+        } else if ($user->role->name = 'admin' && auth()->user()->role->name !== 'system admin') {
+            return redirect()->back()->with("error", "You can't update the admin");
         } else if ($user->id == auth()->user()->id) {
             return redirect()->back()->with("error", "You can't update yourself");
         }

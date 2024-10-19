@@ -21,7 +21,7 @@ const handleSearch = (s) => {
 
 const handleDelete = (id) => {
     const form = useForm({});
-    if (authUser.role.name == 'project admin') {
+    if (authUser.role.name == 'admin') {
         if (
             confirm(
                 'Are you sure you want Remove This Person from your Projects?',

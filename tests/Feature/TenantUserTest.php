@@ -86,3 +86,11 @@ test('Can get tenant', function () {
 
     expect($tenantUser->tenant)->toBeInstanceOf(Tenant::class);
 });
+
+test("isAdmin() returns true if the user is an admin", function () {
+    $tenantUser = TenantUser::factory()->create([
+        'tenant_role_id' => TenantRole::where('name', 'admin')->first()->id
+    ]);
+
+    expect($tenantUser->isAdmin())->toBeTrue();
+});

@@ -11,7 +11,7 @@ uses(RefreshDatabase::class)->beforeEach(function () {
 
 test('A role has many project users', function () {
     // Retrieve the role instance
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
     $projects = Project::factory()->count(3)->create();
     $user = User::factory()->create();
 

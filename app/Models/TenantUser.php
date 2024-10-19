@@ -39,4 +39,16 @@ class TenantUser extends Pivot
     {
         return $this->belongsTo(TenantRole::class, 'tenant_role_id');
     }
+
+    /**
+     * ditermin is admin in any projecg
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role->name === 'admin';
+    }
+
+    /**
+     * ditermin is admin in any project
+     */
 }

@@ -35,7 +35,7 @@ it('can get the project tenant', function () {
     expect($relatedTenant->id)->toBe($tenant->id);
 });
 
-it('can get all project admins', function () {
+it('can get all admins', function () {
     // Create a project
     $project = Project::factory()->create();
 
@@ -43,7 +43,7 @@ it('can get all project admins', function () {
     $user = User::factory()->create();
 
     // Create a role
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the user to the project with the specified role
     $project->users()->attach($user->id, [
@@ -51,7 +51,7 @@ it('can get all project admins', function () {
         'joined_at' => now(),
     ]);
 
-    // Assert that the project admins relationship returns the correct user
+    // Assert that the admins relationship returns the correct user
     $projectAdmins = $project->admins;
 
     expect($projectAdmins->contains($user))->toBeTrue();

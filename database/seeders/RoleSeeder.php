@@ -12,7 +12,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ["system admin", 'project admin', 'enumerator'];
+        $roles = ['admin', 'enumerator'];
         //inside pick first unique element from $roles
         collect($roles)->each(fn($role) => \App\Models\Role::factory()->create(['name' => $role]));
     }

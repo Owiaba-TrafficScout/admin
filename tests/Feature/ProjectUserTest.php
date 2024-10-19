@@ -12,7 +12,7 @@ test('Associate a User to a Project', function () {
     // Retrieve the project, user, and role instances
     $project = Project::factory()->create();
     $user = User::factory()->create();
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the user to the project with the specified role
     $project->users()->attach($user->id, [
@@ -27,7 +27,7 @@ test('Associate a Project to a User', function () {
     // Retrieve the project, user, and role instances
     $project = Project::factory()->create();
     $user = User::factory()->create();
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the project to the user with the specified role
     $user->projects()->attach($project->id, [
@@ -42,7 +42,7 @@ test('detach a user from a project', function () {
     // Retrieve the project, user, and role instances
     $project = Project::factory()->create();
     $user = User::factory()->create();
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the user to the project with the specified role
     $project->users()->attach($user->id, [
@@ -61,7 +61,7 @@ test('detach a project from a user', function () {
     // Retrieve the project, user, and role instances
     $project = Project::factory()->create();
     $user = User::factory()->create();
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the project to the user with the specified role
     $user->projects()->attach($project->id, [
@@ -80,7 +80,7 @@ test("Associate a User to a Project with a Role", function () {
     // Retrieve the project, user, and role instances
     $project = Project::factory()->create();
     $user = User::factory()->create();
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     // Attach the user to the project with the specified role
     $project->users()->attach($user->id, [

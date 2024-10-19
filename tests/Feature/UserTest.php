@@ -18,7 +18,7 @@ test('A user can check if they are an admin in any project', function () {
     $project = Project::factory()->create();
 
     // Create a role
-    $role = Role::where('name', 'project admin')->first();
+    $role = Role::where('name', 'admin')->first();
 
     //expect user is not an admin in any project
     expect($user->isAdminInAnyProject())->toBeFalse();
