@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Log;
+use PgSql\Lob;
 
 class Project extends Model
 {
@@ -15,6 +17,26 @@ class Project extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        // Log::info('Project model booted');
+        static::creating(function ($project) {
+            // Ensure the tenant relationship is loaded
+            Log::info($project);
+            $tenant = Tenant::find($project->tenant_id);
+
+            if (!$tenant || !$tenant->hasActiveSubscription()) {
+                throw new \Exception('Cannot create a project without an active subscription.');
+            }
+        });
+    }
+
 
     public function trips(): HasMany
     {
@@ -34,11 +56,11 @@ class Project extends Model
     }
 
     /**
-     * Get the tenant through the subscription.
+     * Get tenant project belongs to.
      */
-    public function tenant(): HasOneThrough
+    public function tenant(): BelongsTo
     {
-        return $this->hasOneThrough(Tenant::class, Subscription::class, 'id', 'id', 'subscription_id', 'tenant_id');
+        return $this->belongsTo(Tenant::class);
     }
 
     /**

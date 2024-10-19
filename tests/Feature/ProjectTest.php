@@ -19,15 +19,15 @@ test('Projects can be created via factory', function () {
         ->and($project->exists)->toBeTrue();
 });
 
-it('can get the tenant through the subscription', function () {
-    // Create a tenant
-    $tenant = Tenant::factory()->create();
+it('can get the project tenant', function () {
+    // find tenant with active subscription
+    // in this case, we are using the first tenant
+    // which i have already defined in the database seeder
+    // to have an active subscription
+    $tenant = Tenant::first();
 
-    // Create a subscription for the tenant
-    $subscription = Subscription::factory()->create(['tenant_id' => $tenant->id]);
-
-    // Create a project for the subscription
-    $project = Project::factory()->create(['subscription_id' => $subscription->id]);
+    // Create a project for the tenant
+    $project = Project::factory()->withTenantId($tenant->id)->create();
 
     // Assert that the tenant relationship returns the correct tenant
     $relatedTenant = $project->tenant;

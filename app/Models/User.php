@@ -106,10 +106,33 @@ class User extends Authenticatable
     }
 
     /**
-     * The tenant that the user belongs to.
+     * The tenants that the user belongs to.
      */
-    public function tenant(): BelongsTo
+    public function tenants(): BelongsToMany
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsToMany(Tenant::class)
+            ->using(TenantUser::class)
+            ->withPivot(['id', 'tenant_role_id'])
+            ->withTimestamps();
+    }
+
+    /**
+     * The tenants where the user is an admin.
+     */
+    public function tenantsWhereAdmin(): BelongsToMany
+    {
+        return $this->belongsToMany(Tenant::class)
+            ->using(TenantUser::class)
+            ->withPivot(['id', 'tenant_role_id'])
+            ->withTimestamps()
+            ->wherePivot('tenant_role_id', env('TENANT_ADMIN_ROLE_ID'));
+    }
+
+    /**
+     * Check if the user is an admin in any tenant.
+     */
+    public function isAdminInAnyTenant(): bool
+    {
+        return $this->tenantsWhereAdmin()->exists();
     }
 }

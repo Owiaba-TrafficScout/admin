@@ -31,12 +31,4 @@ class Subscription extends Model
     {
         return $this->belongsTo(SubscriptionPlan::class, 'plan_id');
     }
-
-    /**
-     * Get the projects associated with the subscription.
-     */
-    public function projects(): HasMany
-    {
-        return $this->hasMany(Project::class, 'subscription_id');
-    }
 }

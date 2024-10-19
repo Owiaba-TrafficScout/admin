@@ -34,17 +34,3 @@ it('belongs to subscriptionPlans class', function () {
     // Assert the Subscription belongs to the subscriptionPlans class
     expect($Subscription->subscriptionPlan)->toBeInstanceOf(SubscriptionPlan::class);
 });
-
-it('has many projects', function () {
-    // Create a Subscription using the factory
-    $Subscription = Subscription::factory()->create();
-
-    // Create projects for the Subscription
-    $projects = $Subscription->projects()->saveMany(Project::factory()->count(3)->make());
-
-    // Assert the Subscription has many projects
-    expect($projects)->toBeInstanceOf(\Illuminate\Database\Eloquent\Collection::class);
-
-    //Assert if any of the project is an instance of Project class
-    expect($projects->first())->toBeInstanceOf(\App\Models\Project::class);
-});

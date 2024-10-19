@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,14 @@ class ProjectFactory extends Factory
             'description' => fake()->paragraph(),
             'start_date' => fake()->date(),
             'end_date' => fake()->date(),
-            'subscription_id' => \App\Models\Subscription::factory(),
+            'tenant_id' => fake()->numberBetween(1, 10),
         ];
+    }
+
+    public function withTenantId(int $tenantId): self
+    {
+        return $this->state([
+            'tenant_id' => $tenantId,
+        ]);
     }
 }

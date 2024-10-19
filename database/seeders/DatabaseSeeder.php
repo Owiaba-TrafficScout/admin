@@ -8,9 +8,6 @@ use App\Models\CarType;
 use App\Models\License;
 use App\Models\Payment;
 use App\Models\PaymentStatus;
-use App\Models\Project;
-use App\Models\ProjectUser;
-use App\Models\Role;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionStatus;
@@ -32,9 +29,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(SubscriptionStatusSeeder::class);
-        Tenant::factory(10)->create();
+        $tenants = Tenant::factory(10)->create();
         SubscriptionPlan::factory(3)->create();
-        Subscription::factory(10)->create();
+
+        $tenants->each(function ($tenant) {
+            Subscription::factory(3)->withTenantId($tenant->id)->withStatusId(1)->create();
+        });
+
 
         $this->call(RoleSeeder::class);
         $this->call(TenantRoleSeeder::class);
