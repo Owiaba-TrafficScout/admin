@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Log;
 use PgSql\Lob;
@@ -35,12 +36,6 @@ class Project extends Model
                 throw new \Exception('Cannot create a project without an active subscription.');
             }
         });
-    }
-
-
-    public function trips(): HasMany
-    {
-        return $this->hasMany(Trip::class);
     }
 
 
@@ -84,5 +79,13 @@ class Project extends Model
             ->withPivot(['id', 'role_id', 'joined_at'])
             ->withTimestamps()
             ->wherePivot('role_id', Role::where('name', 'admin')->first()->id);
+    }
+
+    /**
+     * Get all trips for the project.
+     */
+    public function trips(): HasManyThrough
+    {
+        return $this->through('users')->has('trips');
     }
 }

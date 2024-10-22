@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Car;
 use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\TripSpeed;
 use App\Models\TripStop;
 use App\Models\User;
@@ -24,10 +25,9 @@ class TripFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->sentence(),
-            'user_id' =>  User::factory(),
+            'project_user_id' =>  ProjectUser::factory(),
             'group_code' => $this->faker->word(),
             'car_id' => Car::factory(),
-            'project_id' => Project::factory(),
             'start_time' => $this->faker->dateTime(),
             'end_time' => $this->faker->dateTime(),
             'trip_status_id' => rand(1, 3),

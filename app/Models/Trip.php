@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Trip extends Model
 {
     /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
 
-    protected $with = ['status', 'user', 'car', 'project', 'speeds', 'stops'];
+    protected $with = ['status', 'user', 'car', 'speeds', 'stops'];
 
     protected $guarded = [];
 
@@ -33,7 +34,7 @@ class Trip extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(ProjectUser::class);
     }
 
     public function car(): BelongsTo
@@ -41,8 +42,20 @@ class Trip extends Model
         return $this->belongsTo(Car::class);
     }
 
-    public function project(): BelongsTo
+    /**
+     * Get the project user undertaking this trip
+     */
+
+    public function projectUser(): BelongsTo
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(ProjectUser::class, 'project_user_id');
+    }
+
+    /**
+     * Get the project that the trip belongs to.
+     */
+    public function project(): HasOneThrough
+    {
+        return $this->hasOneThrough(Project::class, ProjectUser::class, 'id', 'id', 'project_user_id', 'project_id');
     }
 }

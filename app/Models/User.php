@@ -46,10 +46,7 @@ class User extends Authenticatable
     }
 
 
-    public function trips(): HasMany
-    {
-        return $this->hasMany(Trip::class);
-    }
+
 
 
     public function payments(): HasMany
@@ -57,22 +54,6 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
-    public function isSystemAdmin(): bool
-    {
-        //convert role name to lowercase and compare
-        return Str::lower($this->role->name) === 'system admin';
-    }
-
-    public function isProjectAdmin(): bool
-    {
-        //convert role name to lowercase and compare
-        return Str::lower($this->role->name) === 'admin';
-    }
-
-    public function isAdmin(): bool
-    {
-        return $this->isSystemAdmin() || $this->isProjectAdmin();
-    }
 
     /**
      * The projects that the user belongs to.

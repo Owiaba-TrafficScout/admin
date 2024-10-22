@@ -21,7 +21,7 @@ class ProjectUserFactory extends Factory
         return [
             'project_id' => Project::factory(),
             'user_id' => User::factory(),
-            'role_id' => fake()->numberBetween(1, 3),
+            'role_id' => fake()->numberBetween(1, 2),
             'joined_at' => now(),
         ];
     }

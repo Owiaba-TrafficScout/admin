@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title', 255);
             $table->text('description');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('project_user_id')->constrained('project_user')->cascadeOnDelete();
             $table->string('group_code', 255);
             $table->foreignId('car_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_time');
             $table->timestamp('end_time');
             $table->foreignId('trip_status_id')->constrained()->cascadeOnDelete();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ProjectUser extends Pivot
@@ -25,6 +26,11 @@ class ProjectUser extends Pivot
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function trips(): HasMany
+    {
+        return $this->hasMany(Trip::class, 'project_user_id');
     }
 
     /**

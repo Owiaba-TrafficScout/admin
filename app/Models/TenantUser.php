@@ -47,8 +47,4 @@ class TenantUser extends Pivot
     {
         return $this->role->name === 'admin';
     }
-
-    /**
-     * ditermin is admin in any project
-     */
 }

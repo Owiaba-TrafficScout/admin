@@ -56,3 +56,55 @@ it('can get all admins', function () {
 
     expect($projectAdmins->contains($user))->toBeTrue();
 });
+
+
+test("can get all project's trips", function () {
+    // create project
+    $project = Project::factory()->create();
+
+    // create user
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    // attach user to project
+    $project->users()->attach($user1->id, [
+        'role_id' => 1,
+        'joined_at' => now(),
+    ]);
+    $project->users()->attach($user2->id, [
+        'role_id' => 1,
+        'joined_at' => now(),
+    ]);
+
+    // create trip for user1
+    $trip1 = $project->users->first()->pivot->trips()->create([
+        'title' => 'Trip to the moon',
+        'description' => 'A trip to the moon and back',
+        'project_user_id' => $project->users->first()->pivot->id,
+        'group_code' => 'ABC123',
+        'car_id' => 1,
+        'start_time' => now(),
+        'end_time' => now()->addDay(),
+        'trip_status_id' => 1,
+    ]);
+
+    // create trip for user2
+    $trip2 = $project->users->last()->pivot->trips()->create([
+        'title' => 'Trip to the sun',
+        'description' => 'A trip to the sun and back',
+        'project_user_id' => $project->users->last()->pivot->id,
+        'group_code' => 'XYZ123',
+        'car_id' => 2,
+        'start_time' => now(),
+        'end_time' => now()->addDay(),
+        'trip_status_id' => 1,
+    ]);
+
+    // Assert that the project's trips relationship returns the correct trips
+    $projectTrips = $project->trips;
+    assert($projectTrips->contains($trip1));
+    assert($projectTrips->contains($trip2));
+
+    // Asseert that the total number of trips is 2
+    expect($projectTrips->count())->toBe(2);
+});
