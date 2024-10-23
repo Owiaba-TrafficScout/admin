@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
     Route::post('/projects/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 
     //Cartype routes
     Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');

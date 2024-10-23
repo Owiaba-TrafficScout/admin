@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Car;
-use App\Models\CarStatus;
 use App\Models\CarType;
 use App\Models\License;
 use App\Models\Payment;
@@ -48,8 +47,6 @@ class DatabaseSeeder extends Seeder
         User::factory()->create(['email' => 'system@gmail.com', 'password' => bcrypt('password')]);
         User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
         CarType::factory(10)->create();
-
-        CarStatus::factory(3)->create();
 
         TripStatus::factory(3)->create();
 

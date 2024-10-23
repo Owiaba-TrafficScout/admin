@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -6,16 +6,8 @@ import TextInput from '@/Components/TextInput.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed, Ref, ref } from 'vue';
+import { computed } from 'vue';
 
-defineProps<{ subscriptionPlans: SubscriptionPlan[] }>();
-
-interface SubscriptionPlan {
-    id: number;
-    name: string;
-    price: number;
-}
-const selected_plan: Ref<SubscriptionPlan> = ref({ id: 0, name: '', price: 0 });
 const amount = computed(() => {
     return selected_plan.value.price;
 });
@@ -193,4 +185,4 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
             </div>
         </form>
     </GuestLayout>
-</template>
+</template> -->

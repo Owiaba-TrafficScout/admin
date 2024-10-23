@@ -18,9 +18,7 @@ class CarFactory extends Factory
     {
         return [
             'car_type_id' => rand(1, 10),
-            'car_status_id' => rand(1, 3),
-            'car_number' => $this->faker->uuid(),
-            'last_maintenance_date' => $this->faker->date(),
+            'car_number' => $this->faker->buildingNumber(),
         ];
     }
 }
