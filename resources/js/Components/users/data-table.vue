@@ -31,7 +31,7 @@ const handleDelete = (id) => {
         ) {
             form.delete(route('users.destroy', id));
         }
-    } else if (authUser.pivot.role.name == 'admin') {
+    } else {
         if (
             confirm(
                 'Are you sure you want Remove This Person from your Projects?',

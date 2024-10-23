@@ -44,20 +44,19 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->role->name === 'system admin') {
+        if ($user->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't remove a system admin");
-        }
-
-        if (auth()->user()->isSystemAdmin()) {
-            $user->delete();
-            return redirect()->back()->with("success", "User Deleted");
+        } else if (auth()->user()->isAdminInTenant()) {
+            $tenant = Tenant::find(session('tenant_id'));
+            $tenant->users()->detach($user->id);
+            return redirect()->back()->with("success", "User removed from your organization");
         } else {
             //remove users from projects
-            $projectIds = auth()->user()->projects->pluck('id');
+            $projectIds = auth()->user()->adminProjects->pluck('id');
             //detach all projectIds that the user has that are found in $projectIds
             $user->projects()->detach($projectIds);
 
-            return redirect()->back()->with("success", "User Removed from all yuor projects");
+            return redirect()->back()->with("success", "User Removed from all your projects");
         }
     }
 }
