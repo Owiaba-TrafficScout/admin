@@ -24,7 +24,7 @@ const props = defineProps<{
 const emit = defineEmits(['update']);
 
 const form = useForm({
-    role_id: props.user.role.id,
+    role_id: props.user.pivot.role.id,
 });
 
 const submit = () => {

@@ -3,6 +3,8 @@
 use App\Models\Project;
 use App\Models\ProjectUser;
 use App\Models\Role;
+use App\Models\Tenant;
+use App\Models\TenantUser;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -116,4 +118,27 @@ test('can get all project user trips', function () {
     ]);
     // Assert that the trip is associated with the project user
     expect($project->users->first()->pivot->trips->contains($trip))->toBeTrue();
+});
+
+it('associates user with tenant when creating project user', function () {
+    // Create a tenant
+    $tenant = Tenant::first();
+
+    // Create a project for the tenant
+    $project = Project::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create a user
+    $user = User::factory()->create();
+
+    // Attach the user to the project
+    $project->users()->attach($user->id, ['role_id' => 1, 'joined_at' => now()]);
+
+    // Assert that the user is associated with the tenant
+    expect(TenantUser::where('tenant_id', $tenant->id)->where('user_id', $user->id)->exists())->toBeTrue();
+    // Assert that the user is associated with the tenant
+    $this->assertDatabaseHas('tenant_user', [
+        'tenant_id' => $tenant->id,
+        'user_id' => $user->id,
+        'tenant_role_id' => 2, // Default role, change as needed
+    ]);
 });

@@ -15,6 +15,8 @@ class TenantUser extends Pivot
     protected $table = 'tenant_user';
     protected $guarded = [];
 
+    protected $with = ['tenant', 'user', 'role'];
+
     /**
      * Get the tenant that the user belongs to.
      */

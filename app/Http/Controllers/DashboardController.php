@@ -48,22 +48,21 @@ class DashboardController extends Controller
             $recentPayments = $tenant->payments()->latest()->limit(5)->get();
             $recentTrips = $tenant->trips()->latest()->limit(5)->get();
         } else {
+            $projectIds = $authUser->adminProjects->pluck('id');
+            $userIds = DB::table("project_user")->whereIn('project_id', $projectIds)->pluck('user_id');
+            $projectUserIds = DB::table("project_user")->whereIn('project_id', $projectIds)->pluck('id');
             $projects = [
                 'name' => 'Projects',
                 'value' => $authUser->adminProjects->count()
             ];
             $payments = [
                 'name' => 'Payments',
-                'value' => Payment::whereIn('project_id', $authUser->projects->pluck('id'))->count()
+                'value' => Payment::whereIn('project_id', $projectIds)->count()
             ];
             $trips = [
                 'name' => 'Trips',
                 'value' => $authUser->adminTrips()->count() //Trip::whereIn('project_id', $authUser->projects->pluck('id'))->count()
             ];
-
-            $projectIds = $authUser->adminProjects->pluck('id');
-            $userIds = DB::table("project_user")->whereIn('project_id', $projectIds)->pluck('user_id');
-            $projectUserIds = DB::table("project_user")->whereIn('project_id', $projectIds)->pluck('id');
             $users = [
                 'name' => 'Users',
                 'value' => User::whereIn('id', $userIds)->count()

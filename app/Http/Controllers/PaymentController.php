@@ -19,10 +19,13 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payments = Payment::all();
+        $payments = [];
         $statuses = PaymentStatus::all();
-        if (auth()->user()->isProjectAdmin()) {
-            $payments = Payment::whereIn('project_id', auth()->user()->projects->pluck('id'))->get();
+        $tenant = Tenant::find(session('tenant_id'));
+        if (auth()->user()->isAdminInTenant()) {
+            $payments = $tenant->payments;
+        } else {
+            $payments = Payment::where('project_id', auth()->user()->adminProjects->pluck('id'))->get();
         }
         return Inertia::render('Payments', [
             'payments' => $payments,

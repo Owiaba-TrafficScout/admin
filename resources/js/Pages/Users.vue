@@ -2,15 +2,7 @@
 import DataTable from '@/Components/users/data-table.vue';
 import Layout from '@/Layouts/App.vue';
 import { provide } from 'vue';
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: {
-        id: number;
-        name: string;
-    };
-}
+import { User } from './Trips.vue';
 
 const props = defineProps<{
     users: User[];

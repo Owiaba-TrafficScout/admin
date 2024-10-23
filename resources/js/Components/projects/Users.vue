@@ -30,7 +30,7 @@ const handleRemove = (userId: number) => {
 
 const filteredUsers = computed(() => {
     return props.users.filter((user) => {
-        return user.role.id >= authUser.role.id;
+        return user.pivot.role_id >= 1;
     });
 });
 </script>
@@ -97,7 +97,7 @@ const filteredUsers = computed(() => {
                         <p
                             class="text-sm font-medium text-black dark:text-white"
                         >
-                            {{ user.role.name }}
+                            {{ user.pivot.role_id === 1 ? 'Admin' : 'User' }}
                         </p>
                     </div>
 
@@ -110,9 +110,9 @@ const filteredUsers = computed(() => {
                                 :class="[
                                     {
                                         'text-red-500 hover:cursor-pointer hover:underline':
-                                            user.role.id > authUser.role.id,
+                                            user.pivot.role_id > 1,
                                         'hidden text-green-500 hover:cursor-not-allowed':
-                                            user.role.id <= authUser.role.id,
+                                            user.pivot.role_id === 1,
                                     },
                                     'text-semibold',
                                 ]"

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,7 +17,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, EagerLoadPivotTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = [];
+
+    /**
+     * The attributes that should be appended to the model's array and JSON form.
+     *
+     * @var array
+     */
+
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -88,6 +98,7 @@ class User extends Authenticatable
         return $this->adminProjects()->exists();
     }
 
+
     /**
      * The tenants that the user belongs to.
      */
@@ -122,8 +133,11 @@ class User extends Authenticatable
     /**
      * Check if the user is an admin in the given tenant.
      */
-    public function isAdminInTenant($tenant_id): bool
+    public function isAdminInTenant($tenant_id = null): bool
     {
+        if (is_null($tenant_id)) {
+            $tenant_id = session('tenant_id');
+        }
         return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists();
     }
 

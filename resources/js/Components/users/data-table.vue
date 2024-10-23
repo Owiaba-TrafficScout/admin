@@ -15,24 +15,26 @@ const props = defineProps({
 const search = ref('');
 const authUser = usePage().props.auth.user;
 
+const isTenantAdmin = usePage().props.auth.is_tenant_admin;
+
 const handleSearch = (s) => {
     search.value = s;
 };
 
 const handleDelete = (id) => {
     const form = useForm({});
-    if (authUser.role.name == 'admin') {
+    if (isTenantAdmin) {
         if (
             confirm(
-                'Are you sure you want Remove This Person from your Projects?',
+                'Are you sure you want To Remove this user from your organization, This will also remove him from all your projects? This is irreversible',
             )
         ) {
             form.delete(route('users.destroy', id));
         }
-    } else {
+    } else if (authUser.pivot.role.name == 'admin') {
         if (
             confirm(
-                'Are you sure you want To Delete This person? This is irreversible',
+                'Are you sure you want Remove This Person from your Projects?',
             )
         ) {
             form.delete(route('users.destroy', id));
@@ -45,7 +47,7 @@ const filteredItems = computed(() => {
             return (
                 item.name.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.email.toLowerCase().includes(search.value.toLowerCase()) ||
-                item.role.name
+                item.pivot.role.name
                     .toLowerCase()
                     .includes(search.value.toLowerCase())
             );
@@ -101,19 +103,13 @@ const filteredItems = computed(() => {
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.role.name }}
+                                {{ item.pivot.role.name }}
                             </p>
                         </td>
 
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit
-                                    :user="item"
-                                    v-if="
-                                        $page.props.auth.user.role.name ==
-                                        'system admin'
-                                    "
-                                >
+                                <Edit :user="item" v-if="isTenantAdmin">
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"

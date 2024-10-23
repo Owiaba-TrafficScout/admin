@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,11 +12,13 @@ class ProjectController extends Controller
 {
     public function index()
     {
+        $tenant_id = session('tenant_id');
+        $tenant = Tenant::find($tenant_id);
         $projects = [];
-        if (auth()->user()->isSystemAdmin()) {
-            $projects = Project::all()->load(['trips', 'users']);
+        if (auth()->user()->isAdminInTenant($tenant_id)) {
+            $projects = $tenant->projects->load(['trips', 'users']);
         } else {
-            $projects = auth()->user()->projects->load(['trips', 'users']);
+            $projects = auth()->user()->adminProjects->load(['trips', 'users']);
         }
         return Inertia::render('Projects', ['projects' => $projects]);
     }

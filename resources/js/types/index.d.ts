@@ -2,7 +2,6 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    role: { id: number; name: string };
     email_verified_at?: string;
 }
 
@@ -16,6 +15,7 @@ export type PageProps<
 > = T & {
     auth: {
         user: User;
+        is_tenant_admin: boolean;
     };
     flash: FlashMessage;
 };

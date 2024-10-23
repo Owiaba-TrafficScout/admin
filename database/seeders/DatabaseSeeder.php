@@ -83,8 +83,8 @@ class DatabaseSeeder extends Seeder
         $tenant->users()->attach($user3->id, ['tenant_role_id' => 2]);
 
         // create projects
-        $tenant->projects()->create(['name' => 'Test Project 1']);
-        $tenant->projects()->create(['name' => 'Test Project 2']);
+        $tenant->projects()->create(['name' => 'Test Project 1', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
+        $tenant->projects()->create(['name' => 'Test Project 2', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
 
         //asign $user2 to project 1 as admin
         $tenant->projects()->first()->users()->attach($user2->id, ['role_id' => 1]);

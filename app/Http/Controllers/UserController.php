@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Tenant;
+use App\Models\TenantRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,27 +13,26 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        if (auth()->user()->isProjectAdmin()) {
-            $userIdsWithSameProjects = auth()->user()->projects->pluck('users')->flatten()->pluck('id');
-            $users = User::WhereIn('id', $userIdsWithSameProjects)
-                ->where('id', '!=', auth()->user()->id)
-                ->where('role_id', '>', auth()->user()->role_id)
-                ->get();
+        $tenant = Tenant::find(session('tenant_id'));
+        $users = [];
+        $roles = [];
+        if (auth()->user()->isAdminInTenant()) {
+            $users = $tenant->users()->with('pivot.role')->get();
+            $roles = TenantRole::all();
         } else {
-            $users = User::where('id', '!=', auth()->user()->id)->get();
+            $users = auth()->user()->projects()->with('users.pivot.role')->get()->pluck('users')->unique('id')->flatten();
         }
         return Inertia::render('Users', [
             'users' => $users,
-            'roles' => Role::all(),
+            'roles' => $roles,
         ]);
     }
 
     public function update(Request $request, User $user)
     {
-        if ($user->role->name === 'system admin') {
+        if ($user->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't update the system admin");
-        } else if ($user->role->name = 'admin' && auth()->user()->role->name !== 'system admin') {
+        } else if ($user->pivot->role->name = 'admin' && !auth()->user()->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't update the admin");
         } else if ($user->id == auth()->user()->id) {
             return redirect()->back()->with("error", "You can't update yourself");

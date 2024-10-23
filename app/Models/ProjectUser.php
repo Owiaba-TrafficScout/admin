@@ -18,6 +18,26 @@ class ProjectUser extends Pivot
     protected $with = ['role', 'user', 'project'];
     public $incrementing = true;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($projectUser) {
+            // Get the tenant ID from the project
+            $tenantId = $projectUser->project->tenant_id;
+
+            // Check if the user is already associated with the tenant
+            if (!TenantUser::where('tenant_id', $tenantId)->where('user_id', $projectUser->user_id)->exists()) {
+                // Attach the user to the tenant
+                TenantUser::create([
+                    'tenant_id' => $tenantId,
+                    'user_id' => $projectUser->user_id,
+                    'tenant_role_id' => 2, // Default role, change as needed
+                ]);
+            }
+        });
+    }
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
