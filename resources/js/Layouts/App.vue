@@ -51,9 +51,7 @@ const classes = ref(
                 >
                     <a href="/" class="flex items-center gap-2 font-semibold">
                         <Package2 class="h-6 w-6" />
-                        <span class="capitalize">{{
-                            $page.props.auth.user.role.name
-                        }}</span>
+                        <span class="capitalize"> Admin Panel </span>
                     </a>
                     <Button
                         variant="outline"

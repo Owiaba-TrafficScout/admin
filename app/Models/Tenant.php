@@ -67,4 +67,22 @@ class Tenant extends Model
     {
         return $this->users()->wherePivot('tenant_role_id', env('TENANT_ADMIN_ROLE_ID'));
     }
+
+    /**
+     * Get all trips for the tenant.
+     */
+
+    public function trips(): HasMany
+    {
+        return $this->hasMany(Trip::class);
+    }
+
+    /**
+     * Get all payments for the tenant.
+     */
+
+    public function payments(): HasManyThrough
+    {
+        return $this->through('projects')->has('payments');
+    }
 }

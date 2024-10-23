@@ -8,7 +8,7 @@ export interface Trip {
     id: number;
     title: string;
     description: string;
-    user: User;
+    project_user: projectUser;
     group_code: string;
     car: Car;
     project: Project;
@@ -18,7 +18,10 @@ export interface Trip {
     created_at: string;
     updated_at: string;
 }
-
+export interface projectUser {
+    id: number;
+    user: User;
+}
 export interface TripStatus {
     id: number;
     name: string;

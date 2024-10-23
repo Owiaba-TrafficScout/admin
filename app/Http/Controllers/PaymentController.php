@@ -75,7 +75,6 @@ class PaymentController extends Controller
                 'name' => $user_data['name'],
                 'email' => $user_data['email'],
                 'password' => Hash::make($user_data['password']),
-                'tenant_id' => $tenant->id,
             ]);
 
             //create subscription
@@ -99,7 +98,8 @@ class PaymentController extends Controller
             // Clear the session data
             session()->forget('user_registration_data');
             // Redirect to the intended page or dashboard
-            return redirect()->route('dashboard')->with('success', 'Registration and payment successful.');
+            return redirect()->route('tenant.select');
+            // return redirect()->route('dashboard')->with('success', 'Registration and payment successful.');
         } else {
             return redirect()->route('payment.success', ['success' => false]);
         }

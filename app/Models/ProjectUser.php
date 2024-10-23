@@ -15,7 +15,7 @@ class ProjectUser extends Pivot
     protected $table = 'project_user';
 
     protected $guarded = [];
-    protected $with = ['role'];
+    protected $with = ['role', 'user', 'project'];
     public $incrementing = true;
 
     public function project(): BelongsTo

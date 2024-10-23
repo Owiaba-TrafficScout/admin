@@ -166,7 +166,7 @@ defineProps<{
                             >
                                 <Avatar class="hidden h-9 w-9 sm:flex">
                                     <AvatarFallback>{{
-                                        trip.user.name[0]
+                                        trip.project_user.user.name[0]
                                     }}</AvatarFallback>
                                 </Avatar>
                                 <div class="grid gap-1">
@@ -174,7 +174,7 @@ defineProps<{
                                         {{ trip.title }}
                                     </p>
                                     <p class="text-sm text-muted-foreground">
-                                        {{ trip.user.name }}
+                                        {{ trip.project_user.user.name }}
                                     </p>
                                 </div>
                             </div>

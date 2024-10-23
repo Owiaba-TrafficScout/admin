@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Project;
+use App\Models\Tenant;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -24,6 +26,7 @@ test("can get trip's project and projectUser", function () {
         'title' => 'Trip to the moon',
         'description' => 'A trip to the moon and back',
         'project_user_id' => $project->users->first()->pivot->id,
+        'tenant_id' => $project->tenant_id,
         'group_code' => 'ABC123',
         'car_id' => 1,
         'start_time' => now(),
@@ -34,4 +37,17 @@ test("can get trip's project and projectUser", function () {
     // Assert the trip's project and projectUser
     expect($trip->project->id)->toBe($project->id);
     expect($trip->ProjectUser->id)->toBe($project->users->first()->pivot->id);
+});
+
+test("can get trip's tenant", function () {
+    // Create tenant
+    $tenant = Tenant::factory()->create();
+
+    // create trip
+    $trip = Trip::factory()->create([
+        'tenant_id' => $tenant->id,
+    ]);
+
+    // Assert the trip's tenant
+    expect($trip->tenant->id)->toBe($tenant->id);
 });

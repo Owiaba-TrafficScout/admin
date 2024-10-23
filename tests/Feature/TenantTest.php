@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 
 uses(RefreshDatabase::class)->beforeEach(function () {
     $this->seed(); // This will run DatabaseSeeder by default
@@ -139,4 +141,58 @@ it('can create a project with an active subscription', function () {
     $project = Project::factory()->create(['tenant_id' => $tenant->id]);
 
     expect($project)->toBeInstanceOf(Project::class);
+});
+
+test("can get all trips", function () {
+    // Create a tenant
+    $tenant = Tenant::factory()->create();
+
+    // Create an active subscription for the tenant
+    Subscription::factory()->create([
+        'tenant_id' => $tenant->id,
+        'status_id' => 1, // Assuming 1 is the status ID for active
+    ]);
+
+    // Create a project with an active subscription
+    $project = Project::factory()->create(['tenant_id' => $tenant->id]);
+
+    //create a user for the project
+    $user = User::factory()->create();
+
+    // assign user to project
+    $project->users()->attach($user->id, ['role_id' => 1, 'joined_at' => now()]);
+
+    // Create trips for the project
+    $trip1 = \App\Models\Trip::factory()->create(['project_user_id' => $project->users->first()->pivot->id, 'tenant_id' => $tenant->id]);
+    $trip2 = \App\Models\Trip::factory()->create(['project_user_id' => $project->users->first()->pivot->id, 'tenant_id' => $tenant->id]);
+
+    // Assert that the trips relationship returns the correct trips
+    $trips = $tenant->trips;
+
+    expect($trips)->toHaveCount(2);
+    expect($trips->pluck('id'))->toContain($trip1->id, $trip2->id);
+});
+
+it('can get all payments for the tenant', function () {
+    // Create a tenant
+    $tenant = Tenant::factory()->create();
+
+    // Create an active subscription for the tenant
+    Subscription::factory()->create([
+        'tenant_id' => $tenant->id,
+        'status_id' => 1, // Assuming 1 is the status ID for active
+    ]);
+
+    // Create a project for the tenant
+    $project = Project::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create payments for the project
+    $payment1 = Payment::factory()->create(['project_id' => $project->id]);
+    $payment2 = Payment::factory()->create(['project_id' => $project->id]);
+
+    // Assert that the tenant's payments relationship returns the correct payments
+    // Assert that the tenant's payments relationship returns the correct payments
+    expect($tenant->payments->pluck('id'))->toContain($payment1->id);
+    expect($tenant->payments->pluck('id'))->toContain($payment2->id);
+    expect($tenant->payments)->toHaveCount(2);
 });

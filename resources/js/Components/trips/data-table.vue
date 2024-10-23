@@ -129,7 +129,7 @@ const handleFilter = (filter) => {
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.project.name }}
+                                {{ item.project_user.project.name }}
                             </p>
                         </td>
                         <td class="px-4 py-5">
@@ -142,7 +142,7 @@ const handleFilter = (filter) => {
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">
-                                {{ item.user.name }}
+                                {{ item.project_user.user.name }}
                             </p>
                         </td>
                         <td class="px-4 py-5">

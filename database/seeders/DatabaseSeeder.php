@@ -62,5 +62,62 @@ class DatabaseSeeder extends Seeder
         PaymentStatus::factory(4)->create();
 
         Payment::factory(20)->create();
+
+
+        //create user
+        $user = User::factory()->create(['email' => 'test@gmail.com', 'password' => bcrypt('password')]);
+        $user2 = User::factory()->create(['email' => 'second@gmail.com', 'password' => bcrypt('password')]);
+        $user3 = User::factory()->create(['email' => 'user@gmail.com', 'password' => bcrypt('password')]);
+
+        //create tenant
+        $tenant = Tenant::factory()->create(['name' => 'Test Tenant']);
+
+        //create a subscription
+        $subscription = Subscription::factory()->withTenantId($tenant->id)->withStatusId(1)->create();
+
+
+
+        //associate user with tenant
+        $tenant->users()->attach($user->id, ['tenant_role_id' => 1]);
+        $tenant->users()->attach($user2->id, ['tenant_role_id' => 2]);
+        $tenant->users()->attach($user3->id, ['tenant_role_id' => 2]);
+
+        // create projects
+        $tenant->projects()->create(['name' => 'Test Project 1']);
+        $tenant->projects()->create(['name' => 'Test Project 2']);
+
+        //asign $user2 to project 1 as admin
+        $tenant->projects()->first()->users()->attach($user2->id, ['role_id' => 1]);
+
+        //asign $user3 to project 1 as enumerator
+        $tenant->projects()->first()->users()->attach($user3->id, ['role_id' => 2]);
+        //assign $user2 to project 2 as enumerator
+        $tenant->projects->get(1)->users()->attach($user2->id, ['role_id' => 2]);
+
+        // get project user for project 1 user2
+        $projectUser = $tenant->projects->first()->users->first()->pivot;
+
+        //get project user for project 1 user3
+        $projectUser2 = $tenant->projects->first()->users->get(1)->pivot;
+
+        //create trips
+        Trip::factory(4)->create([
+            'project_user_id' => $projectUser->id,
+            'tenant_id' => $tenant->id,
+            'trip_status_id' => 1,
+        ]);
+
+        //create trips
+        Trip::factory(4)->create([
+            'project_user_id' => $projectUser2->id,
+            'tenant_id' => $tenant->id,
+            'trip_status_id' => 1,
+        ]);
+
+        //create payments
+        Payment::factory(4)->create([
+            'project_id' => $tenant->projects->first()->id,
+            'payment_status_id' => 1,
+        ]);
     }
 }

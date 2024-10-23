@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
@@ -115,5 +117,30 @@ class User extends Authenticatable
     public function isAdminInAnyTenant(): bool
     {
         return $this->tenantsWhereAdmin()->exists();
+    }
+
+    /**
+     * Check if the user is an admin in the given tenant.
+     */
+    public function isAdminInTenant($tenant_id): bool
+    {
+        return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists();
+    }
+
+    /**
+     * Get all of the trips for the user.
+     */
+
+    public function trips(): HasManyThrough
+    {
+        return $this->hasManyThrough(Trip::class, ProjectUser::class, 'user_id', 'project_user_id', 'id', 'id');
+    }
+
+    /**
+     * Get all trips for the user in projects where the user is an admin.
+     */
+    public function adminTrips(): Collection
+    {
+        return $this->adminProjects()->with('trips')->get()->pluck('trips')->flatten();
     }
 }

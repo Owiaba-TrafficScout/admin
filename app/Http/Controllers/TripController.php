@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\TripMultiSheetExport;
 use App\Exports\TripsExport;
+use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripStatus;
 use Illuminate\Http\Request;
@@ -15,15 +16,12 @@ class TripController extends Controller
     public function index()
     {
         $trips = null;
-        if (auth()->user()->isSystemAdmin()) {
-            $trips = Trip::all();
+        $tenant_id = session('tenant_id');
+        $tenant = Tenant::find($tenant_id);
+        if (auth()->user()->isAdminInTenant($tenant_id)) {
+            $trips = $tenant->trips;
         } else {
-            //i want to retrieve all trips with project id same as the user's project id
-            //I'll get all user's project ids
-            $projectIds = auth()->user()->projects->pluck('id');
-
-            //retrieve all trips with project id same as the user's project id
-            $trips = Trip::whereIn('project_id', $projectIds)->get();
+            $trips = auth()->user()->adminTrips();
         }
 
         $statuses = TripStatus::all();

@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('User registration initiated: ', $request->all());
+        // Log::info('User registration initiated: ', $request->all());
         $attributes = $request->validate([
             'org_name' => 'required|string|max:255',
             'org_email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller
         //round ammount to 2 decimal places
         $amount = intval($attributes['amount'] * 100);
 
-        Log::info('User registration data validated: ' . $amount);
+        // Log::info('User registration data validated: ' . $amount);
 
         // Store validated data in the session
         session(['user_registration_data' => $attributes]);
@@ -68,7 +68,7 @@ class RegisteredUserController extends Controller
 
         try {
             $authorizationUrl = Paystack::getAuthorizationUrl($data)->url;
-            Log::info('Paystack payment initiation successful: ' . $authorizationUrl);
+            // Log::info('Paystack payment initiation successful: ' . $authorizationUrl);
             // return redirect()->away($authorizationUrl); // Properly handle the redirect using Inertia
             return Inertia::location($authorizationUrl); // Properly handle the redirect using Inertia
         } catch (\Exception $e) {

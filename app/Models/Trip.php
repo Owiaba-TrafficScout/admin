@@ -13,7 +13,7 @@ class Trip extends Model
     /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
 
-    protected $with = ['status', 'user', 'car', 'speeds', 'stops'];
+    protected $with = ['status', 'car', 'speeds', 'stops', 'projectUser'];
 
     protected $guarded = [];
 
@@ -57,5 +57,13 @@ class Trip extends Model
     public function project(): HasOneThrough
     {
         return $this->hasOneThrough(Project::class, ProjectUser::class, 'id', 'id', 'project_user_id', 'project_id');
+    }
+
+    /**
+     * Get the tenant that the trip belongs to.
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

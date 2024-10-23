@@ -29,7 +29,7 @@ class Project extends Model
         // Log::info('Project model booted');
         static::creating(function ($project) {
             // Ensure the tenant relationship is loaded
-            Log::info($project);
+            // Log::info($project);
             $tenant = Tenant::find($project->tenant_id);
 
             if (!$tenant || !$tenant->hasActiveSubscription()) {
@@ -86,6 +86,6 @@ class Project extends Model
      */
     public function trips(): HasManyThrough
     {
-        return $this->through('users')->has('trips');
+        return $this->hasManyThrough(Trip::class, ProjectUser::class, 'project_id', 'project_user_id');
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -63,6 +64,10 @@ Route::middleware(['auth'])->group(function () {
     //---Trips-------//
     Route::get('/export-trips', [TripController::class, 'exportTripsToExcel'])->name('export.trips');
     Route::get('/export-trip/{tripId}', [TripController::class, 'exportTripToExcel'])->name('export.trip');
+
+    //select tenant
+    Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
+    Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
 });
 
 require __DIR__ . '/auth.php';

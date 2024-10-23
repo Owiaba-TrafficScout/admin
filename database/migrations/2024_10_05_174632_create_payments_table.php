@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('payment_status_id')->constrained()->cascadeOnDelete();
-            $table->date('date');
-            $table->double('amount');
-            $table->string('description');
+            $table->timestamp('date');
+            $table->decimal('amount', 19, 4);
+            $table->text('description');
             $table->timestamps();
         });
     }
