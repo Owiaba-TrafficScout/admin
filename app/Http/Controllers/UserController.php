@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\TenantRole;
+use App\Models\TenantUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,13 +33,10 @@ class UserController extends Controller
     {
         if ($user->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't update the system admin");
-        } else if ($user->pivot->role->name = 'admin' && !auth()->user()->isAdminInTenant()) {
-            return redirect()->back()->with("error", "You can't update the admin");
-        } else if ($user->id == auth()->user()->id) {
-            return redirect()->back()->with("error", "You can't update yourself");
         }
-        $user->update($request->validate([
-            'role_id' => ['required', 'integer'],
+        $tenantUser = TenantUser::where('user_id', $user->id)->where('tenant_id', session('tenant_id'))->first();
+        $tenantUser->update($request->validate([
+            'tenant_role_id' => ['required', 'integer'],
         ]));
 
         return redirect()->back()->with("success", "Role Updated");

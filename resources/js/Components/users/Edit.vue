@@ -13,7 +13,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/Components/ui/popover';
-import { User } from '@/Pages/Users.vue';
+import { User } from '@/Pages/Trips.vue';
+
 import { useForm } from '@inertiajs/vue3';
 import { inject } from 'vue';
 
@@ -24,7 +25,7 @@ const props = defineProps<{
 const emit = defineEmits(['update']);
 
 const form = useForm({
-    role_id: props.user.pivot.role.id,
+    tenant_role_id: props.user.pivot.role.id,
 });
 
 const submit = () => {
@@ -54,12 +55,16 @@ const roles = inject<{ id: number; name: string }[]>('roles');
                     <CardContent class="grid gap-4">
                         <div class="grid gap-2">
                             <Label for="role">Role</Label>
-                            <select id="role" v-model="form.role_id" required>
+                            <select
+                                id="role"
+                                v-model="form.tenant_role_id"
+                                required
+                            >
                                 <option
                                     v-for="role in roles"
                                     :key="role.id"
                                     :value="role.id"
-                                    :selected="role.id === form.role_id"
+                                    :selected="role.id === form.tenant_role_id"
                                 >
                                     {{ role.name }}
                                 </option>
