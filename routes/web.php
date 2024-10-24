@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/projects/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}/users/create', [ProjectController::class, 'addUsers'])->name('project.users.create');
+    Route::post('/projects/{project}/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
 
     //Cartype routes
     Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');

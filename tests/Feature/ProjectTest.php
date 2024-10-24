@@ -195,3 +195,63 @@ it('redirects back with error for non-admin users', function () {
     $response->assertStatus(302);
     $response->assertSessionHas('error', 'You are not allowed to create a project.');
 });
+
+it('displays the add users to project form', function () {
+    // Create a user and authenticate
+    $user = User::factory()->create();
+    Auth::login($user);
+
+    //get tenant with active subscription
+    $tenant = Tenant::first();
+    //add user to tenant
+    $tenant->users()->attach($user->id, [
+        'tenant_role_id' => 1,
+    ]);
+    $project = Project::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Simulate a GET request to the project.users.create route
+    $response = $this->get(route('project.users.create', $project->id));
+
+    // Assert the response status and view
+    $response->assertStatus(200);
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('Projects/AddUsers')
+            ->has('project')
+            ->has('users')
+    );
+});
+
+it('stores users to the project', function () {
+    // Create a user and authenticate
+    $user = User::factory()->create();
+    Auth::login($user);
+
+    //get tenant with active subscription
+    $tenant = Tenant::first();
+    //add user to tenant
+    $tenant->users()->attach($user->id, [
+        'tenant_role_id' => 1,
+    ]);
+
+    $project = Project::factory()->create(['tenant_id' => $tenant->id]);
+
+    // Create some users to add to the project
+    $usersToAdd = User::factory()->count(3)->create();
+
+    // Simulate a POST request to the project.users.store route
+    $response = $this->post(route('project.users.store', $project->id), [
+        'userIds' => $usersToAdd->pluck('id')->toArray(),
+    ]);
+
+    // Assert the response status and database changes
+    $response->assertStatus(302); // Assuming a redirect after successful store
+    $response->assertSessionHas('success', 'Users added to project.');
+
+    foreach ($usersToAdd as $userToAdd) {
+        $this->assertDatabaseHas('project_user', [
+            'project_id' => $project->id,
+            'user_id' => $userToAdd->id,
+        ]);
+    }
+});

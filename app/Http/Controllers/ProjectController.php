@@ -79,4 +79,28 @@ class ProjectController extends Controller
         $project->users()->detach($user);
         return redirect()->back()->with('success', 'User removed from project.');
     }
+
+    public function addUsers(Project $project)
+    {
+        $users = User::all();
+        return Inertia::render('Projects/AddUsers', ['project' => $project, 'users' => $users]);
+    }
+
+    public function storeUsers(Request $request, Project $project)
+    {
+        $attributes = $request->validate([
+            'userIds' => 'required|array',
+        ]);
+
+        // Prepare the data for syncWithoutDetaching
+        $syncData = [];
+        foreach ($attributes['userIds'] as $userId) {
+            $syncData[$userId] = [
+                'role_id' => 2,
+                'joined_at' => now(),
+            ];
+        }
+        $project->users()->syncWithoutDetaching($syncData);
+        return redirect()->route('projects.index')->with('success', 'Users added to project.');
+    }
 }
