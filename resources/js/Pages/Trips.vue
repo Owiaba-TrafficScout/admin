@@ -38,6 +38,7 @@ export interface User {
     name: string;
     email: string;
     pivot: {
+        id: number;
         role_id: number;
         tenant_role_id: number;
         role: Role;

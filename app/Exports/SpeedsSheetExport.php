@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripSpeed;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -12,9 +13,14 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        $speeds = TripSpeed::all();
-        if (auth()->user()->isProjectAdmin()) {
-            $projectIds = auth()->user()->projects->pluck('id');
+        $speeds = [];
+        $tenant = Tenant::find(session('tenant_id'));
+        if (auth()->user()->isAdminInTenant()) {
+            $projectIds = $tenant->projects->pluck('id');
+            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
+            $speeds = TripSpeed::whereIn('trip_id', $tripIds)->get();
+        } else {
+            $projectIds = auth()->user()->adminProjects->pluck('id');
             $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
             $speeds = TripSpeed::whereIn('trip_id', $tripIds)->get();
         }

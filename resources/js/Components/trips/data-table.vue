@@ -1,7 +1,6 @@
 <script setup>
 import SearchForm from '@/Components/SearchForm.vue';
 import FilterRadios from '@/Components/trips/FilterRadios.vue';
-import Pagination from '@/Shared/Pagination.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Tooltip from '../Tooltip.vue';
@@ -30,7 +29,7 @@ const handleDelete = (id) => {
 };
 const filteredItems = computed(() => {
     if (search.value != '')
-        return props.items.data.filter((item) => {
+        return props.items.filter((item) => {
             return (
                 item.title.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.description
@@ -42,7 +41,7 @@ const filteredItems = computed(() => {
                 item.status.name.toLowerCase() === search.value.toLowerCase()
             );
         });
-    return props.items.data;
+    return props.items;
 });
 
 const handleFilter = (filter) => {
@@ -263,7 +262,6 @@ const handleFilter = (filter) => {
                     </tr>
                 </tbody>
             </table>
-            <Pagination :links="items.links" />
         </div>
     </div>
 </template>

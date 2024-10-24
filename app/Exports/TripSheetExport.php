@@ -27,7 +27,7 @@ class TripSheetExport implements FromCollection, WithHeadings, WithMapping
             $trip->id,
             $trip->title,
             $trip->description,
-            $trip->user->name,
+            $trip->projectUser->user->name,
             $trip->group_code,
             $trip->car->type->name,
             $trip->project->name,

@@ -60,4 +60,12 @@ class ProjectUser extends Pivot
     {
         return $this->belongsTo(Role::class);
     }
+
+    /**
+     * Check if the user is an admin in the project.
+     */
+    public function isProjectAdmin(): bool
+    {
+        return $this->role->name === 'admin';
+    }
 }

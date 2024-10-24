@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Tenant;
 use App\Models\Trip;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,11 +15,13 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
      */
     public function collection()
     {
-        $trips = Trip::all();
+        $trips = [];
+        $tenant = Tenant::find(session('tenant_id'));
 
-        if (auth()->user()->isProjectAdmin()) {
-            $projectIds = auth()->user()->projects->pluck('id');
-            $trips = Trip::whereIn('project_id', $projectIds)->get();
+        if (auth()->user()->isAdminInTenant()) {
+            $trips = $tenant->trips;
+        } else {
+            $trips = auth()->user()->adminTrips();
         }
         return $trips;
     }
@@ -29,7 +32,7 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
             $trip->id,
             $trip->title,
             $trip->description,
-            $trip->user->name,
+            $trip->projectUser->user->name,
             $trip->group_code,
             $trip->car->type->name,
             $trip->project->name,

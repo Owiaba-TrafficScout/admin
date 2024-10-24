@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CarType;
 use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,13 +17,15 @@ class ProjectController extends Controller
     {
         $tenant_id = session('tenant_id');
         $tenant = Tenant::find($tenant_id);
+        $roles = Role::all();
         $projects = [];
         if (auth()->user()->isAdminInTenant($tenant_id)) {
-            $projects = $tenant->projects->load(['trips', 'users']);
+            $projects = $tenant->projects->load(['trips', 'users.pivot.role']);
         } else {
-            $projects = auth()->user()->adminProjects->load(['trips', 'users']);
+            $projects = auth()->user()->adminProjects->load(['trips', 'users.pivot.role']);
         }
-        return Inertia::render('Projects', ['projects' => $projects]);
+
+        return Inertia::render('Projects', ['projects' => $projects, 'roles' => $roles]);
     }
 
     public function create()
@@ -71,10 +75,16 @@ class ProjectController extends Controller
 
     public function removeUser(Request $request, Project $project, User $user)
     {
+        $projectUser = $project->users()->where('user_id', $user->id)->first();
+        $authProjectUser = $project->users()->where('user_id', auth()->user()->id)->first();
         if (auth()->user()->id == $user->id) {
             return redirect()->back()->with('error', 'You can\'t remove yourself from the project.');
-        } else if (auth()->user()->isProjectAdmin() && $user->isProjectAdmin()) {
-            return redirect()->back()->with('error', 'You can\'t remove a admin from the project.');
+        } else if ($authProjectUser?->isProjectAdmin()) {
+            if ($projectUser->isProjectAdmin()) {
+                return redirect()->back()->with('error', 'You can\'t remove an admin from the project.');
+            }
+        } else if (!auth()->user()->isAdminInTenant()) {
+            return redirect()->back()->with('error', 'You are not allowed to remove a user from the project.');
         }
         $project->users()->detach($user);
         return redirect()->back()->with('success', 'User removed from project.');
@@ -102,5 +112,13 @@ class ProjectController extends Controller
         }
         $project->users()->syncWithoutDetaching($syncData);
         return redirect()->route('projects.index')->with('success', 'Users added to project.');
+    }
+
+    public function updateUserRole(Request $request, Project $project, ProjectUser $projectUser)
+    {
+        $projectUser->update($request->validate([
+            'role_id' => 'required|exists:roles,id',
+        ]));
+        return redirect()->route('projects.index')->with('success', 'User role updated.');
     }
 }

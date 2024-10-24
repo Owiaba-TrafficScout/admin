@@ -6,10 +6,9 @@ import {
     PopoverTrigger,
 } from '@/Components/ui/popover';
 import { User } from '@/Pages/Trips.vue';
-import { useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { computed, inject } from 'vue';
 
-const authUser = usePage().props.auth.user;
 const props = defineProps<{
     users: User[];
     projectId: number;
@@ -33,6 +32,31 @@ const filteredUsers = computed(() => {
         return user.pivot.role_id >= 1;
     });
 });
+
+const roles: { id: number; name: string }[] = inject('roles') || [];
+const form = useForm({
+    role_id: 0,
+});
+
+const submit = (ProjectUserId: number, RoleId: number) => {
+    if (confirm('Are you sure you want to change this user role?')) {
+        form.role_id = RoleId;
+        console.log(form.role_id);
+        form.post(
+            route('projects.users.update', {
+                project: props.projectId,
+                projectUser: ProjectUserId,
+            }),
+            {
+                onError: (e) => {
+                    console.log(e);
+                    console.log(form.role_id);
+                    console.log('role_id', RoleId);
+                },
+            },
+        );
+    }
+};
 </script>
 
 <template>
@@ -94,11 +118,24 @@ const filteredUsers = computed(() => {
                     </div>
 
                     <div class="col-span-2 flex items-center">
-                        <p
-                            class="text-sm font-medium text-black dark:text-white"
-                        >
-                            {{ user.pivot.role_id === 1 ? 'Admin' : 'User' }}
-                        </p>
+                        <div class="grid gap-2">
+                            <select
+                                id="role"
+                                v-model="user.pivot.role"
+                                @change="
+                                    submit(user.pivot.id, user.pivot.role.id)
+                                "
+                                required
+                            >
+                                <option
+                                    v-for="role in roles"
+                                    :key="role.id"
+                                    :value="role"
+                                >
+                                    {{ role.name }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="col-span-2 flex items-center">

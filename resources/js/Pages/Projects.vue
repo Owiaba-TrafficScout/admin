@@ -4,6 +4,7 @@ import Layout from '@/Layouts/App.vue';
 import { Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
+import { provide } from 'vue';
 import { Trip, User } from './Trips.vue';
 export interface Project {
     id: number;
@@ -15,9 +16,12 @@ export interface Project {
     users: User[];
 }
 
-defineProps<{
+const props = defineProps<{
     projects: Project[];
+    roles: { id: number; name: string }[];
 }>();
+
+provide('roles', props.roles);
 
 const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold

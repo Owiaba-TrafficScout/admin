@@ -19,7 +19,7 @@ class TripController extends Controller
         $tenant_id = session('tenant_id');
         $tenant = Tenant::find($tenant_id);
         if (auth()->user()->isAdminInTenant($tenant_id)) {
-            $trips = $tenant->trips()->paginate(3);
+            $trips = $tenant->trips;
         } else {
             $trips = auth()->user()->adminTrips();
         }
