@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CarType;
 use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\User;
@@ -21,6 +22,12 @@ class ProjectController extends Controller
             $projects = auth()->user()->adminProjects->load(['trips', 'users']);
         }
         return Inertia::render('Projects', ['projects' => $projects]);
+    }
+
+    public function create()
+    {
+        $carTypes = CarType::all();
+        return Inertia::render('Projects/Create', ['carTypes' => $carTypes]);
     }
 
     public function update(Request $request, Project $project)

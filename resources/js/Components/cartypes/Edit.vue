@@ -26,7 +26,6 @@ const emit = defineEmits(['update']);
 
 const form = useForm({
     name: props.car_type.name,
-    description: props.car_type.description,
 });
 
 const submit = () => {
@@ -63,17 +62,6 @@ const submit = () => {
                             />
                             <div v-if="form.errors.name">
                                 {{ form.errors.name }}
-                            </div>
-                        </div>
-                        <div class="grid gap-2">
-                            <Label for="description">Description</Label>
-                            <textarea
-                                name="description"
-                                id="description"
-                                v-model="form.description"
-                            ></textarea>
-                            <div v-if="form.errors.description">
-                                {{ form.errors.description }}
                             </div>
                         </div>
                     </CardContent>

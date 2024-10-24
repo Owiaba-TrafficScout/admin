@@ -4,7 +4,6 @@ import Layout from '@/Layouts/App.vue';
 export interface CarType {
     id: number;
     name: string;
-    description: string;
 }
 
 defineProps<{

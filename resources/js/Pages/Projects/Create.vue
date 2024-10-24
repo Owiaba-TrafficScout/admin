@@ -1,82 +1,50 @@
-<!-- <script setup lang="ts">
+<script setup lang="ts">
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import Layout from '@/Layouts/App.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed } from 'vue';
+import { ref, Ref } from 'vue';
+import { CarType } from '../CarTypes.vue';
 
-const amount = computed(() => {
-    return selected_plan.value.price;
-});
+defineProps<{
+    carTypes: CarType[];
+}>();
 
-const planId = computed(() => {
-    return selected_plan.value.id;
-});
+const car_types: Ref<CarType[]> = ref([]);
+
+const addCarType = (newCarType: string) => {
+    car_types.value.push({
+        id: car_types.value.length + 1,
+        name: newCarType,
+    });
+};
 
 const form = useForm({
-    org_name: '',
-    org_email: '',
     name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    plan_id: planId,
-    amount: amount,
+    description: '',
+    start_date: '',
+    end_date: '',
 });
 
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => {
-            form.reset('password', 'password_confirmation');
+            form.reset();
         },
     });
-};
-
-const nameWithPrice = (plan: SubscriptionPlan) => {
-    return `${plan.name} - GHS${plan.price}`;
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
-
+    <Layout page="Create New Project">
+        <Head title="Create New Project" />
+        {{ car_types }}
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="org_name" value="Organization Name" />
-
-                <TextInput
-                    id="org_name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.org_name"
-                    required
-                    autofocus
-                    autocomplete="org_name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.org_name" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="org_email" value="Organization's Email" />
-
-                <TextInput
-                    id="org_email"
-                    type="org_email"
-                    class="mt-1 block w-full"
-                    v-model="form.org_email"
-                    required
-                    autocomplete="org_email"
-                />
-
-                <InputError class="mt-2" :message="form.errors.org_email" />
-            </div>
-            <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Organization Name" />
 
                 <TextInput
                     id="name"
@@ -92,68 +60,64 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="description" value="Organization's Email" />
 
                 <TextInput
-                    id="email"
-                    type="email"
+                    id="description"
                     class="mt-1 block w-full"
-                    v-model="form.email"
+                    v-model="form.description"
                     required
-                    autocomplete="email"
+                    autocomplete="description"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.description" />
+            </div>
+            <div class="mt-4">
+                <InputLabel for="start_date" value="Start Date" />
+
+                <TextInput
+                    id="start_date"
+                    type="date"
+                    class="mt-1 block w-full"
+                    v-model="form.start_date"
+                    required
+                    autocomplete="start_date"
+                />
+
+                <InputError class="mt-2" :message="form.errors.start_date" />
+            </div>
+            <div class="mt-4">
+                <InputLabel for="end_date" value="End Date" />
+
+                <TextInput
+                    id="end_date"
+                    type="date"
+                    class="mt-1 block w-full"
+                    v-model="form.end_date"
+                    required
+                    autocomplete="end_date"
+                />
+
+                <InputError class="mt-2" :message="form.errors.end_date" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4">
-                <label class="typo__label">Select Your Plan</label>
+                <label class="typo__label"
+                    >Select or Create Your Car Types</label
+                >
                 <div class="flex flex-col gap-3">
                     <Multiselect
-                        v-model="selected_plan"
-                        :options="subscriptionPlans"
+                        v-model="car_types"
+                        :options="carTypes"
                         :close-on-select="false"
                         :clear-on-select="false"
                         :preserve-search="true"
-                        placeholder="Select plan"
-                        :custom-label="nameWithPrice"
+                        placeholder="Select Car Types"
+                        label="name"
                         track-by="id"
+                        multiple
+                        taggable
+                        @tag="addCarType"
                     >
                         <template #selection="{ values, isOpen }">
                             <span
@@ -170,7 +134,7 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                     >
-                        Pay {{ 'GHS' + form.amount }} and Register
+                        Create Project
                     </PrimaryButton>
                 </div>
             </div>
@@ -184,5 +148,5 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
                 </Link>
             </div>
         </form>
-    </GuestLayout>
-</template> -->
+    </Layout>
+</template>

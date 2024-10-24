@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Car;
 use App\Models\CarType;
-use App\Models\License;
 use App\Models\Payment;
 use App\Models\PaymentStatus;
 use App\Models\Subscription;
