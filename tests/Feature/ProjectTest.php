@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\CarType;
 use App\Models\Project;
 use App\Models\Role;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 
 uses(RefreshDatabase::class)->beforeEach(function () {
     $this->seed();
@@ -109,4 +111,87 @@ test("can get all project's trips", function () {
 
     // Asseert that the total number of trips is 2
     expect($projectTrips->count())->toBe(2);
+});
+
+it('stores a new project', function () {
+    // Create a user and authenticate
+    $user = User::factory()->create();
+    Auth::login($user);
+
+    // get tenant with active subscription
+    $tenant = Tenant::first();
+
+    //add user to tenant
+    $tenant->users()->attach($user->id, [
+        'tenant_role_id' => 1,
+    ]);
+
+    //store tenant_id in session
+    session(['tenant_id' => $tenant->id]);
+
+    // Simulate a POST request to the projects.store route
+    $response = $this->post(route('projects.store'), [
+        'name' => 'Test Project',
+        'description' => 'This is a test project',
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addDays(30)->toDateString(),
+        'tenant_id' => $tenant->id,
+    ]);
+
+    // Assert the response status and database changes
+    $response->assertStatus(302); // Assuming a redirect after successful store
+    $this->assertDatabaseHas('projects', [
+        'name' => 'Test Project',
+        'description' => 'This is a test project',
+        'tenant_id' => $tenant->id,
+    ]);
+});
+
+
+
+it('displays the create project form for admin users', function () {
+    // Create a user and authenticate
+    $user = User::factory()->create();
+    Auth::login($user);
+
+    // make user an admin
+    $role = Role::where('name', 'admin')->first();
+    Tenant::first()->users()->attach($user->id, [
+        'tenant_role_id' => $role->id,
+    ]);
+
+    //store tenant_id in session
+    session(['tenant_id' => Tenant::first()->id]);
+
+    // Create some car types
+    $car_type_count = CarType::count();
+
+    // Simulate a GET request to the projects.create route
+    $response = $this->get(route('projects.create'));
+
+    // Assert the response status and view
+    $response->assertStatus(200);
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('Projects/Create')
+            ->has('carTypes', $car_type_count)
+    );
+});
+
+it('redirects back with error for non-admin users', function () {
+    // Create a user and authenticate
+    $user = User::factory()->create();
+    Auth::login($user);
+
+    // Mock the isAdminInTenant method to return false
+    $this->mock(User::class, function ($mock) {
+        $mock->shouldReceive('isAdminInTenant')->andReturn(false);
+    });
+
+    // Simulate a GET request to the projects.create route
+    $response = $this->get(route('projects.create'));
+
+    // Assert the response status and redirection
+    $response->assertStatus(302);
+    $response->assertSessionHas('error', 'You are not allowed to create a project.');
 });
