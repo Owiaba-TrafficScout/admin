@@ -26,8 +26,29 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $carTypes = CarType::all();
+        if (!auth()->user()->isAdminInTenant()) {
+            return redirect()->back()->with('error', 'You are not allowed to create a project.');
+        }
+        $carTypes = CarType::orderByDesc('created_at')->get();
         return Inertia::render('Projects/Create', ['carTypes' => $carTypes]);
+    }
+
+
+    public function store(Request $request)
+    {
+        if (!auth()->user()->isAdminInTenant()) {
+            return redirect()->back()->with('error', 'You are not allowed to create a project.');
+        }
+        $attributes = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+        $attributes['tenant_id'] = session('tenant_id');
+        $project = Project::create($attributes);
+
+        return redirect()->route('projects.index')->with('success', 'Project created.');
     }
 
     public function update(Request $request, Project $project)

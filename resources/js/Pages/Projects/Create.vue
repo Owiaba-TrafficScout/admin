@@ -4,21 +4,32 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Layout from '@/Layouts/App.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import { ref, Ref } from 'vue';
 import { CarType } from '../CarTypes.vue';
 
-defineProps<{
+const props = defineProps<{
     carTypes: CarType[];
 }>();
 
 const car_types: Ref<CarType[]> = ref([]);
-
+const carTypeForm = useForm({
+    name: '',
+});
 const addCarType = (newCarType: string) => {
-    car_types.value.push({
-        id: car_types.value.length + 1,
-        name: newCarType,
+    carTypeForm.name = newCarType;
+    carTypeForm.post(route('car-types.store'), {
+        onError: (errors) => {
+            console.log(errors);
+        },
+        onSuccess: () => {
+            const cType = props.carTypes.find(
+                (carType) => carType.name === carTypeForm.name,
+            );
+            if (cType !== undefined) car_types.value.push(cType);
+            carTypeForm.reset();
+        },
     });
 };
 
@@ -30,7 +41,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('register'), {
+    form.post(route('projects.store'), {
         onFinish: () => {
             form.reset();
         },
@@ -41,10 +52,10 @@ const submit = () => {
 <template>
     <Layout page="Create New Project">
         <Head title="Create New Project" />
-        {{ car_types }}
-        <form @submit.prevent="submit">
+
+        <form @submit.prevent="submit" class="mt-10 w-auto min-w-[30vw]">
             <div>
-                <InputLabel for="name" value="Organization Name" />
+                <InputLabel for="name" value="Name" />
 
                 <TextInput
                     id="name"
@@ -60,15 +71,12 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="description" value="Organization's Email" />
-
-                <TextInput
+                <InputLabel for="description" value="Description" />
+                <textarea
+                    name="description"
                     id="description"
-                    class="mt-1 block w-full"
                     v-model="form.description"
-                    required
-                    autocomplete="description"
-                />
+                ></textarea>
 
                 <InputError class="mt-2" :message="form.errors.description" />
             </div>
@@ -117,6 +125,8 @@ const submit = () => {
                         track-by="id"
                         multiple
                         taggable
+                        tagPosition="top"
+                        tagPlaceholder="Add this as new car type"
                         @tag="addCarType"
                     >
                         <template #selection="{ values, isOpen }">
@@ -137,15 +147,6 @@ const submit = () => {
                         Create Project
                     </PrimaryButton>
                 </div>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Already registered?
-                </Link>
             </div>
         </form>
     </Layout>

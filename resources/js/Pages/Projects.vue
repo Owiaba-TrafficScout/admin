@@ -32,6 +32,7 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     <Layout page="Projects">
         <div class="mt-2 flex flex-col gap-5">
             <a
+                v-if="$page.props.auth.is_tenant_admin"
                 :href="route('projects.create')"
                 :class="btnClasses"
                 class="w-fit"

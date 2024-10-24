@@ -28,4 +28,14 @@ class CarTypeController extends Controller
         $car_type->delete();
         return redirect()->back()->with('success', 'Car Type deleted.');
     }
+
+    public function store(Request $request)
+    {
+        $attributes = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        CarType::create($attributes);
+        return redirect()->back()->with('success', 'Car Type created.');
+    }
 }
