@@ -1,3 +1,5 @@
+import { Project } from '@/Pages/Projects.vue';
+
 export interface User {
     id: number;
     name: string;
@@ -18,4 +20,6 @@ export type PageProps<
         is_tenant_admin: boolean;
     };
     flash: FlashMessage;
+    selected_project: Project;
+    projects: Project[];
 };

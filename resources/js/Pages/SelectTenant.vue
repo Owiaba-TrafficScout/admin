@@ -45,7 +45,7 @@ const handleNext = () => {
                     placeholder="Select Organization"
                     label="name"
                     track-by="id"
-                >
+                    >
                     <template #selection="{ values, isOpen }">
                         <span
                             class="multiselect__single"

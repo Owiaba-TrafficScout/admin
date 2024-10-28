@@ -1,26 +1,8 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback } from '@/Components/ui/avatar';
-import { Badge } from '@/Components/ui/badge';
-import { Button } from '@/Components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/Components/ui/card';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/Components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
 import Layout from '@/Layouts/App.vue';
-import { Link } from '@inertiajs/vue3';
-import { ArrowUpRight, DollarSign, Map, Package, Users } from 'lucide-vue-next';
-import { Payment } from './Payments.vue';
+import { DollarSign, Map, Package, Users } from 'lucide-vue-next';
 import { Trip } from './Trips.vue';
 
 interface Total {
@@ -29,7 +11,6 @@ interface Total {
 }
 defineProps<{
     totals: Total[];
-    payments: Payment[];
     trips: Trip[];
 }>();
 </script>
@@ -81,7 +62,8 @@ defineProps<{
                     </Card>
                 </div>
                 <div class="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-                    <Card class="xl:col-span-2">
+                    <!-- TODO: fill out this table -->
+                    <!-- <Card class="xl:col-span-2">
                         <CardHeader class="flex flex-row items-center">
                             <div class="grid gap-2">
                                 <CardTitle>Payments</CardTitle>
@@ -153,7 +135,7 @@ defineProps<{
                                 </TableBody>
                             </Table>
                         </CardContent>
-                    </Card>
+                    </Card> -->
                     <Card>
                         <CardHeader>
                             <CardTitle>Recent Trips</CardTitle>

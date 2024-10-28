@@ -121,4 +121,15 @@ class ProjectController extends Controller
         ]));
         return redirect()->route('projects.index')->with('success', 'User role updated.');
     }
+
+    public function storeSelectedProject(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+        ]);
+
+        $request->session()->put('project_id', $request->project_id);
+
+        return redirect()->back()->with('success', 'Project switched!');
+    }
 }

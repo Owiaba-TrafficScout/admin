@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
     Banknote,
-    Bell,
     Car,
     CircleUser,
     Home,
@@ -28,13 +27,33 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
-import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Project } from '@/Pages/Projects.vue';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
+import Multiselect from '@suadelabs/vue3-multiselect';
+import { computed, Ref, ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
+//copy project from usepage
+const selected_project: Ref<Project> = ref(
+    JSON.parse(JSON.stringify(usePage().props.selected_project)),
+);
+const projects = usePage().props.projects;
 
+const selectedProjectId = computed(() => selected_project.value.id);
+const form = useForm({
+    project_id: selectedProjectId,
+});
+
+const handleSelect = () => {
+    // go to route tenant.selected.store
+    form.post(route('project.selected.store'), {
+        onError: (e) => {
+            console.log(e);
+        },
+    });
+};
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
@@ -49,18 +68,30 @@ const classes = ref(
                 <div
                     class="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6"
                 >
-                    <a href="/" class="flex items-center gap-2 font-semibold">
-                        <Package2 class="h-6 w-6" />
-                        <span class="capitalize"> Admin Panel </span>
-                    </a>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        class="ml-auto h-8 w-8"
-                    >
-                        <Bell class="h-4 w-4" />
-                        <span class="sr-only">Toggle notifications</span>
-                    </Button>
+                    <div class="flex items-center gap-2 font-semibold">
+                        <!-- <Package2 class="h-6 w-6" /> -->
+                        <Multiselect
+                            class="w-full"
+                            v-model="selected_project"
+                            :options="projects"
+                            :close-on-select="true"
+                            :clear-on-select="false"
+                            :preserve-search="true"
+                            placeholder="Select Project"
+                            label="name"
+                            track-by="id"
+                            @select="handleSelect"
+                        >
+                            <template #selection="{ values, isOpen }">
+                                <span
+                                    class="multiselect__single"
+                                    v-if="values.length"
+                                    v-show="!isOpen"
+                                    >{{ values.length }} options selected</span
+                                >
+                            </template>
+                        </Multiselect>
+                    </div>
                 </div>
                 <div class="flex-1">
                     <nav

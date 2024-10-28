@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     //select tenant
     Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
     Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
+    Route::post('/select-project', [ProjectController::class, 'storeSelectedProject'])->name('project.selected.store');
 });
 
 require __DIR__ . '/auth.php';
