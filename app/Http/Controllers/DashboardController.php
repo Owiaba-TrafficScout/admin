@@ -20,16 +20,15 @@ class DashboardController extends Controller
 
         //retrieve tenant
         $project = Project::find(session('project_id'));
-        Log::info($project->name);
         $trips = [
             'name' => 'Trips',
-            'value' => $project->trips->count()
+            'value' => $project?->trips->count() ?? 0
         ];
         $users = [
             'name' => 'Users',
-            'value' => $project->users->count()
+            'value' => $project?->users->count() ?? 0
         ];
-        $recentTrips = $project->trips()->latest()->limit(5)->get();
+        $recentTrips = $project?->trips()->latest()->limit(5)->get()??[];
 
         $totals = [$trips, $users];
         return Inertia::render('Dashboard2', [

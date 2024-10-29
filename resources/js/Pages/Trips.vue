@@ -69,10 +69,14 @@ provide('trip_statuses', props.statuses);
 <template>
     <Layout page="Trips">
         <div class="mt-2 flex flex-col gap-5">
-            <a :href="route('export.trips')" :class="btnClasses"
+            <a
+                :href="route('export.trips')"
+                :class="btnClasses"
+                v-if="trips.length > 0"
                 >Export Trips</a
             >
-            <DataTable :items="trips" />
+            <DataTable :items="trips" v-if="trips.length > 0" />
+            <p v-else class="text-xl font-bold text-gray-500">Empty</p>
         </div>
     </Layout>
 </template>
