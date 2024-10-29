@@ -88,4 +88,12 @@ class Project extends Model
     {
         return $this->hasManyThrough(Trip::class, ProjectUser::class, 'project_id', 'project_user_id');
     }
+
+    /**
+     * Get all CarTypes for project
+     */
+    public function carTypes(): BelongsToMany
+    {
+        return $this->belongsToMany(CarType::class, 'project_car_type');
+    }
 }

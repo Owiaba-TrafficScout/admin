@@ -255,3 +255,12 @@ it('stores users to the project', function () {
         ]);
     }
 });
+
+it('has many car types', function () {
+    /**
+     * Create a project with 3 car types
+     * Assert that the project has 3 car types
+     */
+    $project = Project::factory()->hasCarTypes(3)->create();
+    expect($project->carTypes->count())->toBe(3);
+});
