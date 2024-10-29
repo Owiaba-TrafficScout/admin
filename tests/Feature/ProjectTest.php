@@ -196,15 +196,13 @@ it('redirects back with error for non-admin users', function () {
     // Simulate a GET request to the projects.create route
     $response = $this->get(route('projects.create'));
 
-    // Assert the response status and redirection
-    $response->assertStatus(302);
-    $response->assertSessionHas('error', 'You are not allowed to create a project.');
+    // Assert the response status is forbidden
+    $response->assertStatus(403);
 });
 
 it('displays the add users to project form', function () {
     // Create a user and authenticate
     $user = User::factory()->create();
-    Auth::login($user);
 
     //get tenant with active subscription
     $tenant = Tenant::first();
@@ -212,6 +210,8 @@ it('displays the add users to project form', function () {
     $tenant->users()->attach($user->id, [
         'tenant_role_id' => 1,
     ]);
+    session()->put('tenant_id', $tenant->id);
+    Auth::login($user);
     $project = Project::factory()->create(['tenant_id' => $tenant->id]);
 
     // Simulate a GET request to the project.users.create route
@@ -244,6 +244,7 @@ it('stores users to the project', function () {
     // Create some users to add to the project
     $usersToAdd = User::factory()->count(3)->create();
 
+    session()->put('tenant_id', $tenant->id);
     // Simulate a POST request to the project.users.store route
     $response = $this->post(route('project.users.store', $project->id), [
         'userIds' => $usersToAdd->pluck('id')->toArray(),
