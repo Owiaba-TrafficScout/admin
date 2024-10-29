@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -22,12 +23,20 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
 
+Route::get('/invite/accept/{token}', [InvitationController::class, 'accept'])->name('invite.accept');
+Route::post('invitation/register', [InvitationController::class, 'register'])->name('invite.register');
 
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    //select tenant
+    Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
+    Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
+});
+
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -71,10 +80,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/export-trips', [TripController::class, 'exportTripsToExcel'])->name('export.trips');
     Route::get('/export-trip/{tripId}', [TripController::class, 'exportTripToExcel'])->name('export.trip');
 
-    //select tenant
-    Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
-    Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
+    // select project
     Route::post('/select-project', [ProjectController::class, 'storeSelectedProject'])->name('project.selected.store');
+
+
+    //---Invitations---//
+    Route::post('/projects/{project}/invitations/send', [InvitationController::class, 'sendInvite'])->name('projects.invite');
 });
 
 require __DIR__ . '/auth.php';

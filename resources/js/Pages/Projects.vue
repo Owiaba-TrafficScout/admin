@@ -3,12 +3,14 @@ import Layout from '@/Layouts/App.vue';
 import { Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
-import { usePage } from '@inertiajs/vue3';
+import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { provide } from 'vue';
 import { Trip, User } from './Trips.vue';
 export interface Project {
     id: number;
-    name: string;
+    email: string;
     description: string;
     start_date: string;
     end_date: string;
@@ -18,7 +20,7 @@ export interface Project {
 
 const props = defineProps<{
     projects: Project[];
-    roles: { id: number; name: string }[];
+    roles: { id: number; email: string }[];
 }>();
 
 const is_tenant_admin = usePage().props.auth.is_tenant_admin;
@@ -32,18 +34,67 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 dark:bg-gray-200
     dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white
     dark:focus:ring-offset-gray-800 dark:active:bg-gray-300`);
+
+const form = useForm({
+    email: '',
+});
+
+const sendInvitation = () => {
+    form.post(
+        route('projects.invite', {
+            project: usePage().props.selected_project.id,
+        }),
+        {
+            onSuccess: () => {
+                form.reset();
+            },
+            onError: (e) => {
+                console.log(e);
+            },
+        },
+    );
+};
 </script>
 
 <template>
-    <Layout page="Projects">
-        <div class="mt-2 flex flex-col gap-5">
-            <a
-                v-if="is_tenant_admin"
-                :href="route('projects.create')"
-                :class="btnClasses"
-                class="w-fit"
-                >New Project <Plus class="ml-2" :size="16"
-            /></a>
+    <Layout page="Project">
+        <div class="flex flex-col gap-5">
+            <div class="mt-2 flex flex-col gap-5">
+                <a
+                    v-if="is_tenant_admin"
+                    :href="route('projects.create')"
+                    :class="btnClasses"
+                    class="w-fit"
+                    >New Project <Plus class="ml-2" :size="16"
+                /></a>
+            </div>
+            <h1 class="mt-20 text-lg font-semibold capitalize text-black">
+                Invite users to this Project
+            </h1>
+            <div class="mt-5 flex flex-row gap-5">
+                <div>
+                    <TextInput
+                        id="email"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.email"
+                        required
+                        autofocus
+                        autocomplete="email"
+                        placeholder="Email"
+                    />
+
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
+                <button
+                    v-if="is_tenant_admin"
+                    @click="sendInvitation"
+                    :class="btnClasses"
+                    class="w-fit"
+                >
+                    Send Invitation
+                </button>
+            </div>
         </div>
     </Layout>
 </template>

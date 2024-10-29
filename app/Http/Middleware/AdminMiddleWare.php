@@ -15,7 +15,7 @@ class AdminMiddleWare
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!(auth()->user()->isAdminInAnyProject() || auth()->user()->isAdminInAnyTenant())) {
+        if (!(auth()->user()->isAdminInProject() || auth()->user()->isAdminInTenant())) {
             //if the person is logged in, logout and abort
             auth()->logout();
             abort(403);
