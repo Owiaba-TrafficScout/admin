@@ -269,3 +269,12 @@ it('has many car types', function () {
     $project = Project::factory()->hasCarTypes(3)->create();
     expect($project->carTypes->count())->toBe(3);
 });
+
+it('has many invitations', function () {
+    /**
+     * Create a project with 3 invitations
+     * Assert that the project has 3 invitations
+     */
+    $project = Project::factory()->hasInvitations(3)->create();
+    expect($project->invitations->count())->toBe(3);
+});

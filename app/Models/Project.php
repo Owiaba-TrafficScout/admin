@@ -96,4 +96,12 @@ class Project extends Model
     {
         return $this->belongsToMany(CarType::class, 'project_car_type');
     }
+
+    /**
+     * Get all invitations for the project.
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
 }
