@@ -13,9 +13,9 @@ const props = defineProps({
 });
 
 const search = ref('');
-const authUser = usePage().props.auth.user;
 
 const isTenantAdmin = usePage().props.auth.is_tenant_admin;
+const isProjectAdmin = usePage().props.auth.is_project_admin;
 
 const handleSearch = (s) => {
     search.value = s;
@@ -23,24 +23,12 @@ const handleSearch = (s) => {
 
 const handleDelete = (id) => {
     const form = useForm({});
-    if (isTenantAdmin) {
-        if (
-            confirm(
-                'Are you sure you want To Remove this user from your organization, This will also remove him from all your projects? This is irreversible',
-            )
-        ) {
-            form.delete(route('users.destroy', id));
-        }
-    } else {
-        if (
-            confirm(
-                'Are you sure you want Remove This Person from your Projects?',
-            )
-        ) {
-            form.delete(route('users.destroy', id));
-        }
+
+    if (confirm('Are you sure you want remove this user from the project?')) {
+        form.delete(route('users.destroy', id));
     }
 };
+
 const filteredItems = computed(() => {
     if (search.value != '')
         return props.items.filter((item) => {
@@ -109,7 +97,10 @@ const filteredItems = computed(() => {
 
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :user="item" v-if="isTenantAdmin">
+                                <Edit
+                                    :user="item"
+                                    v-if="isTenantAdmin || isProjectAdmin"
+                                >
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"

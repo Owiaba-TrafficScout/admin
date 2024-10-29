@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 
 uses(RefreshDatabase::class)->beforeEach(function () {
     $this->seed(); // This will run DatabaseSeeder by default
@@ -21,7 +22,6 @@ test('users can authenticate using the login screen', function () {
         'email' => $user->email,
         'password' => 'password',
     ]);
-
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('tenant.select'));

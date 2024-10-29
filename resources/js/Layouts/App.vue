@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import {
-    Banknote,
     Car,
     CircleUser,
     Home,
-    LineChart,
     Map,
     Menu,
     Package,
-    Package2,
     ShoppingCart,
     Users,
 } from 'lucide-vue-next';
@@ -16,7 +13,6 @@ import {
 import Alert from '@/Components/ui/alert/Alert.vue';
 import AlertDescription from '@/Components/ui/alert/AlertDescription.vue';
 import AlertTitle from '@/Components/ui/alert/AlertTitle.vue';
-import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
     DropdownMenu,
@@ -81,7 +77,7 @@ const classes = ref(
                                 )
                             "
                         >
-                            submit
+                            Update
                         </button>
                     </div>
                 </div>
@@ -124,7 +120,7 @@ const classes = ref(
                             ]"
                         >
                             <Package class="h-4 w-4" />
-                            Projects
+                            Create Projects
                         </Link>
                         <Link
                             :href="route('car-types.index')"
@@ -139,7 +135,7 @@ const classes = ref(
                             <Car class="h-4 w-4" />
                             Car Types
                         </Link>
-                        <Link
+                        <!-- <Link
                             :href="route('payments.index')"
                             :class="[
                                 {
@@ -148,22 +144,40 @@ const classes = ref(
                                 },
                                 classes,
                             ]"
-                        >
+                         >
                             <Banknote class="h-4 w-4" />
                             Payments
-                        </Link>
+                        </Link> -->
                         <Link
                             :href="route('users.index')"
                             :class="[
                                 {
                                     'bg-muted text-primary':
-                                        route().current('payments.index'),
+                                        route().current('users.index'),
                                 },
                                 classes,
                             ]"
                         >
                             <Users class="h-4 w-4" />
                             Users
+                        </Link>
+                        <Link
+                            :href="
+                                route('project.users.create', {
+                                    project: $page.props.selected_project.id,
+                                })
+                            "
+                            :class="[
+                                {
+                                    'bg-muted text-primary': route().current(
+                                        'project.users.create',
+                                    ),
+                                },
+                                classes,
+                            ]"
+                        >
+                            <Users class="h-4 w-4" />
+                            Add Users
                         </Link>
                     </nav>
                 </div>
@@ -186,11 +200,43 @@ const classes = ref(
                     </SheetTrigger>
                     <SheetContent side="left" class="flex flex-col">
                         <nav class="grid gap-2 text-lg font-medium">
+                            <div class="flex items-center gap-2 font-semibold">
+                                <!-- <Package2 class="h-6 w-6" /> -->
+                                <Multiselect
+                                    class="w-full"
+                                    v-model="globalStore.selected_project"
+                                    :options="projects"
+                                    :close-on-select="true"
+                                    :clear-on-select="false"
+                                    :preserve-search="true"
+                                    placeholder="Select Project"
+                                    label="name"
+                                    track-by="id"
+                                >
+                                    <template #selection="{ values, isOpen }">
+                                        <span
+                                            class="multiselect__single"
+                                            v-if="values.length"
+                                            v-show="!isOpen"
+                                            >{{ values.length }} options
+                                            selected</span
+                                        >
+                                    </template>
+                                </Multiselect>
+                                <button
+                                    @click="
+                                        globalStore.handleSelect(
+                                            globalStore.selected_project.id,
+                                        )
+                                    "
+                                >
+                                    submit
+                                </button>
+                            </div>
                             <Link
                                 href="#"
                                 class="flex items-center gap-2 text-lg font-semibold"
                             >
-                                <Package2 class="h-6 w-6" />
                                 <span class="sr-only">Admin Panel</span>
                             </Link>
                             <Link
@@ -206,11 +252,6 @@ const classes = ref(
                             >
                                 <ShoppingCart class="h-5 w-5" />
                                 Trips
-                                <Badge
-                                    class="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
-                                >
-                                    6
-                                </Badge>
                             </Link>
                             <Link
                                 href="#"
@@ -225,13 +266,6 @@ const classes = ref(
                             >
                                 <Users class="h-5 w-5" />
                                 Users
-                            </Link>
-                            <Link
-                                href="#"
-                                class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                            >
-                                <LineChart class="h-5 w-5" />
-                                Analytics
                             </Link>
                         </nav>
                     </SheetContent>
@@ -255,6 +289,22 @@ const classes = ref(
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <Link :href="route('profile.edit')"> Profile </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <Link
+                                :href="route('users.index')"
+                                :class="[
+                                    {
+                                        'bg-muted text-primary':
+                                            route().current('payments.index'),
+                                    },
+                                    classes,
+                                ]"
+                            >
+                                <Users class="h-4 w-4" />
+                                Users
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>

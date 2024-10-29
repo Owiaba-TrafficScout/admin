@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import DataTable from '@/Components/projects/data-table.vue';
 import Layout from '@/Layouts/App.vue';
 import { Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
+import { usePage } from '@inertiajs/vue3';
 import { provide } from 'vue';
 import { Trip, User } from './Trips.vue';
 export interface Project {
@@ -21,6 +21,8 @@ const props = defineProps<{
     roles: { id: number; name: string }[];
 }>();
 
+const is_tenant_admin = usePage().props.auth.is_tenant_admin;
+
 provide('roles', props.roles);
 
 const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
@@ -36,14 +38,12 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     <Layout page="Projects">
         <div class="mt-2 flex flex-col gap-5">
             <a
-                v-if="$page.props.auth.is_tenant_admin"
+                v-if="is_tenant_admin"
                 :href="route('projects.create')"
                 :class="btnClasses"
                 class="w-fit"
                 >New Project <Plus class="ml-2" :size="16"
             /></a>
-
-            <DataTable :items="projects" />
         </div>
     </Layout>
 </template>

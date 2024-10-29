@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 uses(RefreshDatabase::class)->beforeEach(function () {
     $this->seed();
@@ -129,6 +130,7 @@ it('stores a new project', function () {
     //store tenant_id in session
     session(['tenant_id' => $tenant->id]);
 
+    $carTypeIds = CarType::limit(3)->pluck('id')->toArray();
     // Simulate a POST request to the projects.store route
     $response = $this->post(route('projects.store'), [
         'name' => 'Test Project',
@@ -136,7 +138,10 @@ it('stores a new project', function () {
         'start_date' => now()->toDateString(),
         'end_date' => now()->addDays(30)->toDateString(),
         'tenant_id' => $tenant->id,
+        'carTypeIds' => $carTypeIds,
     ]);
+
+    // Log::debug($response->getContent());
 
     // Assert the response status and database changes
     $response->assertStatus(302); // Assuming a redirect after successful store

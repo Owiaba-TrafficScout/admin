@@ -31,18 +31,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $isTenantAdmin = $user ? $user->isAdminInTenant() : false;
+        $isProjectAdmin = $user ? $user->isAdminInProject() : false;
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
-                'is_tenant_admin' => $request->user() ? $request->user()->isAdminInTenant() : false,
+                'user' => $user,
+                'is_tenant_admin' => $isTenantAdmin,
+                'is_project_admin' => $isProjectAdmin,
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error')
             ],
-            'projects' => $request->user() ? ($request->user()->isAdminInTenant() ? Tenant::find(session('tenant_id'))->projects : $request->user()->projects) : [],
-            'selected_project' => $request->user() ? ($request->user()->isAdminInTenant() ? $request->user()->tenants->find(session('tenant_id'))->projects->find($request->session()->get('project_id')) : $request->user()->projects->find($request->session()->get('project_id'))) : null,
+            'projects' => $isTenantAdmin ? Tenant::find(session('tenant_id'))->projects : $user?->projects,
+            'selected_project' => $isTenantAdmin ? $user->tenants->find(session('tenant_id'))->projects->find($request->session()->get('project_id')) : $user?->projects->find($request->session()->get('project_id'))
         ];
     }
 }

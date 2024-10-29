@@ -16,16 +16,16 @@ import {
 import { User } from '@/Pages/Trips.vue';
 
 import { useForm } from '@inertiajs/vue3';
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 
 const props = defineProps<{
     user: User;
 }>();
 
 const emit = defineEmits(['update']);
-
+const roleId = ref(JSON.parse(JSON.stringify(props.user.pivot.role_id)));
 const form = useForm({
-    tenant_role_id: props.user.pivot.role.id,
+    role_id: roleId.value,
 });
 
 const submit = () => {
@@ -55,16 +55,12 @@ const roles = inject<{ id: number; name: string }[]>('roles');
                     <CardContent class="grid gap-4">
                         <div class="grid gap-2">
                             <Label for="role">Role</Label>
-                            <select
-                                id="role"
-                                v-model="form.tenant_role_id"
-                                required
-                            >
+                            <select id="role" v-model="form.role_id" required>
                                 <option
                                     v-for="role in roles"
                                     :key="role.id"
                                     :value="role.id"
-                                    :selected="role.id === form.tenant_role_id"
+                                    :selected="role.id === form.role_id"
                                 >
                                     {{ role.name }}
                                 </option>

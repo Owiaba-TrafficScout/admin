@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\Role;
 use App\Models\Tenant;
 use App\Models\TenantRole;
 use App\Models\TenantUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $tenant = Tenant::find(session('tenant_id'));
-        $users = [];
+        $project = Project::find(session('project_id'));
+        $users = $project->users()->with('pivot.role')->get();
         $roles = [];
         if (auth()->user()->isAdminInTenant()) {
-            $users = $tenant->users()->with('pivot.role')->get();
             $roles = TenantRole::all();
         } else {
-            $users = auth()->user()->projects()->with('users.pivot.role')->get()->pluck('users')->unique('id')->flatten();
+            $roles = Role::all();
         }
         return Inertia::render('Users', [
             'users' => $users,
@@ -33,30 +35,48 @@ class UserController extends Controller
     {
         if ($user->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't update the system admin");
+        } else if ($user->isAdminInProject() and !$request->user()->isAdminInTenant()) {
+            return redirect()->back()->with("error", "You can't update the project admin");
         }
-        $tenantUser = TenantUser::where('user_id', $user->id)->where('tenant_id', session('tenant_id'))->first();
-        $tenantUser->update($request->validate([
-            'tenant_role_id' => ['required', 'integer'],
+        Log::debug($request->all());
+
+        $projectUser = ProjectUser::where('user_id', $user->id)->where('project_id', session('project_id'))->first();
+        Log::debug($projectUser);
+        $projectUser->update($request->validate([
+            'role_id' => ['required', 'integer'],
         ]));
+
+        Log::debug($projectUser);
 
         return redirect()->back()->with("success", "Role Updated");
     }
 
+    // public function destroy(User $user)
+    // {
+    //     if ($user->isAdminInTenant()) {
+    //         return redirect()->back()->with("error", "You can't remove a system admin");
+    //     } else if (auth()->user()->isAdminInTenant()) {
+    //         $tenant = Tenant::find(session('tenant_id'));
+    //         $tenant->users()->detach($user->id);
+    //         return redirect()->back()->with("success", "User removed from your organization");
+    //     } else {
+    //         //remove users from projects
+    //         $projectIds = auth()->user()->adminProjects->pluck('id');
+    //         //detach all projectIds that the user has that are found in $projectIds
+    //         $user->projects()->detach($projectIds);
+
+    //         return redirect()->back()->with("success", "User Removed from all your projects");
+    //     }
+    // }
     public function destroy(User $user)
     {
-        if ($user->isAdminInTenant()) {
-            return redirect()->back()->with("error", "You can't remove a system admin");
-        } else if (auth()->user()->isAdminInTenant()) {
-            $tenant = Tenant::find(session('tenant_id'));
-            $tenant->users()->detach($user->id);
-            return redirect()->back()->with("success", "User removed from your organization");
+        if ($user->isAdminInProject()) {
+            return redirect()->back()->with("error", "You can't remove admin");
         } else {
-            //remove users from projects
-            $projectIds = auth()->user()->adminProjects->pluck('id');
-            //detach all projectIds that the user has that are found in $projectIds
-            $user->projects()->detach($projectIds);
+            //remove user from current project
+            $user->projects()->detach(session('project_id'));
 
-            return redirect()->back()->with("success", "User Removed from all your projects");
+            return redirect()->back()->with("success", "User Removed from project!");
         }
     }
 }

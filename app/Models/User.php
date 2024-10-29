@@ -98,6 +98,16 @@ class User extends Authenticatable
         return $this->adminProjects()->exists();
     }
 
+    /**
+     * Check if the user is an admin in the given project.
+     */
+    public function isAdminInProject($project_id = null)
+    {
+        if (is_null($project_id)) {
+            $project_id = session('project_id');
+        }
+        return $this->adminProjects()->where('project_id', $project_id)->exists();
+    }
 
     /**
      * The tenants that the user belongs to.

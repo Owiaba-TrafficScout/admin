@@ -18,6 +18,7 @@ export type PageProps<
     auth: {
         user: User;
         is_tenant_admin: boolean;
+        is_project_admin: boolean;
     };
     flash: FlashMessage;
     selected_project: Project;

@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\ProjectUser;
 use App\Models\Role;
 use App\Models\Tenant;
+use App\Models\TenantRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,6 +45,8 @@ class ProjectController extends Controller
         if (!auth()->user()->isAdminInTenant()) {
             return redirect()->back()->with('error', 'You are not allowed to create a project.');
         }
+
+
         $attributes = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
