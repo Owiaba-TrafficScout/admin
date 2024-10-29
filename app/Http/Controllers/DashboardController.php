@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
         //retrieve tenant
         $project = Project::find(session('project_id'));
-        Log::info($project);
+        Log::info($project->name);
         $trips = [
             'name' => 'Trips',
             'value' => $project->trips->count()

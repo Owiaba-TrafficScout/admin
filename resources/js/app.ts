@@ -4,10 +4,12 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/vue3';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createPinia } from 'pinia';
 import { createApp, DefineComponent, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'ADMIN';
+const pinia = createPinia();
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -18,6 +20,7 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
+            .use(pinia)
             .use(plugin)
             .use(ZiggyVue)
             .mount(el);

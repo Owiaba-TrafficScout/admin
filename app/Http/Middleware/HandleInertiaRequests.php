@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Project;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,7 +41,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error')
             ],
-            'projects' => $request->user() ? ($request->user()->isAdminInTenant() ? $request->user()->tenants->find(session('tenant_id'))->projects : $request->user()->projects) : [],
+            'projects' => $request->user() ? ($request->user()->isAdminInTenant() ? Tenant::find(session('tenant_id'))->projects : $request->user()->projects) : [],
             'selected_project' => $request->user() ? ($request->user()->isAdminInTenant() ? $request->user()->tenants->find(session('tenant_id'))->projects->find($request->session()->get('project_id')) : $request->user()->projects->find($request->session()->get('project_id'))) : null,
         ];
     }

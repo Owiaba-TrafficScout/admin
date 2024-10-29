@@ -30,14 +30,13 @@ class TenantController extends Controller
             $tenant = Tenant::find($request->tenant_id);
             //check if tenant has projects if yes access the last accessed project
             if ($tenant->projects->count() > 0) {
-                $request->session()->put('project_id', $tenant->projects->last()->id);
+                session('project_id') ?? $request->session()->put('project_id', $tenant->projects->last()->id);
             } else {
                 $request->session()->put('project_id', null);
             }
-            
         } else {
             if ($request->user()->projects->count() > 0) {
-                $request->session()->put('project_id', $request->user()->projects->last()->id);
+                session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
             } else {
                 $request->session()->put('project_id', null);
             }

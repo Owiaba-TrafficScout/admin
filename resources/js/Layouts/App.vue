@@ -27,33 +27,17 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
-import { Project } from '@/Pages/Projects.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { useGlobalStore } from '@/Stores/global';
+import { Link, usePage } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed, Ref, ref } from 'vue';
+import { ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
-//copy project from usepage
-const selected_project: Ref<Project> = ref(
-    JSON.parse(JSON.stringify(usePage().props.selected_project)),
-);
-const projects = usePage().props.projects;
+const globalStore = useGlobalStore();
+const projects = ref(usePage().props.projects);
 
-const selectedProjectId = computed(() => selected_project.value.id);
-const form = useForm({
-    project_id: selectedProjectId,
-});
-
-const handleSelect = () => {
-    // go to route tenant.selected.store
-    form.post(route('project.selected.store'), {
-        onError: (e) => {
-            console.log(e);
-        },
-    });
-};
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
@@ -72,7 +56,7 @@ const classes = ref(
                         <!-- <Package2 class="h-6 w-6" /> -->
                         <Multiselect
                             class="w-full"
-                            v-model="selected_project"
+                            v-model="globalStore.selected_project"
                             :options="projects"
                             :close-on-select="true"
                             :clear-on-select="false"
@@ -80,7 +64,6 @@ const classes = ref(
                             placeholder="Select Project"
                             label="name"
                             track-by="id"
-                            @select="handleSelect"
                         >
                             <template #selection="{ values, isOpen }">
                                 <span
@@ -91,6 +74,15 @@ const classes = ref(
                                 >
                             </template>
                         </Multiselect>
+                        <button
+                            @click="
+                                globalStore.handleSelect(
+                                    globalStore.selected_project.id,
+                                )
+                            "
+                        >
+                            submit
+                        </button>
                     </div>
                 </div>
                 <div class="flex-1">

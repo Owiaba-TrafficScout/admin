@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\TripMultiSheetExport;
 use App\Exports\TripsExport;
+use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripStatus;
@@ -15,15 +16,7 @@ class TripController extends Controller
 {
     public function index()
     {
-        $trips = null;
-        $tenant_id = session('tenant_id');
-        $tenant = Tenant::find($tenant_id);
-        if (auth()->user()->isAdminInTenant($tenant_id)) {
-            $trips = $tenant->trips;
-        } else {
-            $trips = auth()->user()->adminTrips();
-        }
-
+        $trips = Project::find(session('project_id'))->trips;
         $statuses = TripStatus::all();
         return Inertia::render('Trips', ['trips' => $trips, 'statuses' => $statuses]);
     }
