@@ -49,9 +49,14 @@ class ProjectController extends Controller
             'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
+            'carTypeIds' => 'required|array',
+            'carTypeIds.*' => 'required|exists:car_types,id',
         ]);
         $attributes['tenant_id'] = session('tenant_id');
+        $carTypeIds = $attributes['carTypeIds'];
+        unset($attributes['carTypeIds']);
         $project = Project::create($attributes);
+        $project->carTypes()->attach($carTypeIds);
 
         return redirect()->route('projects.index')->with('success', 'Project created.');
     }

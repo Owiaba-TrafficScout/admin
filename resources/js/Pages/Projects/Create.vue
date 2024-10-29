@@ -38,9 +38,11 @@ const form = useForm({
     description: '',
     start_date: '',
     end_date: '',
+    carTypeIds: [] as number[],
 });
 
 const submit = () => {
+    form.carTypeIds = car_types.value.map((carType) => carType.id);
     form.post(route('projects.store'), {
         onFinish: () => {
             form.reset();
