@@ -10,6 +10,7 @@ import { provide } from 'vue';
 import { Trip, User } from './Trips.vue';
 export interface Project {
     id: number;
+    name: string;
     email: string;
     description: string;
     start_date: string;
