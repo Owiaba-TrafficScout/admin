@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
         // Log::info('User registration initiated: ', $request->all());
         $attributes = $request->validate([
             'org_name' => 'required|string|max:255',
-            'org_email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'org_email' => 'required|string|lowercase|email|max:255|unique:tenants,email',
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
