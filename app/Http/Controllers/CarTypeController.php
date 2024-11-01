@@ -49,4 +49,12 @@ class CarTypeController extends Controller
         $project->carTypes()->syncWithoutDetaching($request->car_type_ids);
         return redirect()->back()->with('success', 'Car Type added to project.');
     }
+
+    public function addCarTypePage(Project $project)
+    {
+        return Inertia::render('Projects/AddCarTypes', [
+            'project' => $project,
+            'carTypes' => CarType::all(),
+        ]);
+    }
 }
