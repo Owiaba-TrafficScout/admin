@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            // TODO: Add project code column
+            $table->string('code');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();

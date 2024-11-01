@@ -20,6 +20,7 @@ class ProjectFactory extends Factory
         return [
             'name' => fake()->sentence(),
             'description' => fake()->paragraph(),
+            'code' => uniqid(),
             'start_date' => fake()->date(),
             'end_date' => fake()->date(),
             'tenant_id' => fake()->numberBetween(1, 10),

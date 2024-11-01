@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Layout from '@/Layouts/App.vue';
-import { Plus } from 'lucide-vue-next';
+import { CopyIcon, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 import InputError from '@/Components/InputError.vue';
@@ -13,6 +13,7 @@ export interface Project {
     name: string;
     email: string;
     description: string;
+    code: string;
     start_date: string;
     end_date: string;
     trips: Trip[];
@@ -55,6 +56,11 @@ const sendInvitation = () => {
         },
     );
 };
+
+const copyProjectCode = async () => {
+    await navigator.clipboard.writeText(usePage().props.selected_project.code);
+    alert('Project code copied to clipboard');
+};
 </script>
 
 <template>
@@ -95,6 +101,20 @@ const sendInvitation = () => {
                 >
                     Send Invitation
                 </button>
+            </div>
+
+            <div>
+                <h3 class="mt-20 text-lg font-semibold capitalize text-black">
+                    or coppy and share project code 👇
+                </h3>
+                <!-- click to copy project code -->
+                <p
+                    @click="copyProjectCode"
+                    class="my-5 flex cursor-pointer flex-row text-black"
+                >
+                    {{ usePage().props.selected_project.code }}
+                    <CopyIcon class="ml-2" :size="18" />
+                </p>
             </div>
         </div>
     </Layout>

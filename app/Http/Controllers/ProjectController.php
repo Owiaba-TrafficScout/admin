@@ -47,6 +47,7 @@ class ProjectController extends Controller
         }
 
 
+
         $attributes = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -55,6 +56,8 @@ class ProjectController extends Controller
             'carTypeIds' => 'required|array',
             'carTypeIds.*' => 'required|exists:car_types,id',
         ]);
+        //generate project code which is unique in the projects table code column
+        $attributes['code'] = uniqid();
         $attributes['tenant_id'] = session('tenant_id');
         $carTypeIds = $attributes['carTypeIds'];
         unset($attributes['carTypeIds']);
