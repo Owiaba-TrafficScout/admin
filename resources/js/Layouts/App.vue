@@ -76,6 +76,7 @@ const classes = ref(
                                     globalStore.selected_project.id,
                                 )
                             "
+                            class="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white"
                         >
                             Update
                         </button>
@@ -108,19 +109,6 @@ const classes = ref(
                         >
                             <Map class="h-4 w-4" />
                             Trips
-                        </Link>
-                        <Link
-                            :href="route('projects.index')"
-                            :class="[
-                                {
-                                    'bg-muted text-primary':
-                                        route().current('projects.index'),
-                                },
-                                classes,
-                            ]"
-                        >
-                            <Package class="h-4 w-4" />
-                            Create Projects
                         </Link>
                         <Link
                             :href="route('car-types.index')"
@@ -161,6 +149,9 @@ const classes = ref(
                             <Users class="h-4 w-4" />
                             Users
                         </Link>
+
+                        <!-- HORIZONTAL RULE -->
+                        <hr class="mt-[30%] size-4 w-full text-black" />
                         <Link
                             :href="
                                 route('project.users.create', {
@@ -178,6 +169,20 @@ const classes = ref(
                         >
                             <Users class="h-4 w-4" />
                             Add Users
+                        </Link>
+
+                        <Link
+                            :href="route('projects.index')"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('projects.index'),
+                                },
+                                classes,
+                            ]"
+                        >
+                            <Package class="h-4 w-4" />
+                            Create Projects
                         </Link>
                     </nav>
                 </div>

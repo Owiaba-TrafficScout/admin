@@ -39,4 +39,14 @@ class CarTypeController extends Controller
         CarType::create($attributes);
         return redirect()->back()->with('success', 'Car Type created.');
     }
+
+    public function addCarType(Request $request, Project $project)
+    {
+        $request->validate([
+            'car_type_ids' => 'required|array',
+            'car_type_ids.*' => 'integer|exists:car_types,id',
+        ]);
+        $project->carTypes()->syncWithoutDetaching($request->car_type_ids);
+        return redirect()->back()->with('success', 'Car Type added to project.');
+    }
 }
