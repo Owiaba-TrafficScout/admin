@@ -20,7 +20,7 @@ return new class extends Migration
             $table->datetime('stop_time');
             $table->double('stop_location_x');
             $table->double('stop_location_y');
-            $table->integer('passenger_count');
+            $table->integer('passengers_count');
             $table->integer('passengers_boarding');
             $table->integer('passengers_alighting');
             $table->integer('is_traffic');
