@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('trip_speeds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('trip_id')->references('id')->on('trips')->cascadeOnDelete();
+            $table->datetime('time');
             $table->double('location_x');
             $table->double('location_y');
             $table->double('velocity');
