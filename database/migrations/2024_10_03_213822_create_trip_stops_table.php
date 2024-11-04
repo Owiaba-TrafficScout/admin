@@ -14,10 +14,16 @@ return new class extends Migration
         Schema::create('trip_stops', function (Blueprint $table) {
             $table->id();
             $table->foreignId('trip_id')->references('id')->on('trips')->cascadeOnDelete();
-            $table->double('location_x');
-            $table->double('location_y');
-            $table->string('stop_time');
-            $table->text('description');
+            $table->datetime('start_time');
+            $table->double('start_location_x');
+            $table->double('start_location_y');
+            $table->datetime('stop_time');
+            $table->double('stop_location_x');
+            $table->double('stop_location_y');
+            $table->integer('passenger_count');
+            $table->integer('passengers_boarding');
+            $table->integer('passengers_alighting');
+            $table->integer('is_traffic');
             $table->timestamps();
         });
     }
