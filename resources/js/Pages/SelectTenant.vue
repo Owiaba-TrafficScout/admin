@@ -61,7 +61,7 @@ const handleNext = () => {
 
                 <PrimaryButton
                     class="mt-4 w-full"
-                    :disabled="selected_tenant.id === 0"
+                    :disabled="selected_tenant?.id === 0"
                     @click.prevent="handleNext"
                 >
                     Next
