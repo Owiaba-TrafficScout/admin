@@ -33,12 +33,6 @@ class TenantController extends Controller
             if ($tenant->projects->count() > 0) {
                 session('project_id') ?? $request->session()->put('project_id', $tenant->projects->last()->id);
             } else {
-                $request->session()->put('project_id', null);
-            }
-        } else {
-            if ($request->user()->projects->count() > 0) {
-                session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
-            } else {
                 Tenant::find($request->tenant_id)->projects()->create([
                     'name' => 'Default Project',
                     'description' => 'Default Project',
@@ -49,6 +43,13 @@ class TenantController extends Controller
                 $project = Project::where('tenant_id', $request->tenant_id)->where('name', 'Default Project')->first();
 
                 $request->session()->put('project_id', $project->id);
+            }
+        } else {
+            if ($request->user()->projects->count() > 0) {
+                session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
+            } else {
+                //unauthorized
+                return back();
             }
         }
 

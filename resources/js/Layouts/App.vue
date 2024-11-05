@@ -155,7 +155,7 @@ const classes = ref(
                         <Link
                             :href="
                                 route('project.users.create', {
-                                    project: $page.props.selected_project.id,
+                                    project: $page.props.selected_project?.id,
                                 })
                             "
                             :class="[
