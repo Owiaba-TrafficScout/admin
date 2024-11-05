@@ -46,8 +46,7 @@ class TenantController extends Controller
                     'start_date' => now(),
                     'end_date' => now()->addDays(30),
                 ]);
-                $project = Project::where('tenant_id', $request->tenant_id)->latest()->first();
-                $request->session()->put('project_id', $project->id);
+                $project = Project::where('tenant_id', $request->tenant_id)->where('name', 'Default Project')->first();
             }
         }
 
