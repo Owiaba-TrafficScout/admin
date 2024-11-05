@@ -19,6 +19,7 @@ class TripSpeedFactory extends Factory
     {
         return [
             'trip_id' => random_int(1, 10),
+            'time' => $this->faker->dateTime(),
             'location_x' => $this->faker->randomFloat(2, 0, 100),
             'location_y' => $this->faker->randomFloat(2, 0, 100),
             'velocity' => $this->faker->randomFloat(2, 0, 100),
