@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,7 +39,15 @@ class TenantController extends Controller
             if ($request->user()->projects->count() > 0) {
                 session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
             } else {
-                $request->session()->put('project_id', null);
+                Tenant::find($request->tenant_id)->projects()->create([
+                    'name' => 'Default Project',
+                    'description' => 'Default Project',
+                    'code' => uniqid(),
+                    'start_date' => now(),
+                    'end_date' => now()->addDays(30),
+                ]);
+                $project = Project::where('tenant_id', $request->tenant_id)->latest()->first();
+                $request->session()->put('project_id', $project->id);
             }
         }
 
