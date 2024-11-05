@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->string('project_id');
+            $table->json('state');
             $table->timestamps();
         });
     }
