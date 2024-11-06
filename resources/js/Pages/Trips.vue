@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DataTable from '@/Components/trips/data-table.vue';
 import Layout from '@/Layouts/App.vue';
-import { provide, ref } from 'vue';
+import { ref } from 'vue';
 import { CarType } from './CarTypes.vue';
 import { Project } from './Projects.vue';
 export interface Trip {
@@ -14,17 +14,12 @@ export interface Trip {
     project: Project;
     start_time: string;
     end_time: string;
-    status: TripStatus;
     created_at: string;
     updated_at: string;
 }
 export interface projectUser {
     id: number;
     user: User;
-}
-export interface TripStatus {
-    id: number;
-    name: string;
 }
 
 interface Car {
@@ -50,9 +45,8 @@ interface Role {
     name: string;
 }
 
-let props = defineProps<{
+defineProps<{
     trips: Trip[];
-    statuses: TripStatus[];
 }>();
 
 const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
@@ -62,8 +56,6 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 dark:bg-gray-200
     dark:text-gray-800 dark:hover:bg-white dark:focus:bg-white
     dark:focus:ring-offset-gray-800 dark:active:bg-gray-300`);
-
-provide('trip_statuses', props.statuses);
 </script>
 
 <template>

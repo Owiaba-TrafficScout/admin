@@ -83,27 +83,21 @@ test("can get all project's trips", function () {
     // create trip for user1
     $trip1 = $project->users->first()->pivot->trips()->create([
         'title' => 'Trip to the moon',
-        'description' => 'A trip to the moon and back',
         'project_user_id' => $project->users->first()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'ABC123',
-        'car_id' => 1,
         'start_time' => now(),
         'end_time' => now()->addDay(),
-        'trip_status_id' => 1,
     ]);
 
     // create trip for user2
     $trip2 = $project->users->last()->pivot->trips()->create([
         'title' => 'Trip to the sun',
-        'description' => 'A trip to the sun and back',
         'project_user_id' => $project->users->last()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'XYZ123',
-        'car_id' => 2,
         'start_time' => now(),
         'end_time' => now()->addDay(),
-        'trip_status_id' => 1,
     ]);
 
     // Assert that the project's trips relationship returns the correct trips

@@ -15,14 +15,11 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->text('description');
             $table->foreignId('project_user_id')->constrained('project_user')->cascadeOnDelete();
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('group_code', 255);
-            $table->foreignId('car_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_time');
             $table->timestamp('end_time')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->foreignId('trip_status_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

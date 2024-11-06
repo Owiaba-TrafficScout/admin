@@ -38,7 +38,6 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
             $trip->project->name,
             $trip->start_time,
             $trip->end_time,
-            $trip->status->name,
         ];
     }
 
@@ -54,7 +53,6 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Project',
             'Start Time',
             'End Time',
-            'Status',
             'Stops',
             'Speeds',
         ];

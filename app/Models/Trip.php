@@ -13,14 +13,9 @@ class Trip extends Model
     /** @use HasFactory<\Database\Factories\TripFactory> */
     use HasFactory;
 
-    protected $with = ['status', 'car', 'speeds', 'stops', 'projectUser'];
+    protected $with = ['car', 'speeds', 'stops', 'projectUser'];
 
     protected $guarded = [];
-
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(TripStatus::class, 'trip_status_id');
-    }
 
     public function speeds(): HasMany
     {

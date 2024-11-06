@@ -24,14 +24,11 @@ test("can get trip's project and projectUser", function () {
     // Create a trip for the user
     $trip = $project->users->first()->pivot->trips()->create([
         'title' => 'Trip to the moon',
-        'description' => 'A trip to the moon and back',
         'project_user_id' => $project->users->first()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'ABC123',
-        'car_id' => 1,
         'start_time' => now(),
         'end_time' => now()->addDay(),
-        'trip_status_id' => 1,
     ]);
 
     // Assert the trip's project and projectUser

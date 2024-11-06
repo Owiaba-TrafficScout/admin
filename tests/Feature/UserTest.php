@@ -179,14 +179,12 @@ test('It can get all trips for projects where user is admin', function () {
     Trip::factory(4)->create([
         'project_user_id' => $projectUser->id,
         'tenant_id' => $tenant->id,
-        'trip_status_id' => 1,
     ]);
 
     //create trips
     Trip::factory(4)->create([
         'project_user_id' => $projectUser2->id,
         'tenant_id' => $tenant->id,
-        'trip_status_id' => 1,
     ]);
 
     expect($user2->trips->count())->toBe(4);

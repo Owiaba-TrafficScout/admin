@@ -37,8 +37,7 @@ const filteredItems = computed(() => {
                     .includes(search.value.toLowerCase()) ||
                 item.group_code
                     .toLowerCase()
-                    .includes(search.value.toLowerCase()) ||
-                item.status.name.toLowerCase() === search.value.toLowerCase()
+                    .includes(search.value.toLowerCase())
             );
         });
     return props.items;
@@ -108,11 +107,6 @@ const handleFilter = (filter) => {
                             Speeds
                         </th>
                         <th
-                            class="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Status
-                        </th>
-                        <th
                             class="px-4 py-4 font-medium text-black dark:text-white"
                         >
                             Actions
@@ -165,21 +159,7 @@ const handleFilter = (filter) => {
                                 <Speeds :speeds="item.speeds" />
                             </p>
                         </td>
-                        <td class="px-4 py-5">
-                            <p
-                                class="inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium"
-                                :class="{
-                                    'bg-gray-500 text-gray-500':
-                                        item.status.name === 'completed',
-                                    'bg-red-500 text-red-500':
-                                        item.status.name === 'inactive',
-                                    'bg-green-500 text-green-500':
-                                        item.status.name === 'active',
-                                }"
-                            >
-                                {{ item.status.name }}
-                            </p>
-                        </td>
+
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
                                 <Edit :trip="item">

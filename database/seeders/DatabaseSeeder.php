@@ -13,7 +13,6 @@ use App\Models\Tenant;
 use App\Models\TenantUser;
 use App\Models\Trip;
 use App\Models\TripSpeed;
-use App\Models\TripStatus;
 use App\Models\TripStop;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -47,7 +46,6 @@ class DatabaseSeeder extends Seeder
         User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
         CarType::factory(10)->create();
 
-        TripStatus::factory(3)->create();
 
         Trip::factory(10)->create();
         TripSpeed::factory(10)->create();
@@ -100,14 +98,14 @@ class DatabaseSeeder extends Seeder
         Trip::factory(4)->create([
             'project_user_id' => $projectUser->id,
             'tenant_id' => $tenant->id,
-            'trip_status_id' => 1,
+
         ]);
 
         //create trips
         Trip::factory(4)->create([
             'project_user_id' => $projectUser2->id,
             'tenant_id' => $tenant->id,
-            'trip_status_id' => 1,
+
         ]);
 
         //create payments

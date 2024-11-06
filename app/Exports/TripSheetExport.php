@@ -33,7 +33,6 @@ class TripSheetExport implements FromCollection, WithHeadings, WithMapping
             $trip->project->name,
             $trip->start_time,
             $trip->end_time,
-            $trip->status->name,
         ];
     }
     public function headings(): array
@@ -48,7 +47,6 @@ class TripSheetExport implements FromCollection, WithHeadings, WithMapping
             'Project',
             'Start Time',
             'End Time',
-            'Status',
         ];
     }
 }
