@@ -28,8 +28,7 @@ class TripStopFactory extends Factory
             'passengers_count' => random_int(1, 15),
             'passengers_boarding' => random_int(1, 15),
             'passengers_alighting' => random_int(1, 15),
-            'is_traffic' => random_int(0,1),
-            // 'description' => $this->faker->sentence(),
+            'is_traffic' => random_int(0, 1),
         ];
     }
 }

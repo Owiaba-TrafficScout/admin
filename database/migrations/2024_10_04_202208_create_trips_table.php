@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('project_user_id')->constrained('project_user')->cascadeOnDelete();
             $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->string('group_code', 255);
+            $table->foreignId('car_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_time');
             $table->timestamp('end_time')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();

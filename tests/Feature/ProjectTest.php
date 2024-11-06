@@ -3,7 +3,6 @@
 use App\Models\CarType;
 use App\Models\Project;
 use App\Models\Role;
-use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -86,6 +85,7 @@ test("can get all project's trips", function () {
         'project_user_id' => $project->users->first()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'ABC123',
+        'car_id' => 1,
         'start_time' => now(),
         'end_time' => now()->addDay(),
     ]);
@@ -96,6 +96,7 @@ test("can get all project's trips", function () {
         'project_user_id' => $project->users->last()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'XYZ123',
+        'car_id' => 2,
         'start_time' => now(),
         'end_time' => now()->addDay(),
     ]);

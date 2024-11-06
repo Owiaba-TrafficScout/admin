@@ -11,6 +11,7 @@ defineProps<{
 }>();
 interface Speed {
     id: number;
+    time: string;
     location_x: number;
     location_y: number;
     velocity: number;
@@ -23,9 +24,10 @@ interface Speed {
         <PopoverTrigger as-child>
             <Button variant="outline"> Speeds </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-[auto] max-w-[80vw]">
+        <PopoverContent class="w-[auto] max-w-[100vw]">
             <div
                 class="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm border bg-white"
+                style="width: 60vw"
             >
                 <div class="xl:px-7.5 px-4 py-6 md:px-6">
                     <h4 class="text-xl font-bold text-black dark:text-white">
@@ -35,19 +37,22 @@ interface Speed {
 
                 <!-- Table Header -->
                 <div
-                    class="border-stroke py-4.5 dark:border-strokedark 2xl:px-7.5 grid grid-cols-6 border-t px-4 sm:grid-cols-8 md:px-6"
+                    class="border-stroke py-4.5 dark:border-strokedark 2xl:px-7.5 border- grid grid-cols-10 px-4 md:px-6"
                 >
-                    <div class="col-span-3 flex items-center">
+                    <div class="col-span-2 flex items-center">
+                        <p class="font-medium">Time</p>
+                    </div>
+                    <div class="col-span-2 flex items-center">
                         <p class="font-medium">Location X</p>
                     </div>
-                    <div class="col-span-2 hidden items-center sm:flex">
+                    <div class="col-span-2 flex items-center">
                         <p class="font-medium">Location Y</p>
                     </div>
                     <div class="col-span-2 flex items-center">
                         <p class="font-medium">Velocity</p>
                     </div>
 
-                    <div class="col-span-1 flex items-center">
+                    <div class="col-span-2 flex items-center">
                         <p class="font-medium">Traffic</p>
                     </div>
                 </div>
@@ -56,9 +61,20 @@ interface Speed {
                 <div
                     v-for="speed in speeds"
                     :key="speed.id"
-                    class="border-stroke py-4.5 dark:border-strokedark 2xl:px-7.5 grid grid-cols-6 border-t px-4 sm:grid-cols-8 md:px-6"
+                    class="border-stroke py-4.5 dark:border-strokedark 2xl:px-7.5 border- grid grid-cols-10 px-4 md:px-6"
                 >
-                    <div class="col-span-3 flex items-center">
+                    <div class="col-span-2 flex items-center">
+                        <div
+                            class="flex flex-col gap-4 sm:flex-row sm:items-center"
+                        >
+                            <p
+                                class="text-sm font-medium text-black dark:text-white"
+                            >
+                                {{ speed.time }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-span-2 flex items-center">
                         <div
                             class="flex flex-col gap-4 sm:flex-row sm:items-center"
                         >
@@ -69,7 +85,7 @@ interface Speed {
                             </p>
                         </div>
                     </div>
-                    <div class="col-span-2 hidden items-center sm:flex">
+                    <div class="col-span-2 flex items-center">
                         <p
                             class="text-sm font-medium text-black dark:text-white"
                         >
@@ -80,10 +96,10 @@ interface Speed {
                         <p
                             class="text-sm font-medium text-black dark:text-white"
                         >
-                            ${{ speed.velocity }}
+                            {{ speed.velocity }}
                         </p>
                     </div>
-                    <div class="col-span-1 flex items-center">
+                    <div class="col-span-2 flex items-center">
                         <p
                             class="text-sm font-medium text-black dark:text-white"
                         >

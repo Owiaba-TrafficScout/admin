@@ -28,6 +28,7 @@ class TripFactory extends Factory
             'project_user_id' =>  ProjectUser::factory(),
             'tenant_id' => Tenant::factory(),
             'group_code' => $this->faker->word(),
+            'car_id' => Car::factory(),
             'start_time' => $this->faker->dateTime(),
             'end_time' => $this->faker->dateTime(),
         ];

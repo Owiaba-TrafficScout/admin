@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Car;
 use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\Trip;
@@ -27,6 +28,7 @@ test("can get trip's project and projectUser", function () {
         'project_user_id' => $project->users->first()->pivot->id,
         'tenant_id' => $project->tenant_id,
         'group_code' => 'ABC123',
+        'car_id' => 1,
         'start_time' => now(),
         'end_time' => now()->addDay(),
     ]);
@@ -47,4 +49,19 @@ test("can get trip's tenant", function () {
 
     // Assert the trip's tenant
     expect($trip->tenant->id)->toBe($tenant->id);
+});
+
+test("it has one car", function () {
+    /**
+     * Create Car
+     * Create trip for the car
+     * Assert the trip's car
+     */
+
+    // Create car
+    $car = Car::factory()->create();
+    $trip = Trip::factory()->for($car)->create();
+
+    // Assert the trip's car
+    expect($trip->car->id)->toBe($car->id);
 });
