@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripStop;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -16,13 +17,16 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
         $stops = [];
         $tenant = Tenant::find(session('tenant_id'));
 
+
         if (auth()->user()->isAdminInTenant()) {
             $projectIds = $tenant->projects->pluck('id');
             $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
+            Log::debug("Hit here");
+            Log::debug($tripIds);
             $stops = TripStop::whereIn('trip_id', $tripIds)->get();
         } else {
             $projectIds = auth()->user()->adminProjects->pluck('id');
-            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
+            $tripIds = Trip::whereIn('projectsasd_id', $projectIds)->pluck('id');
             $stops = TripStop::whereIn('trip_id', $tripIds)->get();
         }
         return $stops;
