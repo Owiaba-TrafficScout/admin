@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripSpeed;
@@ -13,17 +14,9 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        $speeds = [];
-        $tenant = Tenant::find(session('tenant_id'));
-        if (auth()->user()->isAdminInTenant()) {
-            $projectIds = $tenant->projects->pluck('id');
-            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
-            $speeds = TripSpeed::whereIn('trip_id', $tripIds)->get();
-        } else {
-            $projectIds = auth()->user()->adminProjects->pluck('id');
-            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
-            $speeds = TripSpeed::whereIn('trip_id', $tripIds)->get();
-        }
+        $project = Project::find(session('project_id'));
+        $trips = $project->trips;
+        $speeds = TripSpeed::whereIn('trip_id', $trips->pluck('id'))->get();
         return $speeds;
     }
 
@@ -32,6 +25,7 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
         return [
             $tripSpeed->id,
             $tripSpeed->trip_id,
+            $tripSpeed->time,
             $tripSpeed->location_x,
             $tripSpeed->location_y,
             $tripSpeed->velocity,
@@ -44,6 +38,7 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Trip ID',
+            'Time',
             'Location X',
             'Location Y',
             'Velocity',

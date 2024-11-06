@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\Trip;
 use App\Models\TripStop;
@@ -14,21 +15,9 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        $stops = [];
-        $tenant = Tenant::find(session('tenant_id'));
-
-
-        if (auth()->user()->isAdminInTenant()) {
-            $projectIds = $tenant->projects->pluck('id');
-            $tripIds = Trip::whereIn('project_id', $projectIds)->pluck('id');
-            Log::debug("Hit here");
-            Log::debug($tripIds);
-            $stops = TripStop::whereIn('trip_id', $tripIds)->get();
-        } else {
-            $projectIds = auth()->user()->adminProjects->pluck('id');
-            $tripIds = Trip::whereIn('projectsasd_id', $projectIds)->pluck('id');
-            $stops = TripStop::whereIn('trip_id', $tripIds)->get();
-        }
+        $project = Project::find(session('project_id'));
+        $trips = $project->trips;
+        $stops = TripStop::whereIn('trip_id', $trips->pluck('id'))->get();
         return $stops;
     }
 
@@ -37,10 +26,16 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
         return [
             $tripStop->id,
             $tripStop->trip_id,
-            $tripStop->location_x,
-            $tripStop->location_y,
+            $tripStop->start_time,
+            $tripStop->start_location_x,
+            $tripStop->start_location_y,
             $tripStop->stop_time,
-            $tripStop->description,
+            $tripStop->stop_location_x,
+            $tripStop->stop_location_y,
+            $tripStop->passengers_count,
+            $tripStop->passengers_boarding,
+            $tripStop->passengers_alighting,
+            $tripStop->is_traffic,
         ];
     }
 
@@ -49,10 +44,16 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
         return [
             'ID',
             'Trip ID',
-            'Location X',
-            'Location Y',
+            'Start Time',
+            'Start Location X',
+            'Start Location Y',
             'Stop Time',
-            'Description',
+            'Stop Location X',
+            'Stop Location Y',
+            'Passengers Count',
+            'Passengers Boarding',
+            'Passengers Alighting',
+            'Is Traffic',
         ];
     }
 }
