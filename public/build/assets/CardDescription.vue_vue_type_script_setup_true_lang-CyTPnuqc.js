@@ -1,0 +1,1 @@
+import{b as r}from"./App.vue_vue_type_script_setup_true_lang-CeouO07g.js";import{d as t,o as a,g as n,m as c,n as m,u as p}from"./app-BsFLsN6I.js";const f=t({__name:"CardDescription",props:{class:{}},setup(s){const e=s;return(o,l)=>(a(),n("p",{class:m(p(r)("text-sm text-muted-foreground",e.class))},[c(o.$slots,"default")],2))}});export{f as _};
