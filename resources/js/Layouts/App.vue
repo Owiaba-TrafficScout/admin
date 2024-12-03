@@ -238,13 +238,13 @@ const classes = ref(
                         </nav>
                     </SheetContent>
                 </Sheet>
-                <div class="w-full flex-1">
+                <div class="flex">
                     {{ 'Welcome ' + $page.props.auth.user.name + '!' }}
                 </div>
                 <div
-                    class="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6"
+                    class="ml-auto flex h-14 w-[30vw] border-b px-4 lg:h-[60px] lg:px-6"
                 >
-                    <div class="flex items-center gap-2 font-semibold">
+                    <div class="flex w-full items-center gap-2 font-semibold">
                         <!-- <Package2 class="h-6 w-6" /> -->
                         <Multiselect
                             class="w-full"

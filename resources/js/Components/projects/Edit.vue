@@ -83,7 +83,11 @@ const submit = () => {
                             <Input
                                 id="start_date"
                                 type="date"
-                                v-model="form.start_date"
+                                v-model="
+                                    new Date(form.start_date)
+                                        .toISOString()
+                                        .split('T')[0]
+                                "
                                 required
                             />
                             <div v-if="form.errors.start_date">
@@ -95,7 +99,11 @@ const submit = () => {
                             <Input
                                 id="end_date"
                                 type="date"
-                                v-model="form.end_date"
+                                v-model="
+                                    new Date(form.end_date)
+                                        .toISOString()
+                                        .split('T')[0]
+                                "
                                 required
                             />
                             <div v-if="form.errors.end_date">
