@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('car_type_id')->references('id')->on('car_types')->constrained()->cascadeOnDelete();
             $table->string('car_number');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
