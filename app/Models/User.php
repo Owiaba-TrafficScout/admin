@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -167,5 +168,13 @@ class User extends Authenticatable
     public function adminTrips(): Collection
     {
         return $this->adminProjects()->with('trips')->get()->pluck('trips')->flatten();
+    }
+
+    /**
+     * Get current state.
+     */
+    public function state(): HasOne
+    {
+        return $this->hasOne(State::class);
     }
 }

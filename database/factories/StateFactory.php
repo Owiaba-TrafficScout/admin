@@ -17,7 +17,8 @@ class StateFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => \App\Models\User::factory(),
+            'project_id' => \App\Models\Project::factory(),
         ];
     }
 }

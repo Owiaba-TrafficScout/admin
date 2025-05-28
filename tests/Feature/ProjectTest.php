@@ -275,3 +275,13 @@ it('has many invitations', function () {
     $project = Project::factory()->hasInvitations(3)->create();
     expect($project->invitations->count())->toBe(3);
 });
+
+it('has one state', function(){
+    /**
+     * Create a project with one state
+     * Assert that the project has one state
+     */
+    $project = Project::factory()->hasState()->create();
+    expect($project->state)->toBeInstanceOf(\App\Models\State::class);
+    expect($project->state->project_id)->toBe($project->id);
+});
