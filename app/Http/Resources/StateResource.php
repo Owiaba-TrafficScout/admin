@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CarResource extends JsonResource
+class StateResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,8 @@ class CarResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'car_number' => $this->car_number,
-            'car_type' => $this->whenLoaded('type', function () {
-                return new CarTypeResource($this->type);
-            }),
+            'project_id' => $this->project_id,
+            'user_id' => $this->user_id,
         ];
     }
 }

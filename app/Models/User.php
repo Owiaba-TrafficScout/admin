@@ -177,4 +177,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(State::class);
     }
+
+    /**
+     * Get active project.
+     */
+    public function activeProject(): ?Project
+    {
+        $project = $this->state?->project;
+        if ($project) {
+            return $project;
+        }
+        return null;
+    }
 }

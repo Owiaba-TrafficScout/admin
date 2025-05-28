@@ -46,10 +46,10 @@ class AuthController extends Controller
         if (!Auth::attempt($validatedData)) {
             return response(['message' => 'Invalid credentials'], 401);
         }
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         return response([
             'user' => $user,
-            'token' => $user->createToken('authToken')->plainTextToken,
+            'access_token' => $user->createToken('authToken')->plainTextToken,
             'message' => 'Logged in successfully!',
         ], 200);
     }

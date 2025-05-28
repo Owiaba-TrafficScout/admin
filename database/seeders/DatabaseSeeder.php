@@ -107,5 +107,12 @@ class DatabaseSeeder extends Seeder
             'project_id' => $tenant->projects->first()->id,
             'payment_status_id' => 1,
         ]);
+
+        $trips = Trip::all();
+        //create trip speeds and stops for each trip
+        foreach ($trips as $trip) {
+            TripSpeed::factory(3)->create(['trip_id' => $trip->id]);
+            TripStop::factory(3)->create(['trip_id' => $trip->id]);
+        }
     }
 }
