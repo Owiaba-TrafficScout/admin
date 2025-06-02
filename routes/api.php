@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CarController;
 use App\Http\Controllers\API\CarTypeController;
+use App\Http\Controllers\API\GeneralController;
 use App\Http\Controllers\API\StateController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,5 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::group(['prefix' => 'states'], function () {
         Route::patch('/update', [StateController::class, 'update'])->name('api.states.update');
+    });
+    Route::group(['prefix' => 'general'], function () {
+        Route::post('/upload-data', [GeneralController::class, 'uploadData'])->name('api.general.upload-data');
     });
 });

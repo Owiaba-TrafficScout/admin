@@ -14,7 +14,7 @@ class StateController extends Controller
         $attributes = $request->validated();
 
         // Update the state for the authenticated user
-        $state = $request->user()->state()->updateOrCreate($attributes);
+        $state = $request->user()->state()->updateOrCreate(['user_id' => $request->user()->id], $attributes);
 
         return new StateResource($state);
     }
