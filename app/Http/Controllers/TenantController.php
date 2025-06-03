@@ -16,7 +16,7 @@ class TenantController extends Controller
         // Option A: all tenants
         // $tenants = $user->tenants;
 
-        // Option B: only tenants where the user is Admin on at least one project
+        // Option B: only tenants where the user is Admin on at least one project or is tenant admin
         $adminRoleId = \App\Models\Role::where('name', 'Admin')->value('id');
         $tenants = Tenant::whereHas('projects.users', function ($q) use ($user, $adminRoleId) {
             $q->where('user_id', $user->id)
