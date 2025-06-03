@@ -46,7 +46,14 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error')
             ],
-            'projects' => $isTenantAdmin ? Tenant::find(session('tenant_id'))->projects : $user?->projects,
+            'projects' => $isTenantAdmin
+                ? Tenant::find(session('tenant_id'))->projects
+                : $user?->projects()
+                ->where('tenant_id', session('tenant_id'))
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
+                })->get(),
             'selected_project' => $isTenantAdmin ? $user->tenants->find(session('tenant_id'))->projects->find($request->session()->get('project_id')) : $user?->projects->find($request->session()->get('project_id'))
         ];
     }

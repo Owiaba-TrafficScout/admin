@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Layout from '@/Layouts/App.vue';
-import { CopyIcon, Plus } from 'lucide-vue-next';
+import { CopyIcon, EditIcon, Plus } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 import InputError from '@/Components/InputError.vue';
+import Edit from '@/Components/projects/Edit.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { provide } from 'vue';
@@ -66,7 +67,7 @@ const copyProjectCode = async () => {
 <template>
     <Layout page="Project">
         <div class="flex flex-col gap-5">
-            <div class="mt-2 flex flex-col gap-5">
+            <div class="mt-2 flex flex-row gap-5">
                 <a
                     v-if="is_tenant_admin"
                     :href="route('projects.create')"
@@ -74,6 +75,15 @@ const copyProjectCode = async () => {
                     class="w-fit"
                     >New Project <Plus class="ml-2" :size="16"
                 /></a>
+                <Edit :project="usePage().props.selected_project">
+                    <a
+                        v-if="is_tenant_admin"
+                        href="#"
+                        :class="btnClasses"
+                        class="w-fit"
+                        >Edit Current Project <EditIcon class="ml-2" :size="16"
+                    /></a>
+                </Edit>
             </div>
             <h1 class="mt-20 text-lg font-semibold capitalize text-black">
                 Invite users to this Project

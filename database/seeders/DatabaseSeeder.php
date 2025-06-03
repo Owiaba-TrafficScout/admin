@@ -41,9 +41,9 @@ class DatabaseSeeder extends Seeder
 
 
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com
-        User::factory()->create(['email' => 'project@gmail.com', 'password' => bcrypt('password')]);
-        User::factory()->create(['email' => 'system@gmail.com', 'password' => bcrypt('password')]);
-        User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
+        $projectAdmin = User::factory()->create(['email' => 'project@gmail.com', 'password' => bcrypt('password')]);
+        $tenantAdmin = User::factory()->create(['email' => 'system@gmail.com', 'password' => bcrypt('password')]);
+        $enumerator = User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
         CarType::factory(10)->create();
 
 
@@ -57,12 +57,6 @@ class DatabaseSeeder extends Seeder
 
         Payment::factory(20)->create();
 
-
-        //create user
-        $user = User::factory()->create(['email' => 'test@gmail.com', 'password' => bcrypt('password')]);
-        $user2 = User::factory()->create(['email' => 'second@gmail.com', 'password' => bcrypt('password')]);
-        $user3 = User::factory()->create(['email' => 'user@gmail.com', 'password' => bcrypt('password')]);
-
         //create tenant
         $tenant = Tenant::factory()->create(['name' => 'Test Tenant']);
 
@@ -72,21 +66,21 @@ class DatabaseSeeder extends Seeder
 
 
         //associate user with tenant
-        $tenant->users()->attach($user->id, ['tenant_role_id' => 1]);
-        $tenant->users()->attach($user2->id, ['tenant_role_id' => 2]);
-        $tenant->users()->attach($user3->id, ['tenant_role_id' => 2]);
+        $tenant->users()->attach($tenantAdmin->id, ['tenant_role_id' => 1]);
+        $tenant->users()->attach($projectAdmin->id, ['tenant_role_id' => 2]);
+        $tenant->users()->attach($enumerator->id, ['tenant_role_id' => 2]);
 
         // create projects
         $tenant->projects()->create(['code' => 'code1', 'name' => 'Test Project 1', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
         $tenant->projects()->create(['code' => 'code2', 'name' => 'Test Project 2', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
 
         //asign $user2 to project 1 as admin
-        $tenant->projects()->first()->users()->attach($user2->id, ['role_id' => 1]);
+        $tenant->projects()->first()->users()->attach($projectAdmin->id, ['role_id' => 1]);
 
         //asign $user3 to project 1 as enumerator
-        $tenant->projects()->first()->users()->attach($user3->id, ['role_id' => 2]);
+        $tenant->projects()->first()->users()->attach($enumerator->id, ['role_id' => 2]);
         //assign $user2 to project 2 as enumerator
-        $tenant->projects->get(1)->users()->attach($user2->id, ['role_id' => 2]);
+        $tenant->projects->get(1)->users()->attach($projectAdmin->id, ['role_id' => 2]);
 
         // get project user for project 1 user2
         $projectUser = $tenant->projects->first()->users->first()->pivot;
@@ -113,5 +107,12 @@ class DatabaseSeeder extends Seeder
             'project_id' => $tenant->projects->first()->id,
             'payment_status_id' => 1,
         ]);
+
+        $trips = Trip::all();
+        //create trip speeds and stops for each trip
+        foreach ($trips as $trip) {
+            TripSpeed::factory(3)->create(['trip_id' => $trip->id]);
+            TripStop::factory(3)->create(['trip_id' => $trip->id]);
+        }
     }
 }

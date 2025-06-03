@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('passengers_count')->nullable();
             $table->integer('passengers_boarding')->nullable();
             $table->integer('passengers_alighting')->nullable();
-            $table->integer('is_traffic')->nullable();
+            $table->boolean('is_traffic')->nullable();
             $table->timestamps();
         });
     }

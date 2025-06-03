@@ -10,14 +10,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, EagerLoadPivotTrait;
+    use HasFactory, Notifiable, EagerLoadPivotTrait, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -166,5 +168,25 @@ class User extends Authenticatable
     public function adminTrips(): Collection
     {
         return $this->adminProjects()->with('trips')->get()->pluck('trips')->flatten();
+    }
+
+    /**
+     * Get current state.
+     */
+    public function state(): HasOne
+    {
+        return $this->hasOne(State::class);
+    }
+
+    /**
+     * Get active project.
+     */
+    public function activeProject(): ?Project
+    {
+        $project = $this->state?->project;
+        if ($project) {
+            return $project;
+        }
+        return null;
     }
 }

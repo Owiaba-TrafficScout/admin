@@ -192,3 +192,12 @@ test('It can get all trips for projects where user is admin', function () {
     expect($user2->adminTrips()->count())->toBe(8);
     expect($user3->adminTrips()->count())->toBe(0);
 });
+
+test('It has one state', function () {
+    /**
+     * Create a user with one state
+     * assert that the user has one state
+     */
+    $user = User::factory()->hasState()->create();
+    expect($user->state)->toBeInstanceOf(\App\Models\State::class);
+});

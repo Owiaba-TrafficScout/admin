@@ -27,53 +27,64 @@ Route::get('/invite/accept/{token}', [InvitationController::class, 'accept'])->n
 Route::post('invitation/register', [InvitationController::class, 'register'])->name('invite.register');
 
 
-
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     //select tenant
     Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
     Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
-});
 
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    //Profile routes
+    Route::group(['prefix' => '/profile'], function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
     // Trips routes
-    Route::get('/trips', [TripController::class, 'index'])->name('trips.index');
-    Route::patch('/trips/{trip}', [TripController::class, 'update'])->name('trips.update');
-    Route::delete('/trips/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
+    Route::group(['prefix' => '/trips'], function () {
+        Route::get('/', [TripController::class, 'index'])->name('trips.index');
+        Route::patch('/{trip}', [TripController::class, 'update'])->name('trips.update');
+        Route::delete('/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
+    });
 
     //Projects routes
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-    Route::patch('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-    Route::post('/projects/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
-    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/projects/{project}/users/create', [ProjectController::class, 'addUsers'])->name('project.users.create');
-    Route::post('/projects/{project}/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
-    Route::post('/projects/{project}/{projectUser}/users/roles/update', [ProjectController::class, 'updateUserRole'])->name('projects.users.update');
+    Route::group(['prefix' => '/projects'], function () {
+
+        Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
+        Route::patch('/{project}', [ProjectController::class, 'update'])->name('projects.update');
+        Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        Route::post('/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
+        Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
+        Route::post('/store', [ProjectController::class, 'store'])->name('projects.store');
+        Route::get('/{project}/users/create', [ProjectController::class, 'addUsers'])->name('project.users.create');
+        Route::post('/{project}/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
+        Route::post('/{project}/{projectUser}/users/roles/update', [ProjectController::class, 'updateUserRole'])->name('projects.users.update');
+    });
 
     //Cartype routes
-    Route::get('/car-types', [CarTypeController::class, 'index'])->name('car-types.index');
-    Route::post('/car-types', [CarTypeController::class, 'store'])->name('car-types.store');
-    Route::patch('/car-types/{car_type}', [CarTypeController::class, 'update'])->name('car-types.update');
-    Route::delete('/car-types/{car_type}', [CarTypeController::class, 'destroy'])->name('car-types.destroy');
+    Route::group(['prefix' => '/car-types'], function () {
+        Route::get('/', [CarTypeController::class, 'index'])->name('car-types.index');
+        Route::post('/', [CarTypeController::class, 'store'])->name('car-types.store');
+        Route::patch('/{car_type}', [CarTypeController::class, 'update'])->name('car-types.update');
+        Route::delete('/{car_type}', [CarTypeController::class, 'destroy'])->name('car-types.destroy');
+    });
     Route::post('/project/{project}/cartype/add', [CarTypeController::class, 'addCarType'])->name('project.cartype.add');
     Route::get('/project/{project}/cartype/add', [CarTypeController::class, 'addCarTypePage'])->name('project.cartype.add.page');
 
     //Users routes
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
+    Route::group(['prefix' => '/users'], function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::patch('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
     //payments routes
-    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
-    Route::patch('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
-    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    Route::group(['prefix' => '/payments'], function () {
+        Route::get('/', [PaymentController::class, 'index'])->name('payments.index');
+        Route::patch('/{payment}', [PaymentController::class, 'update'])->name('payments.update');
+        Route::delete('/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    });
 
     //Paystack payemnt routes
 
