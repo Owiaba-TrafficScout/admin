@@ -28,7 +28,7 @@ Route::post('invitation/register', [InvitationController::class, 'register'])->n
 
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     //select tenant
     Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
     Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
