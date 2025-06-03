@@ -14,7 +14,7 @@ const emailVerified = usePage().props.auth.user.email_verified_at
     : false;
 const selected_tenant = ref({ id: 0, name: '' });
 
-console.log(usePage().props.auth.user.email_verified_at);
+// console.log(usePage().props.auth.user.email_verified_at);
 const selectedTenantId = computed(() => selected_tenant.value.id);
 const form = useForm({
     tenant_id: selectedTenantId,
