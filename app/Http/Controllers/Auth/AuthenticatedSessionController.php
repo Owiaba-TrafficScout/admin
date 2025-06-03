@@ -50,6 +50,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
+        // Remove only the tenant/project IDs
+        $request->session()->forget(['tenant_id', 'project_id']);
+
         return redirect('/');
     }
 }
