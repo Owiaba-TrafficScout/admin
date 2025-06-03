@@ -27,14 +27,12 @@ Route::get('/invite/accept/{token}', [InvitationController::class, 'accept'])->n
 Route::post('invitation/register', [InvitationController::class, 'register'])->name('invite.register');
 
 
-
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     //select tenant
     Route::get('/select-tenant', [TenantController::class, 'selectTenant'])->name('tenant.select');
     Route::post('/select-tenant', [TenantController::class, 'storeSelectedTenant'])->name('tenant.selected.store');
-});
 
-Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //Profile routes
