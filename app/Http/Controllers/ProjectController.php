@@ -140,6 +140,12 @@ class ProjectController extends Controller
             'project_id' => 'required|exists:projects,id',
         ]);
 
+        // Check if the user is an admin in the selected project
+        if (!$request->user()->isAdminInTenant() && !$request->user()->isAdminInProject($request->project_id)) {
+            //unauthorized
+            return redirect()->back()->with('error', 'You are not allowed to switch to this project.');
+        }
+
         $request->session()->put('project_id', $request->project_id);
 
         return redirect()->back()->with('success', 'Project switched!');
