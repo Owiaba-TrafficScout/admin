@@ -11,7 +11,20 @@ class TenantController extends Controller
 {
     public function selectTenant(Request $request)
     {
-        $tenants = $request->user()->tenants;
+        $user = $request->user();
+
+        // Option A: all tenants
+        // $tenants = $user->tenants;
+
+        // Option B: only tenants where the user is Admin on at least one project
+        $adminRoleId = \App\Models\Role::where('name', 'Admin')->value('id');
+        $tenants = Tenant::whereHas('projects.users', function ($q) use ($user, $adminRoleId) {
+            $q->where('user_id', $user->id)
+                ->where('role_id', $adminRoleId);
+        })->orWhereHas('users', function ($q) use ($user, $adminRoleId) {
+            $q->where('user_id', $user->id)
+                ->where('tenant_role_id', $adminRoleId);
+        })->get();
 
         return Inertia::render('SelectTenant', [
             'tenants' => $tenants,
@@ -26,8 +39,11 @@ class TenantController extends Controller
 
         $request->session()->put('tenant_id', $request->tenant_id);
 
+        logger('selected tennant ->' . session('tenant_id'));
         //check if user is tenant admin
         if ($request->user()->isAdminInTenant($request->tenant_id)) {
+            logger('user is admin in tenant ->' . $request->tenant_id);
+
             $tenant = Tenant::find($request->tenant_id);
             //check if tenant has projects if yes access the last accessed project
             if ($tenant->projects->count() > 0) {
@@ -45,6 +61,7 @@ class TenantController extends Controller
                 $request->session()->put('project_id', $project->id);
             }
         } else {
+            logger('user is not admin in tenant ->' . $request->tenant_id);
             if ($request->user()->projects->count() > 0) {
                 session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
             } else {
