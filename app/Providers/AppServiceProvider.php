@@ -38,5 +38,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Set the default string length for database schema to avoid issues with older MySQL versions
         Schema::defaultStringLength(191);
+
+        // Define a custome gate to allow access to the API documentation for a specific user
+        Gate::define('viewApiDocs', function ($user) {
+            return $user->email === 'system@gmail.com';
+        });
     }
 }
