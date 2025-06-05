@@ -115,7 +115,7 @@ const copyProjectCode = async () => {
 
             <div>
                 <h3 class="mt-20 text-lg font-semibold capitalize text-black">
-                    or coppy and share project code 👇
+                    or copy and share project code 👇
                 </h3>
                 <!-- click to copy project code -->
                 <p
