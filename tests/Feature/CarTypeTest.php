@@ -74,7 +74,6 @@ test('car types can be added to project', function () {
         'car_type_ids' => $newCarTypes->pluck('id')->toArray(),
     ]);
 
-    Log::debug($response->getContent());
     $response->assertStatus(302);
     $project->refresh();
     expect($project->carTypes)->toHaveCount(6);

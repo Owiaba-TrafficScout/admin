@@ -32,8 +32,22 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $isTenantAdmin = $user ? $user->isAdminInTenant() : false;
-        $isProjectAdmin = $user ? $user->isAdminInProject() : false;
+        $isTenantAdmin = $user && $user->isAdminInTenant();
+        $isProjectAdmin = $user && $user->isAdminInProject();
+        $tenant = $user?->tenants()->find(session('tenant_id'));
+        $projectId = session('project_id');
+        $lastProjectId = $tenant?->projects->last()?->id;
+        $selectedProject = $isTenantAdmin
+            // For tenant admins:
+            ? $tenant?->projects()->find($projectId ?? $lastProjectId)
+            // For non-tenant admins:
+            : (
+                $user?->projects->find($projectId)
+                ?: $user?->adminProjects()
+                ->where('tenant_id', session('tenant_id'))
+                ->orderByDesc('created_at')
+                ->first()
+            );
 
         return [
             ...parent::share($request),
@@ -54,7 +68,7 @@ class HandleInertiaRequests extends Middleware
                     $query->where('user_id', $user->id)
                         ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
                 })->get(),
-            'selected_project' => $isTenantAdmin ? $user->tenants->find(session('tenant_id'))->projects->find($request->session()->get('project_id')) : $user?->projects->find($request->session()->get('project_id'))
+            'selected_project' => $selectedProject
         ];
     }
 }

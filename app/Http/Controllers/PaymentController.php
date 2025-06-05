@@ -63,7 +63,6 @@ class PaymentController extends Controller
             $user_data = session('user_registration_data');
 
             if (!$user_data) {
-                Log::error('User registration data not found in session');
                 return redirect()->route('register')->withErrors(['error' => 'User registration data not found.']);
             }
 

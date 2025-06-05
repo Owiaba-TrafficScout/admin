@@ -38,15 +38,12 @@ class UserController extends Controller
         } else if ($user->isAdminInProject() and !$request->user()->isAdminInTenant()) {
             return redirect()->back()->with("error", "You can't update the project admin");
         }
-        Log::debug($request->all());
 
         $projectUser = ProjectUser::where('user_id', $user->id)->where('project_id', session('project_id'))->first();
-        Log::debug($projectUser);
         $projectUser->update($request->validate([
             'role_id' => ['required', 'integer'],
         ]));
 
-        Log::debug($projectUser);
 
         return redirect()->back()->with("success", "Role Updated");
     }

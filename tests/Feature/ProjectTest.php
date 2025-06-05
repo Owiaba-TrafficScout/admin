@@ -137,7 +137,6 @@ it('stores a new project', function () {
         'carTypeIds' => $carTypeIds,
     ]);
 
-    // Log::debug($response->getContent());
 
     // Assert the response status and database changes
     $response->assertStatus(302); // Assuming a redirect after successful store

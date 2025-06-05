@@ -27,10 +27,8 @@ class Project extends Model
      */
     protected static function booted()
     {
-        // Log::info('Project model booted');
         static::creating(function ($project) {
             // Ensure the tenant relationship is loaded
-            // Log::info($project);
             $tenant = Tenant::find($project->tenant_id);
 
             if (!$tenant || !$tenant->hasActiveSubscription()) {
