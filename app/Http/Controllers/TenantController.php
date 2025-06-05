@@ -60,14 +60,15 @@ class TenantController extends Controller
 
                 $request->session()->put('project_id', $project->id);
             }
+        } elseif ($project = $request->user()->adminProjects()
+            ->where('tenant_id', $request->tenant_id)
+            ->orderByDesc('created_at')
+            ->first()
+        ) {
+            $request->session()->put('project_id', $project->id);
         } else {
-            logger('user is not admin in tenant ->' . $request->tenant_id);
-            if ($request->user()->projects->count() > 0) {
-                session('project_id') ?? $request->session()->put('project_id', $request->user()->projects->last()->id);
-            } else {
-                //unauthorized
-                return back();
-            }
+            // unauthorized
+            return back();
         }
 
         return redirect()->route('dashboard');
