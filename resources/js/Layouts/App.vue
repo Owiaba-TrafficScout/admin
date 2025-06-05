@@ -23,20 +23,23 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+import { Project } from '@/Pages/Projects.vue';
 import { useGlobalStore } from '@/Stores/global';
 import { Link, usePage } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
 const globalStore = useGlobalStore();
-const projects = ref(usePage().props.projects);
+const projects = computed(() => usePage().props.projects);
 
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
+
+const currentProject = computed(() => usePage().props.selected_project);
 </script>
 
 <template>
@@ -49,6 +52,11 @@ const classes = ref(
                     <nav
                         class="grid items-start px-2 text-sm font-medium lg:px-4"
                     >
+                        <p
+                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-xl font-bold capitalize"
+                        >
+                            {{ currentProject?.name }}
+                        </p>
                         <Link
                             :href="route('dashboard')"
                             :class="{
@@ -168,39 +176,6 @@ const classes = ref(
                     </SheetTrigger>
                     <SheetContent side="left" class="flex flex-col">
                         <nav class="grid gap-2 text-lg font-medium">
-                            <div class="flex items-center gap-2 font-semibold">
-                                <!-- <Package2 class="h-6 w-6" /> -->
-                                <Multiselect
-                                    class="w-full"
-                                    v-model="globalStore.selected_project"
-                                    :options="projects"
-                                    :close-on-select="true"
-                                    :clear-on-select="false"
-                                    :preserve-search="true"
-                                    placeholder="Select Project"
-                                    label="name"
-                                    track-by="id"
-                                >
-                                    <template #selection="{ values, isOpen }">
-                                        <span
-                                            class="multiselect__single"
-                                            v-if="values.length"
-                                            v-show="!isOpen"
-                                            >{{ values.length }} options
-                                            selected</span
-                                        >
-                                    </template>
-                                </Multiselect>
-                                <button
-                                    @click="
-                                        globalStore.handleSelect(
-                                            globalStore.selected_project.id,
-                                        )
-                                    "
-                                >
-                                    submit
-                                </button>
-                            </div>
                             <Link
                                 href="#"
                                 class="flex items-center gap-2 text-lg font-semibold"
@@ -256,6 +231,12 @@ const classes = ref(
                             placeholder="Select Project"
                             label="name"
                             track-by="id"
+                            :allow-empty="false"
+                            @select="
+                                (selected: Project) =>
+                                    globalStore.handleSelect(selected?.id ?? 0)
+                            "
+                            :show-labels="false"
                         >
                             <template #selection="{ values, isOpen }">
                                 <span
@@ -266,16 +247,6 @@ const classes = ref(
                                 >
                             </template>
                         </Multiselect>
-                        <button
-                            @click="
-                                globalStore.handleSelect(
-                                    globalStore.selected_project.id,
-                                )
-                            "
-                            class="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white"
-                        >
-                            Update
-                        </button>
                     </div>
                 </div>
                 <DropdownMenu>
