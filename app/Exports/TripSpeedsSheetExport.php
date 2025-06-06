@@ -40,7 +40,7 @@ class TripSpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Trip ID',
             'Location X',
             'Location Y',
-            'Velocity',
+            'Speed(km/h)',
             'Is Traffic',
         ];
     }

@@ -1,27 +1,31 @@
-<script setup>
+<script setup lang="ts">
 import SearchForm from '@/Components/SearchForm.vue';
+import { Project } from '@/Pages/Projects.vue';
+import AddUsers from '@/Pages/Projects/AddUsers.vue';
+import { User } from '@/Pages/Trips.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
 import Edit from './Edit.vue';
 
-const props = defineProps({
-    items:
-        {
-            type: Array,
-            required: true,
-        } || [],
-});
+const props = defineProps<{
+    items: User[];
+    project: Project;
+}>();
 
 const search = ref('');
 
 const isTenantAdmin = usePage().props.auth.is_tenant_admin;
 const isProjectAdmin = usePage().props.auth.is_project_admin;
 
-const handleSearch = (s) => {
-    search.value = s;
+interface HandleSearch {
+    (query: string): void;
+}
+
+const handleSearch: HandleSearch = (query: string): void => {
+    search.value = query;
 };
 
-const handleDelete = (id) => {
+const handleDelete = (id: number) => {
     const form = useForm({});
 
     if (confirm('Are you sure you want remove this user from the project?')) {
@@ -31,7 +35,7 @@ const handleDelete = (id) => {
 
 const filteredItems = computed(() => {
     if (search.value != '')
-        return props.items.filter((item) => {
+        return props.items.filter((item: User) => {
             return (
                 item.name.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.email.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -48,8 +52,9 @@ const filteredItems = computed(() => {
     <div
         class="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 rounded-sm border bg-white px-5 pb-2.5 pt-6 xl:pb-1"
     >
-        <div class="mb-5">
+        <div class="mb-5 flex flex-col items-center justify-between">
             <SearchForm @search="handleSearch" />
+            <AddUsers :users="items" :project="project" />
         </div>
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">

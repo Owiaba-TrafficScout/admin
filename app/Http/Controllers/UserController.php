@@ -25,9 +25,12 @@ class UserController extends Controller
         } else {
             $roles = Role::all();
         }
+
+        $project = Project::find(session('project_id'));
         return Inertia::render('Users', [
             'users' => $users,
             'roles' => $roles,
+            'project' => $project,
         ]);
     }
 

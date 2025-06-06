@@ -49,7 +49,7 @@ interface Speed {
                         <p class="font-medium">Location Y</p>
                     </div>
                     <div class="col-span-2 flex items-center">
-                        <p class="font-medium">Velocity</p>
+                        <p class="font-medium">Speed(km/h)</p>
                     </div>
 
                     <div class="col-span-2 flex items-center">

@@ -123,24 +123,6 @@ const currentProject = computed(() => usePage().props.selected_project);
 
                         <!-- HORIZONTAL RULE -->
                         <hr class="mt-[30%] size-4 w-full text-black" />
-                        <Link
-                            :href="
-                                route('project.users.create', {
-                                    project: $page.props.selected_project?.id,
-                                })
-                            "
-                            :class="[
-                                {
-                                    'bg-muted text-primary': route().current(
-                                        'project.users.create',
-                                    ),
-                                },
-                                classes,
-                            ]"
-                        >
-                            <Users class="h-4 w-4" />
-                            Add Users
-                        </Link>
 
                         <Link
                             :href="route('projects.index')"

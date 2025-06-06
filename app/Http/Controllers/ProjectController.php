@@ -64,7 +64,7 @@ class ProjectController extends Controller
         $project = Project::create($attributes);
         $project->carTypes()->attach($carTypeIds);
 
-        return redirect()->route('projects.index')->with('success', 'Project created.');
+        return redirect()->route('users.index')->with('success', 'Project created.');
     }
 
     public function update(Request $request, Project $project)
