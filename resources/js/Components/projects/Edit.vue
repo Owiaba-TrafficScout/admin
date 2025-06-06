@@ -47,7 +47,7 @@ const submit = () => {
         <PopoverTrigger as-child>
             <slot />
         </PopoverTrigger>
-        <PopoverContent class="w-80">
+        <PopoverContent class="max-h-96 w-80 overflow-auto">
             <form @submit.prevent="submit">
                 <Card class="w-full max-w-sm">
                     <CardHeader>
