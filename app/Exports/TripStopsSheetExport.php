@@ -6,8 +6,9 @@ use App\Models\TripStop;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class TripStopsSheetExport implements FromCollection, WithHeadings, WithMapping
+class TripStopsSheetExport implements FromCollection, WithHeadings, WithMapping, WithTitle
 {
     private $tripId;
 
@@ -43,5 +44,10 @@ class TripStopsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Stop Time',
             'Description',
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Stops';
     }
 }

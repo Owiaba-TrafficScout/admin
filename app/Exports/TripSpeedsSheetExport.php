@@ -6,8 +6,9 @@ use App\Models\TripSpeed;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class TripSpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
+class TripSpeedsSheetExport implements FromCollection, WithHeadings, WithMapping, WithTitle
 {
     private $tripId;
 
@@ -43,5 +44,10 @@ class TripSpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Speed(km/h)',
             'Is Traffic',
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Speeds';
     }
 }
