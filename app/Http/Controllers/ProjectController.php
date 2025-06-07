@@ -102,12 +102,6 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'User removed from project.');
     }
 
-    public function addUsers(Project $project)
-    {
-        $users = User::all();
-        return Inertia::render('Projects/AddUsers', ['project' => $project, 'users' => $users]);
-    }
-
     public function storeUsers(Request $request, Project $project)
     {
         $attributes = $request->validate([

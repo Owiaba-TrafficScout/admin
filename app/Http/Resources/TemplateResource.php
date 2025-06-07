@@ -16,7 +16,7 @@ class TemplateResource extends JsonResource
     {
         return [
             'status' => $this['status'] ?? 'success',
-            'message' => $this['message'] ?? 'Transaction completed successfully!',
+            'message' => $this['message'] ?? 'Transaction completed',
             'code' => $this['code'] ?? 200,
         ];
     }

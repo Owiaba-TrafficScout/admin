@@ -19,6 +19,7 @@ class UserController extends Controller
     {
         $project = Project::find(session('project_id'));
         $users = $project->users()->with('pivot.role')->get();
+        $allUsers = User::all();
         $roles = [];
         if (auth()->user()->isAdminInTenant()) {
             $roles = TenantRole::all();
@@ -31,6 +32,7 @@ class UserController extends Controller
             'users' => $users,
             'roles' => $roles,
             'project' => $project,
+            'allUsers' => $allUsers,
         ]);
     }
 

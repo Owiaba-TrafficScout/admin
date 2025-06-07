@@ -9,8 +9,9 @@ use App\Models\TripSpeed;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
+class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping, WithTitle
 {
     public function collection()
     {
@@ -44,5 +45,10 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Velocity',
             'Is Traffic',
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Speeds';
     }
 }

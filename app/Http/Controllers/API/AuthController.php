@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Resources\TemplateResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
@@ -64,5 +67,20 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response(['message' => 'Logged out successfully!'], 200);
+    }
+
+    //change password
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $attributes = $request->validated();
+
+        $user = $request->user();
+        $user->password = Hash::make($attributes['new_password']);
+        $user->save();
+
+        return new TemplateResource([
+            'message' => 'Password changed',
+            'code' => 200
+        ]);
     }
 }

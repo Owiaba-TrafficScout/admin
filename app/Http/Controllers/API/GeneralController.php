@@ -10,6 +10,9 @@ use App\Actions\StoreTripAction;
 use App\Actions\StoreStopAction;
 use App\Actions\StoreSpeedAction;
 use App\Http\Requests\UploadDataRequest;
+use App\Models\Car;
+use App\Models\ProjectUser;
+use Illuminate\Support\Facades\Auth;
 
 class GeneralController extends Controller
 {
@@ -22,6 +25,28 @@ class GeneralController extends Controller
         try {
             // Store trip
             $tripData = $attributes['trip'];
+
+            //find project user and get his id
+            $projectId = $tripData['project_id'];
+            $projectUserId = ProjectUser::where('user_id', Auth::id())->where('project_id', $projectId)->value('id');
+            if (!$projectUserId) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized project access'], 403);
+            }
+            $tripData['project_user_id'] = $projectUserId;
+            //drop project_id
+            unset($tripData['project_id']);
+
+            //create a new car with the provided car_type_id and retrieve it's id
+            $carTypeId = $tripData['car_type_id'];
+            $carId = Car::create([
+                'car_type_id' => $carTypeId,
+                'car_number' => 'Car ' . uniqid(),
+            ]);
+            $tripData['car_id'] = $carId->id;
+            //drop car_type_id
+            unset($tripData['car_type_id']);
+
+
             $trip = $storeTripAction->execute($tripData);
 
             // Store stops

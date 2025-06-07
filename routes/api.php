@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CarController;
 use App\Http\Controllers\API\CarTypeController;
 use App\Http\Controllers\API\GeneralController;
+use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\StateController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('api.change-password');
 
     Route::group(['prefix' => 'cars'], function () {
         Route::post('/', [CarController::class, 'store'])->name('api.cars.store');
@@ -29,7 +31,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::group(['prefix' => 'projects'], function () {
-        Route::get('/', [\App\Http\Controllers\API\ProjectController::class, 'index'])->name('api.projects.index');
+        Route::get('/', [ProjectController::class, 'index'])->name('api.projects.index');
+        Route::post('/join', [ProjectController::class, 'joinProject'])->name('api.project.join');
     });
     Route::group(['prefix' => 'states'], function () {
         Route::patch('/update', [StateController::class, 'update'])->name('api.states.update');

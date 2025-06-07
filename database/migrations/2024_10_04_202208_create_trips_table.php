@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('car_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_time');
             $table->timestamp('end_time')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
             $table->timestamps();
         });
     }

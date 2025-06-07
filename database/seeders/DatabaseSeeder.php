@@ -73,14 +73,20 @@ class DatabaseSeeder extends Seeder
         // create projects
         $tenant->projects()->create(['code' => 'code1', 'name' => 'Test Project 1', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
         $tenant->projects()->create(['code' => 'code2', 'name' => 'Test Project 2', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
+        $tenant->projects()->create(['code' => 'code3', 'name' => 'Test Project 3', 'description' => 'This is a test project', 'start_date' => now(), 'end_date' => now()->addDays(30)]);
 
-        //asign $user2 to project 1 as admin
+        //asign $projectAdmin to project 1 as admin
         $tenant->projects()->first()->users()->attach($projectAdmin->id, ['role_id' => 1]);
 
-        //asign $user3 to project 1 as enumerator
+        //asign $enumerator to project 1 as enumerator
         $tenant->projects()->first()->users()->attach($enumerator->id, ['role_id' => 2]);
-        //assign $user2 to project 2 as enumerator
+
+        //assign $projectAdmin to project 2 as enumerator
         $tenant->projects->get(1)->users()->attach($projectAdmin->id, ['role_id' => 2]);
+
+        //asign $enumerator as enumerator to project 2 and project 3
+        $tenant->projects->get(1)->users()->attach($enumerator->id, ['role_id' => 2]);
+        $tenant->projects->get(2)->users()->attach($enumerator->id, ['role_id' => 2]);
 
         // get project user for project 1 user2
         $projectUser = $tenant->projects->first()->users->first()->pivot;

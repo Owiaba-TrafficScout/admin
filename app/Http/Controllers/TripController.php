@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\TripMultiSheetExport;
 use App\Exports\TripsExport;
+use App\Http\Requests\DeleteMultipleTripsRequest;
 use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\Trip;
@@ -46,5 +47,18 @@ class TripController extends Controller
     public function exportTripToExcel($tripId)
     {
         return Excel::download(new TripMultiSheetExport($tripId), 'trip-details.xlsx');
+    }
+
+    public function destroyBulk(DeleteMultipleTripsRequest $request)
+    {
+        $project = Project::find(session('project_id'));
+        $attributes = $request->validated();
+
+        // ensure we only delete trips belonging to current project
+        $project->trips()
+            ->whereIn('trips.id', $attributes['trip_ids'])
+            ->delete();
+
+        return redirect()->back()->with('success', 'Selected trips have been deleted.');
     }
 }

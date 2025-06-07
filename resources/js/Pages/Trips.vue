@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DataTable from '@/Components/trips/data-table.vue';
+import { Speed, Stop } from '@/interface';
 import Layout from '@/Layouts/App.vue';
 import { ref } from 'vue';
 import { CarType } from './CarTypes.vue';
@@ -11,6 +12,8 @@ export interface Trip {
     project_user: projectUser;
     group_code: string;
     car: Car;
+    speeds: Speed[];
+    stops: Stop[];
     project: Project;
     start_time: string;
     end_time: string;
@@ -20,6 +23,7 @@ export interface Trip {
 export interface projectUser {
     id: number;
     user: User;
+    project: Project;
 }
 
 interface Car {
@@ -60,7 +64,7 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
 
 <template>
     <Layout page="Trips">
-        <div class="mt-2 flex flex-col gap-5">
+        <div class="mt-2 flex max-w-[90vw] flex-col gap-5 overflow-auto">
             <a
                 :href="route('export.trips')"
                 :class="btnClasses"

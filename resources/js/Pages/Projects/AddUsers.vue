@@ -31,9 +31,9 @@ const submit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="submit" class="mt-10 w-auto min-w-[30vw]">
-        <div class="mt-4">
-            <div class="flex flex-col gap-3">
+    <form @submit.prevent="submit" class="w-auto min-w-[30vw]">
+        <div>
+            <div class="flex flex-row gap-3">
                 <Multiselect
                     v-model="selected_users"
                     :options="users"
@@ -56,7 +56,7 @@ const submit = () => {
                 </Multiselect>
 
                 <PrimaryButton
-                    class="ms-4"
+                    class="ms-4 w-56"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                     style="text-align: center"

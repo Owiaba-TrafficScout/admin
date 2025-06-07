@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
+class StopsSheetExport implements FromCollection, WithHeadings, WithMapping, WithTitle
 {
     public function collection()
     {
@@ -55,5 +56,10 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Passengers Alighting',
             'Is Traffic',
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Stops';
     }
 }

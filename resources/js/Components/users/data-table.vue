@@ -10,6 +10,7 @@ import Edit from './Edit.vue';
 const props = defineProps<{
     items: User[];
     project: Project;
+    allUsers: User[];
 }>();
 
 const search = ref('');
@@ -52,9 +53,9 @@ const filteredItems = computed(() => {
     <div
         class="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 rounded-sm border bg-white px-5 pb-2.5 pt-6 xl:pb-1"
     >
-        <div class="mb-5 flex flex-col items-center justify-between">
+        <div class="mb-5 flex flex-row items-center justify-between">
             <SearchForm @search="handleSearch" />
-            <AddUsers :users="items" :project="project" />
+            <AddUsers :users="allUsers" :project="project" />
         </div>
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">

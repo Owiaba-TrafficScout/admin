@@ -47,6 +47,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::get('/', [TripController::class, 'index'])->name('trips.index');
         Route::patch('/{trip}', [TripController::class, 'update'])->name('trips.update');
         Route::delete('/{trip}', [TripController::class, 'destroy'])->name('trips.destroy');
+        Route::delete('/bulk/delete', [TripController::class, 'destroyBulk'])->name('trips.bulkDestroy');
     });
 
     //Projects routes
@@ -58,7 +59,6 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::post('/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
         Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/store', [ProjectController::class, 'store'])->name('projects.store');
-        Route::get('/{project}/users/create', [ProjectController::class, 'addUsers'])->name('project.users.create');
         Route::post('/{project}/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
         Route::post('/{project}/{projectUser}/users/roles/update', [ProjectController::class, 'updateUserRole'])->name('projects.users.update');
     });

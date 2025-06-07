@@ -24,10 +24,10 @@ class UploadDataRequest extends FormRequest
         return [
             'trip' => 'required|array',
             'trip.title' => 'required|string|max:255',
-            'trip.project_user_id' => 'required|exists:project_user,id',
+            'trip.project_id' => 'required|exists:projects,id',
             'trip.tenant_id' => 'required|exists:tenants,id',
             'trip.group_code' => 'required|string|max:255',
-            'trip.car_id' => 'required|exists:cars,id',
+            'trip.car_type_id' => 'required|exists:car_types,id',
             'trip.start_time' => 'required|date',
             'trip.end_time' => 'required|date',
             'stops' => 'array',

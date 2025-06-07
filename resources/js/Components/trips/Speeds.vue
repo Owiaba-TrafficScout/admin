@@ -5,18 +5,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/Components/ui/popover';
+import { Speed } from '@/interface';
 
 defineProps<{
     speeds: Speed[];
 }>();
-interface Speed {
-    id: number;
-    time: string;
-    location_x: number;
-    location_y: number;
-    velocity: number;
-    is_traffic: boolean;
-}
 </script>
 
 <template>
@@ -24,7 +17,7 @@ interface Speed {
         <PopoverTrigger as-child>
             <Button variant="outline"> Speeds </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-[auto] max-w-[100vw]">
+        <PopoverContent class="w-[auto] max-w-[50vw] overflow-y-auto">
             <div
                 class="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm border bg-white"
                 style="width: 60vw"

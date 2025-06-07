@@ -5,23 +5,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/Components/ui/popover';
+import { Stop } from '@/interface';
 
 defineProps<{
     stops: Stop[];
 }>();
-interface Stop {
-    id: number;
-    start_time: string | null;
-    start_location_x: number | null;
-    start_location_y: number | null;
-    stop_time: string | null;
-    stop_location_x: number | null;
-    stop_location_y: number | null;
-    passengers_count: number | null;
-    passengers_boarding: number | null;
-    passengers_alighting: number | null;
-    is_traffic: boolean | null;
-}
 </script>
 
 <template>
@@ -29,7 +17,7 @@ interface Stop {
         <PopoverTrigger as-child>
             <Button variant="outline"> Stops </Button>
         </PopoverTrigger>
-        <PopoverContent class="w-[auto] max-w-[100vw]">
+        <PopoverContent class="w-[auto] max-w-[50vw] overflow-y-auto">
             <div
                 class="border-stroke shadow-default dark:border-strokedark dark:bg-boxdark rounded-sm border bg-white"
                 style="width: 100vw"

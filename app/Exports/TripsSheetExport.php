@@ -7,8 +7,9 @@ use App\Models\Trip;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
+class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, WithTitle
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -56,5 +57,9 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping
             'Stops',
             'Speeds',
         ];
+    }
+    public function title(): string
+    {
+        return 'Trips';
     }
 }

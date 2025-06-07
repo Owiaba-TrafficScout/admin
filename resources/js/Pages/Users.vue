@@ -9,6 +9,7 @@ const props = defineProps<{
     users: User[];
     roles: { id: number; name: string }[];
     project: Project;
+    allUsers: User[];
 }>();
 
 provide('roles', props.roles);
@@ -16,6 +17,6 @@ provide('roles', props.roles);
 
 <template>
     <Layout page="Users">
-        <DataTable :items="users" :project="project" />
+        <DataTable :items="users" :project="project" :allUsers="allUsers" />
     </Layout>
 </template>
