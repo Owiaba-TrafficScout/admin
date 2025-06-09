@@ -13,6 +13,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/email-verified-success', function () {
+    return Inertia::render('EmailVerified');
+})->name('email.verified.success');
 Route::get('/payment/{success}', function ($success) {
     return Inertia::render('Welcome', ['success' => $success]);
 })->name('payment.success');
