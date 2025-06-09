@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { User } from '@/types';
+
 import { useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import { computed, ref, Ref } from 'vue';
+import { User } from '../Trips.vue';
 
 const props = defineProps<{
     users: User[];
