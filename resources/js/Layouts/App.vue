@@ -10,6 +10,7 @@ import {
     Users,
 } from 'lucide-vue-next';
 
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Alert from '@/Components/ui/alert/Alert.vue';
 import AlertDescription from '@/Components/ui/alert/AlertDescription.vue';
 import AlertTitle from '@/Components/ui/alert/AlertTitle.vue';
@@ -53,8 +54,11 @@ const currentProject = computed(() => usePage().props.selected_project);
                         class="grid items-start px-2 text-sm font-medium lg:px-4"
                     >
                         <p
-                            class="flex items-center gap-3 rounded-lg px-3 py-2 text-xl font-bold capitalize"
+                            class="flex items-center gap-3 rounded-lg px-3 py-5 text-xl font-bold capitalize"
                         >
+                            <ApplicationLogo
+                                class="rounded-full bg-black p-1.5"
+                            />
                             {{ currentProject?.name }}
                         </p>
                         <Link
@@ -162,6 +166,14 @@ const currentProject = computed(() => usePage().props.selected_project);
                                 href="#"
                                 class="flex items-center gap-2 text-lg font-semibold"
                             >
+                                <p
+                                    class="flex items-center gap-3 rounded-lg px-3 py-5 text-xl font-bold capitalize"
+                                >
+                                    <ApplicationLogo
+                                        class="rounded-full bg-black p-2"
+                                    />
+                                    {{ currentProject?.name }}
+                                </p>
                                 <span class="sr-only">Admin Panel</span>
                             </Link>
                             <Link
@@ -251,7 +263,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <Link
-                                :href="route('users.index')"
+                                :href="route('users.tenant')"
                                 :class="[
                                     {
                                         'bg-muted text-primary':

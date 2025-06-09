@@ -18,7 +18,7 @@ class TripSpeedFactory extends Factory
     public function definition(): array
     {
         return [
-            'trip_id' => random_int(1, 10),
+            'trip_id' => Trip::inRandomOrder()->first()->id,
             'time' => $this->faker->dateTime(),
             'location_x' => $this->faker->randomFloat(2, 0, 100),
             'location_y' => $this->faker->randomFloat(2, 0, 100),

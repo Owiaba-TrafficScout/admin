@@ -25,10 +25,10 @@ class TripFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(3),
-            'project_user_id' =>  ProjectUser::factory(),
-            'tenant_id' => Tenant::factory(),
+            'project_user_id' =>  ProjectUser::inRandomOrder()->first()->id,
+            'tenant_id' => Tenant::inRandomOrder()->first()->id,
             'group_code' => $this->faker->word(),
-            'car_id' => Car::factory(),
+            'car_id' => Car::inRandomOrder()->first()->id,
             'start_time' => $this->faker->dateTime(),
             'end_time' => $this->faker->dateTime(),
         ];

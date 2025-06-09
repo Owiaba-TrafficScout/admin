@@ -16,27 +16,49 @@ import {
 import { User } from '@/Pages/Trips.vue';
 
 import { useForm } from '@inertiajs/vue3';
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 
 const props = defineProps<{
     user: User;
 }>();
 
 const emit = defineEmits(['update']);
-const roleId = ref(JSON.parse(JSON.stringify(props.user.pivot.role_id)));
+const roleId = ref(
+    JSON.parse(
+        JSON.stringify(
+            props.user.pivot.role_id ?? props.user.pivot.tenant_role_id,
+        ),
+    ),
+);
+const update_route = props.user.pivot.role_id
+    ? 'project.user.update'
+    : 'users.tenant.update';
+
 const form = useForm({
-    role_id: roleId.value,
+    [props.user.pivot.role_id ? 'role_id' : 'tenant_role_id']: roleId.value,
 });
 
 const submit = () => {
     // dynamicaly post to update or store rout
-    form.patch(route('users.update', props.user.id), {
+    form.patch(route(update_route, props.user.id), {
         onSuccess: () => {
-            form.reset();
             emit('update');
+        },
+        onError: (errors) => {
+            console.error('Error updating role:', errors);
         },
     });
 };
+const selectedRole = computed<number>({
+    get: () => form.role_id ?? form.tenant_role_id,
+    set: (value: number) => {
+        if (props.user.pivot.role_id) {
+            form.role_id = value;
+        } else {
+            form.tenant_role_id = value;
+        }
+    },
+});
 
 const roles = inject<{ id: number; name: string }[]>('roles');
 </script>
@@ -55,12 +77,12 @@ const roles = inject<{ id: number; name: string }[]>('roles');
                     <CardContent class="grid gap-4">
                         <div class="grid gap-2">
                             <Label for="role">Role</Label>
-                            <select id="role" v-model="form.role_id" required>
+                            <select id="role" v-model="selectedRole" required>
                                 <option
                                     v-for="role in roles"
                                     :key="role.id"
                                     :value="role.id"
-                                    :selected="role.id === form.role_id"
+                                    :selected="role.id === selectedRole"
                                 >
                                     {{ role.name }}
                                 </option>

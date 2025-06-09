@@ -20,8 +20,8 @@ class InvitationFactory extends Factory
     {
         return [
             'email' => $this->faker->unique()->safeEmail,
-            'role_id' => Role::all()->random()->id,
-            'project_id' => Project::all()->random()->id,
+            'role_id' => Role::inRandomOrder()->first()->id,
+            'project_id' => Project::inRandomOrder()->first()->id,
             'accepted' => $this->faker->boolean,
             'token' => $this->faker->sha256,
             'expires_at' => $this->faker->dateTime,

@@ -6,6 +6,8 @@ use App\Models\Car;
 use App\Models\CarType;
 use App\Models\Payment;
 use App\Models\PaymentStatus;
+use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\SubscriptionStatus;
@@ -25,37 +27,33 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(SubscriptionStatusSeeder::class);
         $tenants = Tenant::factory(10)->create();
-        SubscriptionPlan::factory(3)->create();
-
-        $tenants->each(function ($tenant) {
-            Subscription::factory(3)->withTenantId($tenant->id)->withStatusId(1)->create();
-        });
-
-
-        $this->call(RoleSeeder::class);
-        $this->call(TenantRoleSeeder::class);
-
-        TenantUser::factory(10)->create();
-
-
+        $users = User::factory(10)->create();
         //create users with emails project@gmail.com, system@gmail.com and enumerator@gmail.com
         $projectAdmin = User::factory()->create(['email' => 'project@gmail.com', 'password' => bcrypt('password')]);
         $tenantAdmin = User::factory()->create(['email' => 'system@gmail.com', 'password' => bcrypt('password')]);
         $enumerator = User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
-        CarType::factory(10)->create();
+
+        $this->call(SubscriptionStatusSeeder::class);
+        $this->call(SubscriptionPlanSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(TenantRoleSeeder::class);
+        $this->call(CarTypeSeeder::class);
+        $this->call(PaymentStatusSeeder::class);
 
 
-        Trip::factory(10)->create();
-        TripSpeed::factory(10)->create();
-        TripStop::factory(10)->create();
+        //create cars
+        Car::factory(10)->create();
+        //create subscriptions for each tenant
+        $tenants->each(function ($tenant) {
+            Subscription::factory(3)->withTenantId($tenant->id)->withStatusId(1)->create();
+        });
 
+        $projects = Project::factory(10)->create();
 
+        // TenantUser::factory(10)->create();
+        // ProjectUser::factory(10)->create();
 
-        PaymentStatus::factory(4)->create();
-
-        Payment::factory(20)->create();
 
         //create tenant
         $tenant = Tenant::factory()->create(['name' => 'Test Tenant']);
@@ -115,6 +113,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $trips = Trip::all();
+        Trip::factory(10)->create();
+        Payment::factory(20)->create();
         //create trip speeds and stops for each trip
         foreach ($trips as $trip) {
             TripSpeed::factory(3)->create(['trip_id' => $trip->id]);

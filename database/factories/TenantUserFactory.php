@@ -20,9 +20,9 @@ class TenantUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'tenant_id' => Tenant::factory(),
-            'user_id' => User::factory(),
-            'tenant_role_id' => TenantRole::factory(),
+            'tenant_id' => Tenant::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'tenant_role_id' => TenantRole::inRandomOrder()->first()->id,
         ];
     }
 }

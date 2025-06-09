@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SearchForm from '@/Components/SearchForm.vue';
-import { Project } from '@/Pages/Projects.vue';
 import AddUsers from '@/Pages/Projects/AddUsers.vue';
 import { User } from '@/Pages/Trips.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
@@ -9,7 +8,6 @@ import Edit from './Edit.vue';
 
 const props = defineProps<{
     items: User[];
-    project: Project;
     allUsers: User[];
 }>();
 
@@ -55,7 +53,7 @@ const filteredItems = computed(() => {
     >
         <div class="mb-5 flex flex-row items-center justify-between">
             <SearchForm @search="handleSearch" />
-            <AddUsers :users="allUsers" :project="project" />
+            <AddUsers :users="allUsers" />
         </div>
         <div class="max-w-full overflow-x-auto">
             <table class="w-full table-auto">

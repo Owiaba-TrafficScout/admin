@@ -23,7 +23,7 @@ class ProjectFactory extends Factory
             'code' => uniqid(),
             'start_date' => fake()->date(),
             'end_date' => fake()->date(),
-            'tenant_id' => fake()->numberBetween(1, 10),
+            'tenant_id' => Tenant::inRandomOrder()->first()->id,
         ];
     }
 

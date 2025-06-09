@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\CarType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class CarFactory extends Factory
     public function definition(): array
     {
         return [
-            'car_type_id' => rand(1, 10),
+            'car_type_id' => CarType::inRandomOrder()->first()->id,
             'car_number' => $this->faker->buildingNumber(),
         ];
     }

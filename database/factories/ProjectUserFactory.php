@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Project;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,9 +20,9 @@ class ProjectUserFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => Project::factory(),
-            'user_id' => User::factory(),
-            'role_id' => fake()->numberBetween(1, 2),
+            'project_id' => Project::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'role_id' => Role::inRandomOrder()->first()->id,
             'joined_at' => now(),
         ];
     }

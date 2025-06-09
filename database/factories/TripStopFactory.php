@@ -18,7 +18,7 @@ class TripStopFactory extends Factory
     public function definition(): array
     {
         return [
-            'trip_id' => random_int(1, 10),
+            'trip_id' => Trip::inRandomOrder()->first()->id,
             'start_time' => $this->faker->dateTime(),
             'start_location_x' => $this->faker->randomFloat(2, 0, 100),
             'start_location_y' => $this->faker->randomFloat(2, 0, 100),
@@ -28,7 +28,7 @@ class TripStopFactory extends Factory
             'passengers_count' => random_int(1, 15),
             'passengers_boarding' => random_int(1, 15),
             'passengers_alighting' => random_int(1, 15),
-            'is_traffic' => random_int(0, 1),
+            'is_traffic' => $this->faker->boolean(),
         ];
     }
 }

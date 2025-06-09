@@ -9,67 +9,85 @@ use App\Models\Tenant;
 use App\Models\TenantRole;
 use App\Models\TenantUser;
 use App\Models\User;
+use Dom\Text;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    final const USER_TENANT_ROLE = 2; //tnenat user role id for user
+    final const USER_SUCCESSFULLY_ADDED_TO_TENANT_MSG = 'Users added to your organization.';
     public function index()
     {
         $project = Project::find(session('project_id'));
         $users = $project->users()->with('pivot.role')->get();
-        $allUsers = User::all();
-        $roles = [];
-        if (auth()->user()->isAdminInTenant()) {
-            $roles = TenantRole::all();
-        } else {
-            $roles = Role::all();
-        }
+        $allUsers = Tenant::find(session('tenant_id'))->users()->with('pivot.role')->get();
 
-        $project = Project::find(session('project_id'));
+        $roles = Role::all();
+
         return Inertia::render('Users', [
             'users' => $users,
             'roles' => $roles,
-            'project' => $project,
             'allUsers' => $allUsers,
         ]);
     }
 
-    public function update(Request $request, User $user)
+
+    public function getTenantUsers()
     {
-        if ($user->isAdminInTenant()) {
-            return redirect()->back()->with("error", "You can't update the system admin");
-        } else if ($user->isAdminInProject() and !$request->user()->isAdminInTenant()) {
-            return redirect()->back()->with("error", "You can't update the project admin");
+        $users = Tenant::find(session('tenant_id'))->users()->with('pivot.role')->get();
+        $allUsers = User::all();
+        $roles = TenantRole::all();
+
+        return Inertia::render('Users', [
+            'users' => $users,
+            'roles' => $roles,
+            'allUsers' => $allUsers,
+        ]);
+    }
+
+    public function storeTenantUsers(Request $request)
+    {
+        $attributes = $request->validate([
+            'userIds' => 'required|array',
+            'userIds.*' => 'required|exists:users,id',
+        ]);
+
+        $tenant = Tenant::find(session('tenant_id'));
+
+        $syncData = [];
+        foreach ($attributes['userIds'] as $userId) {
+            $syncData[$userId] = [
+                'tenant_role_id' => self::USER_TENANT_ROLE, // Assigning the tenant user role
+            ];
         }
 
-        $projectUser = ProjectUser::where('user_id', $user->id)->where('project_id', session('project_id'))->first();
-        $projectUser->update($request->validate([
-            'role_id' => ['required', 'integer'],
-        ]));
+        $tenant->users()->syncWithoutDetaching($syncData);
+
+        return redirect()->back()->with('success', self::USER_SUCCESSFULLY_ADDED_TO_TENANT_MSG);
+    }
+
+
+
+    public function updateTenantUser(Request $request, User $user)
+    {
+        $request->validate([
+            'tenant_role_id' => ['required', 'integer', 'exists:tenant_roles,id'],
+        ]);
+
+        if ($user->isAdminInTenant()) {
+            return redirect()->back()->with("error", "You can't update the system admin");
+        }
+
+        $tenantUser = TenantUser::where('user_id', $user->id)->where('tenant_id', session('tenant_id'))->first();
+        $tenantUser->update([
+            'tenant_role_id' => $request->tenant_role_id,
+        ]);
 
 
         return redirect()->back()->with("success", "Role Updated");
     }
 
-    // public function destroy(User $user)
-    // {
-    //     if ($user->isAdminInTenant()) {
-    //         return redirect()->back()->with("error", "You can't remove a system admin");
-    //     } else if (auth()->user()->isAdminInTenant()) {
-    //         $tenant = Tenant::find(session('tenant_id'));
-    //         $tenant->users()->detach($user->id);
-    //         return redirect()->back()->with("success", "User removed from your organization");
-    //     } else {
-    //         //remove users from projects
-    //         $projectIds = auth()->user()->adminProjects->pluck('id');
-    //         //detach all projectIds that the user has that are found in $projectIds
-    //         $user->projects()->detach($projectIds);
-
-    //         return redirect()->back()->with("success", "User Removed from all your projects");
-    //     }
-    // }
     public function destroy(User $user)
     {
         if ($user->isAdminInProject()) {

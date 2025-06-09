@@ -69,12 +69,15 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        $project->update($request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-        ]));
+        $attributes =  $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date',
+        ]);
+
+        $project->update($attributes);
+        logger($project->toArray());
 
         return redirect()->back()->with('success', 'Project updated.');
     }
@@ -102,11 +105,13 @@ class ProjectController extends Controller
         return redirect()->back()->with('success', 'User removed from project.');
     }
 
-    public function storeUsers(Request $request, Project $project)
+    public function storeUsers(Request $request)
     {
         $attributes = $request->validate([
             'userIds' => 'required|array',
         ]);
+
+        $project = Project::find(session('project_id'));
 
         // Prepare the data for syncWithoutDetaching
         $syncData = [];
@@ -117,15 +122,24 @@ class ProjectController extends Controller
             ];
         }
         $project->users()->syncWithoutDetaching($syncData);
-        return redirect()->route('projects.index')->with('success', 'Users added to project.');
+        return redirect()->back()->with('success', 'Users added to project.');
     }
 
-    public function updateUserRole(Request $request, Project $project, ProjectUser $projectUser)
+    public function updateUserRole(Request $request,  User $user)
     {
+        $projectUser = ProjectUser::where('user_id', $user->id)
+            ->where('project_id', session('project_id'))
+            ->first();
+
+        //Make sure only Tenant Admins can change roles of Project Admins
+        if ($projectUser->isProjectAdmin() && !$request->user()->isAdminInTenant()) {
+            return redirect()->back()->with('error', 'You cannot change the role of a project admin.');
+        }
+
         $projectUser->update($request->validate([
             'role_id' => 'required|exists:roles,id',
         ]));
-        return redirect()->route('projects.index')->with('success', 'User role updated.');
+        return redirect()->back()->with('success', 'User role updated.');
     }
 
     public function storeSelectedProject(Request $request)

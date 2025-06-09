@@ -42,7 +42,7 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping, Wi
             'Time',
             'Location X',
             'Location Y',
-            'Velocity',
+            'Speed(km/h)',
             'Is Traffic',
         ];
     }

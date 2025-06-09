@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\PaymentStatus;
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,9 +20,9 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => random_int(1, 10),
-            'project_id' => random_int(1, 10),
-            'payment_status_id' => random_int(1, 4),
+            'user_id' => User::inRandomOrder()->first()->id,
+            'project_id' => Project::inRandomOrder()->first()->id,
+            'payment_status_id' => PaymentStatus::inRandomOrder()->first()->id,
             'date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'amount' => $this->faker->randomFloat(2, 10, 1000),
             'description' => $this->faker->sentence,

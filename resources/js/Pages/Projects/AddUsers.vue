@@ -4,11 +4,9 @@ import { User } from '@/types';
 import { useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import { computed, ref, Ref } from 'vue';
-import { Project } from '../Projects.vue';
 
 const props = defineProps<{
     users: User[];
-    project: Project;
 }>();
 
 const selected_users: Ref<User[]> = ref([]);
@@ -20,11 +18,18 @@ const form = useForm({
     userIds: selectedUsersIds,
 });
 
+const submit_route = props.users[0]?.pivot
+    ? 'project.users.store'
+    : 'users.tenant.store';
+
 const submit = () => {
-    form.post(route('project.users.store', { project: props.project.id }), {
+    form.post(route(submit_route), {
         onError: (e) => {
             console.log(e);
-            console.log(form.userIds);
+        },
+        onSuccess: () => {
+            selected_users.value = [];
+            form.reset();
         },
     });
 };

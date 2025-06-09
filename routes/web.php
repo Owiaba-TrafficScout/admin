@@ -59,8 +59,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::post('/{project}/{user}/remove', [ProjectController::class, 'removeUser'])->name('projects.users.remove');
         Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
         Route::post('/store', [ProjectController::class, 'store'])->name('projects.store');
-        Route::post('/{project}/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
-        Route::post('/{project}/{projectUser}/users/roles/update', [ProjectController::class, 'updateUserRole'])->name('projects.users.update');
+        Route::post('/users/store', [ProjectController::class, 'storeUsers'])->name('project.users.store');
+        Route::patch('/{user}/users/roles/update', [ProjectController::class, 'updateUserRole'])->name('project.user.update');
     });
 
     //Cartype routes
@@ -76,8 +76,10 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     //Users routes
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
-        Route::patch('/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::patch('/{user}', [UserController::class, 'updateTenantUser'])->name('users.tenant.update');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/tenant-users', [UserController::class, 'getTenantUsers'])->name('users.tenant');
+        Route::post('/tenant-users', [UserController::class, 'storeTenantUsers'])->name('users.tenant.store');
     });
     //payments routes
     Route::group(['prefix' => '/payments'], function () {

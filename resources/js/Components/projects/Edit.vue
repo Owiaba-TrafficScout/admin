@@ -35,8 +35,10 @@ const submit = () => {
     // dynamicaly post to update or store rout
     form.patch(route('projects.update', props.project.id), {
         onSuccess: () => {
-            form.reset();
             emit('update');
+        },
+        onError: (errors) => {
+            console.log(errors);
         },
     });
 };
@@ -83,11 +85,7 @@ const submit = () => {
                             <Input
                                 id="start_date"
                                 type="date"
-                                v-model="
-                                    new Date(form.start_date)
-                                        .toISOString()
-                                        .split('T')[0]
-                                "
+                                v-model="form.start_date"
                                 required
                             />
                             <div v-if="form.errors.start_date">
@@ -99,11 +97,7 @@ const submit = () => {
                             <Input
                                 id="end_date"
                                 type="date"
-                                v-model="
-                                    new Date(form.end_date)
-                                        .toISOString()
-                                        .split('T')[0]
-                                "
+                                v-model="form.end_date"
                                 required
                             />
                             <div v-if="form.errors.end_date">

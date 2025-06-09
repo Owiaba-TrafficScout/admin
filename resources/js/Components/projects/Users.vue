@@ -43,7 +43,7 @@ const submit = (ProjectUserId: number, RoleId: number) => {
         form.role_id = RoleId;
         console.log(form.role_id);
         form.post(
-            route('projects.users.update', {
+            route('project.user.update', {
                 project: props.projectId,
                 projectUser: ProjectUserId,
             }),
