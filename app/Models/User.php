@@ -132,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->using(TenantUser::class)
             ->withPivot(['id', 'tenant_role_id'])
             ->withTimestamps()
-            ->wherePivot('tenant_role_id', env('TENANT_ADMIN_ROLE_ID'));
+            ->wherePivot('tenant_role_id', config('constants.tenant_roles.admin'));
     }
 
     /**
