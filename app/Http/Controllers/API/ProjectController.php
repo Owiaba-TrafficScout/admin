@@ -19,12 +19,15 @@ class ProjectController extends Controller
 
         $projects = $user->projects()
             ->with(['trips', 'carTypes'])
-            ->get();
+            ->get()
+            ->filter(fn($project) => !$project->expired);
+
 
         $activeProject = $user->activeProject();
+        $activeProjectNotExpired = $activeProject && !$activeProject->expired;
 
         return ProjectResource::collection($projects)->additional([
-            'active_project' => $activeProject ? new ProjectResource($activeProject) : null,
+            'active_project' => $activeProjectNotExpired ? new ProjectResource($activeProject) : null,
         ]);
     }
 

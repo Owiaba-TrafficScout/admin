@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use PgSql\Lob;
 
@@ -19,7 +20,7 @@ class Project extends Model
     use HasFactory;
 
     protected $guarded = [];
-
+    protected $appends = ['expired'];
     /**
      * The "booted" method of the model.
      *
@@ -37,6 +38,14 @@ class Project extends Model
         });
     }
 
+    /**
+     * Determine if the project is expired.
+     */
+    public function getExpiredAttribute(): bool
+    {
+        // Only expired if end_date is set and the current date is greater
+        return $this->end_date && Carbon::now()->greaterThan($this->end_date);
+    }
 
 
     public function payments(): HasMany
