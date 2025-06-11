@@ -21,6 +21,7 @@ class ProjectResource extends JsonResource
             'code' => $this->code,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'expired' => $this->expired,
             'trips' => TripResource::collection($this->whenLoaded('trips')),
             'car_types' => CarTypeResource::collection($this->whenLoaded('carTypes')),
         ];
