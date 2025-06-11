@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Models\CarType;
 use App\Models\Project;
 use App\Models\ProjectUser;
@@ -40,7 +42,7 @@ class ProjectController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
         if (!auth()->user()->isAdminInTenant()) {
             return redirect()->back()->with('error', 'You are not allowed to create a project.');
@@ -48,14 +50,7 @@ class ProjectController extends Controller
 
 
 
-        $attributes = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'carTypeIds' => 'required|array',
-            'carTypeIds.*' => 'required|exists:car_types,id',
-        ]);
+        $attributes = $request->validated();
         //generate project code which is unique in the projects table code column
         $attributes['code'] = uniqid();
         $attributes['tenant_id'] = session('tenant_id');
@@ -67,17 +62,12 @@ class ProjectController extends Controller
         return redirect()->route('users.index')->with('success', 'Project created.');
     }
 
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        $attributes =  $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date',
-        ]);
+        $attributes =  $request->validated();
 
         $project->update($attributes);
-        logger($project->toArray());
+
 
         return redirect()->back()->with('success', 'Project updated.');
     }

@@ -32,7 +32,12 @@ const form = useForm({
 });
 
 const submit = () => {
-    // dynamicaly post to update or store rout
+    // Client-side validation
+    if (new Date(form.end_date) < new Date(form.start_date)) {
+        alert('End date cannot be earlier than start date.');
+        return;
+    }
+
     form.patch(route('projects.update', props.project.id), {
         onSuccess: () => {
             emit('update');
@@ -65,7 +70,10 @@ const submit = () => {
                                 v-model="form.name"
                                 required
                             />
-                            <div v-if="form.errors.name">
+                            <div
+                                class="text-xs text-red-500"
+                                v-if="form.errors.name"
+                            >
                                 {{ form.errors.name }}
                             </div>
                         </div>
@@ -76,7 +84,10 @@ const submit = () => {
                                 id="description"
                                 v-model="form.description"
                             ></textarea>
-                            <div v-if="form.errors.description">
+                            <div
+                                class="text-xs text-red-500"
+                                v-if="form.errors.description"
+                            >
                                 {{ form.errors.description }}
                             </div>
                         </div>
@@ -88,7 +99,10 @@ const submit = () => {
                                 v-model="form.start_date"
                                 required
                             />
-                            <div v-if="form.errors.start_date">
+                            <div
+                                class="text-xs text-red-500"
+                                v-if="form.errors.start_date"
+                            >
                                 {{ form.errors.start_date }}
                             </div>
                         </div>
@@ -100,7 +114,10 @@ const submit = () => {
                                 v-model="form.end_date"
                                 required
                             />
-                            <div v-if="form.errors.end_date">
+                            <div
+                                class="text-xs text-red-500"
+                                v-if="form.errors.end_date"
+                            >
                                 {{ form.errors.end_date }}
                             </div>
                         </div>
