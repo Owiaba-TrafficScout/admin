@@ -26,13 +26,20 @@
             <button
                 class="mt-6 rounded bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
                 @click="router.visit(route('login'))"
+                v-if="admin"
             >
                 Go to Login
             </button>
+            <p class="mt-4 text-sm text-gray-500">
+                You can now close this window or return to the app.
+            </p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
+defineProps<{
+    admin: boolean;
+}>();
 </script>

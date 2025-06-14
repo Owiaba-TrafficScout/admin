@@ -16,7 +16,7 @@ class TripController extends Controller
 {
     public function index()
     {
-        $trips = Project::find(session('project_id'))?->trips ?? [];
+        $trips = Project::find(session('project_id'))?->trips()->latest()->get() ?? [];
         return Inertia::render('Trips', ['trips' => $trips]);
     }
 

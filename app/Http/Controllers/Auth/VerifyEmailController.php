@@ -14,14 +14,16 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
+        // check if requested user is admin in any tenant or project
+        $userIsAdmin = $request->user()->isAdmin() ? 'admin' : 'enumerator';
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('tenant.select', absolute: false) . '?verified=1');
+            return redirect()->route('email.verified.success', ['admin' => $userIsAdmin]);
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->intended(route('tenant.select', absolute: false) . '?verified=1');
+        return redirect()->route('email.verified.success', ['admin' => $userIsAdmin]);
     }
 }

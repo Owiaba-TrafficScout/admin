@@ -190,4 +190,12 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return null;
     }
+
+    /**
+     * is User an admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->isAdminInAnyTenant() || $this->isAdminInAnyProject();
+    }
 }
