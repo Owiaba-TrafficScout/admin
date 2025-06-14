@@ -13,6 +13,7 @@ use App\Http\Requests\UploadDataRequest;
 use App\Models\Car;
 use App\Models\ProjectUser;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class GeneralController extends Controller
 {

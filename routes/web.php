@@ -1,7 +1,9 @@
 <?php
 
+
 use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -13,10 +15,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/email-verified-success/{admin}', function ($admin) {
-    $admin = 'admin' === $admin ? true : false;
-    return Inertia::render('EmailVerified', ['admin' => $admin]);
-})->name('email.verified.success');
+Route::get('/email-verified-success/{admin}', [GeneralController::class, 'EmailVerifiedPasswordResetSuccess'])->name('email.verified.success');
 Route::get('/payment/{success}', function ($success) {
     return Inertia::render('Welcome', ['success' => $success]);
 })->name('payment.success');

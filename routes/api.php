@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // Request a new verification link
@@ -22,8 +24,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         ->middleware(['signed', 'throttle:6,1'])
         ->name('api.verification.verify');
 });
+
 Route::post('/register', [AuthController::class, 'register'])->name('api.register');
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+
+// Forgot Password (API)
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('api.password.email');
+
+// Reset Password (API)
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->name('api.password.update');
+
+
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);

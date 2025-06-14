@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -27,7 +28,7 @@ class PasswordResetLinkController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $request->validate([
             'email' => 'required|email',
@@ -40,10 +41,16 @@ class PasswordResetLinkController extends Controller
             $request->only('email')
         );
 
-        if ($status == Password::RESET_LINK_SENT) {
+        if ($status === Password::RESET_LINK_SENT) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => __($status)], 200);
+            }
             return back()->with('status', __($status));
         }
 
+        if ($request->expectsJson()) {
+            return response()->json(['message' => __($status)], 400);
+        }
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);

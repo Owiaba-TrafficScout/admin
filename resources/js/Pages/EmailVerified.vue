@@ -18,10 +18,14 @@
                 />
             </svg>
             <h1 class="mb-2 mt-4 text-2xl font-bold text-green-600">
-                Email Verified
+                {{ isEmail ? 'Email Verified' : 'Password reset' }}
             </h1>
             <p class="text-gray-600">
-                Congratulations! Your email is now verified.
+                {{
+                    isEmail
+                        ? 'Congratulations! Your email is now verified.'
+                        : 'Your password has been reset.'
+                }}
             </p>
             <button
                 class="mt-6 rounded bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
@@ -39,7 +43,12 @@
 
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-defineProps<{
-    admin: boolean;
-}>();
+
+const props = withDefaults(
+    defineProps<{
+        admin: boolean;
+        isEmail?: boolean;
+    }>(),
+    { isEmail: true },
+);
 </script>
