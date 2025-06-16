@@ -22,9 +22,9 @@ class StopResource extends JsonResource
             'stop_time' => $this->stop_time,
             'stop_location_x' => $this->stop_location_x,
             'stop_location_y' => $this->stop_location_y,
-            'passenger_count' => $this->passenger_count,
-            'passenger_boarding' => $this->passenger_boarding,
-            'passenger_alighting' => $this->passenger_alighting,
+            'passengers_count' => $this->passengers_count,
+            'passengers_boarding' => $this->passengers_boarding,
+            'passengers_alighting' => $this->passengers_alighting,
             'is_traffic' => $this->is_traffic,
         ];
     }
