@@ -39,10 +39,18 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Centre for Transport Studies, UCT',
                 'email' => 'obiora.nnene@uct.ac.za'
             ]);
+
+            $tenant->subscriptions()->create([
+                'plan_id' => SubscriptionPlan::where('name', 'Enterprise')->first()->id,
+                'trial_ends_at' => now()->addMonths(6),
+                'start_date' => now(),
+                'end_date' => now()->addMonths(6),
+                'status_id' => SubscriptionStatus::where('name', 'active')->first()->id,
+            ]);
             $user =   User::factory()->create([
                 'name' => 'Obiora Nnene',
                 'email' => 'obiora.nnene@uct.ac.za',
-                'password' => 'password',
+                'password' => 'obioraproject',
             ]);
 
             $tenant->users()->syncWithoutDetaching([$user->id => ['tenant_role_id' => config('constants.tenant_roles.admin')]]);

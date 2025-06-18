@@ -14,7 +14,7 @@ class StoreStopAction
      */
     public function execute(array $data): void
     {
-        logger($data);
+  
 
         // Create a new stop record in the database
         TripStop::create($data);

@@ -39,10 +39,9 @@ class TenantController extends Controller
 
         $request->session()->put('tenant_id', $request->tenant_id);
 
-        logger('selected tennant ->' . session('tenant_id'));
         //check if user is tenant admin
         if ($request->user()->isAdminInTenant($request->tenant_id)) {
-            logger('user is admin in tenant ->' . $request->tenant_id);
+
 
             $tenant = Tenant::find($request->tenant_id);
             //check if tenant has projects if yes access the last accessed project
