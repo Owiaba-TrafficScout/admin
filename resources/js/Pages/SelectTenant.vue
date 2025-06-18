@@ -48,6 +48,7 @@ const handleNext = () => {
                     placeholder="Select Organization"
                     label="name"
                     track-by="id"
+                    :show-labels="false"
                 >
                     <template #selection="{ values, isOpen }">
                         <span

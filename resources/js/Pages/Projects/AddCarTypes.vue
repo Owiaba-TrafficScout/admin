@@ -70,6 +70,7 @@ const submit = () => {
                         tagPosition="top"
                         tagPlaceholder="Add this as new car type"
                         @tag="addCarType"
+                        :show-labels="false"
                     >
                         <template #selection="{ values, isOpen }">
                             <span

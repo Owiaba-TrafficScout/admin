@@ -50,6 +50,7 @@ const submit = () => {
                     label="name"
                     track-by="id"
                     multiple
+                    :show-labels="false"
                 >
                     <template #selection="{ values, isOpen }">
                         <span

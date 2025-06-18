@@ -162,6 +162,7 @@ const nameWithPrice = (plan: SubscriptionPlan) => {
                         placeholder="Select plan"
                         :custom-label="nameWithPrice"
                         track-by="id"
+                        :show-labels="false"
                     >
                         <template #selection="{ values, isOpen }">
                             <span
