@@ -90,7 +90,7 @@ class PaymentController extends Controller
 
             //associate user to tenant
 
-            $tenant->users()->syncWithoutDetaching([$user->id => ['tenant_role_id' => env('TENANT_ADMIN_ROLE_ID')]]);
+            $tenant->users()->syncWithoutDetaching([$user->id => ['tenant_role_id' => config('constants.tenant_roles.admin')]]);
 
             //Automatically log in the user
 
