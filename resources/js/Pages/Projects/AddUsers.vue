@@ -7,7 +7,7 @@ import { computed, ref, Ref } from 'vue';
 import { User } from '../Trips.vue';
 
 const props = defineProps<{
-    users: User[];
+    users: User[] | null;
 }>();
 
 const selected_users: Ref<User[]> = ref([]);
@@ -19,7 +19,7 @@ const form = useForm({
     userIds: selectedUsersIds,
 });
 
-const submit_route = props.users[0]?.pivot
+const submit_route = props.users?.[0]?.pivot
     ? 'project.users.store'
     : 'users.tenant.store';
 

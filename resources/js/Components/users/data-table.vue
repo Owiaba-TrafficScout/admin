@@ -7,8 +7,8 @@ import { computed, defineProps, ref } from 'vue';
 import Edit from './Edit.vue';
 
 const props = defineProps<{
-    items: User[];
-    allUsers: User[];
+    items: User[] | null;
+    allUsers: User[] | null;
 }>();
 
 const search = ref('');
@@ -34,7 +34,7 @@ const handleDelete = (id: number) => {
 
 const filteredItems = computed(() => {
     if (search.value != '')
-        return props.items.filter((item: User) => {
+        return props.items?.filter((item: User) => {
             return (
                 item.name.toLowerCase().includes(search.value.toLowerCase()) ||
                 item.email.toLowerCase().includes(search.value.toLowerCase()) ||
