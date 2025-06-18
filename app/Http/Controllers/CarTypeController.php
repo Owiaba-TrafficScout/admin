@@ -26,8 +26,9 @@ class CarTypeController extends Controller
 
     public function destroy(CarType $car_type)
     {
-        $car_type->delete();
-        return redirect()->back()->with('success', 'Car Type deleted.');
+        $project = Project::find(session('project_id'));
+        $project?->carTypes()->detach($car_type->id);
+        return redirect()->back()->with('success', 'Car Type removed from project.');
     }
 
     public function store(Request $request)
@@ -40,21 +41,22 @@ class CarTypeController extends Controller
         return redirect()->back()->with('success', 'Car Type created.');
     }
 
-    public function addCarType(Request $request, Project $project)
+    public function addCarType(Request $request)
     {
         $request->validate([
             'car_type_ids' => 'required|array',
             'car_type_ids.*' => 'integer|exists:car_types,id',
         ]);
-        $project->carTypes()->syncWithoutDetaching($request->car_type_ids);
-        return redirect()->back()->with('success', 'Car Type added to project.');
+
+        $project = Project::find(session('project_id'));
+        $project?->carTypes()->syncWithoutDetaching($request->car_type_ids);
+        return redirect()->route('car-types.index')->with('success', 'Car Types added to project.');
     }
 
-    public function addCarTypePage(Project $project)
+    public function addCarTypePage()
     {
         return Inertia::render('Projects/AddCarTypes', [
-            'project' => $project,
-            'carTypes' => CarType::all(),
+            'carTypes' => CarType::latest()->get(),
         ]);
     }
 }

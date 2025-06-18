@@ -24,11 +24,7 @@ const btnClasses = ref(` ml-10 w-32 inline-flex items-center rounded-md border
     <Layout page="Car Types">
         <div class="flex flex-col">
             <a
-                :href="
-                    route('project.cartype.add.page', {
-                        project: $page.props.selected_project.id,
-                    })
-                "
+                :href="route('project.cartype.add.page')"
                 :class="btnClasses"
                 class="mb-5 w-fit"
                 >Add Car Type</a

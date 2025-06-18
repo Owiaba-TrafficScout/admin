@@ -5,11 +5,9 @@ import { Head, useForm } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import { ref, Ref } from 'vue';
 import { CarType } from '../CarTypes.vue';
-import { Project } from '../Projects.vue';
 
 const props = defineProps<{
     carTypes: CarType[];
-    project: Project;
 }>();
 
 const car_types: Ref<CarType[]> = ref([]);
@@ -38,7 +36,7 @@ const form = useForm({
 
 const submit = () => {
     form.car_type_ids = car_types.value.map((carType) => carType.id);
-    form.post(route('project.cartype.add', { project: props.project.id }), {
+    form.post(route('project.cartype.add'), {
         onFinish: () => {
             form.reset();
         },

@@ -73,8 +73,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::patch('/{car_type}', [CarTypeController::class, 'update'])->name('car-types.update');
         Route::delete('/{car_type}', [CarTypeController::class, 'destroy'])->name('car-types.destroy');
     });
-    Route::post('/project/{project}/cartype/add', [CarTypeController::class, 'addCarType'])->name('project.cartype.add');
-    Route::get('/project/{project}/cartype/add', [CarTypeController::class, 'addCarTypePage'])->name('project.cartype.add.page');
+    Route::post('/project/cartype/add', [CarTypeController::class, 'addCarType'])->name('project.cartype.add');
+    Route::get('/project/cartype/add', [CarTypeController::class, 'addCarTypePage'])->name('project.cartype.add.page');
 
     //Users routes
     Route::group(['prefix' => '/users'], function () {

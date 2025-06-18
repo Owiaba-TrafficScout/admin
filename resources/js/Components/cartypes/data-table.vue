@@ -1,37 +1,32 @@
-<script setup>
+<script setup lang="ts">
 import SearchForm from '@/Components/SearchForm.vue';
+import { CarType } from '@/Pages/CarTypes.vue';
 import { useForm } from '@inertiajs/vue3';
 import { computed, defineProps, ref } from 'vue';
-import Edit from './Edit.vue';
 
-const props = defineProps({
-    items:
-        {
-            type: Array,
-            required: true,
-        } || [],
-});
+const props = defineProps<{
+    items: CarType[];
+}>();
 
 const search = ref('');
-const handleSearch = (s) => {
+const handleSearch = (s: string) => {
     search.value = s;
 };
 
-const handleDelete = (id) => {
+const handleDelete = (id: number) => {
     const form = useForm({});
-    if (confirm('Are you sure you want to delete this item?')) {
+    if (
+        confirm(
+            'Are you sure you want to remove this car type from current project?',
+        )
+    ) {
         form.delete(route('car-types.destroy', id));
     }
 };
 const filteredItems = computed(() => {
     if (search.value != '')
         return props.items.filter((item) => {
-            return (
-                item.name.toLowerCase().includes(search.value.toLowerCase()) ||
-                item.description
-                    .toLowerCase()
-                    .includes(search.value.toLowerCase())
-            );
+            return item.name.toLowerCase().includes(search.value.toLowerCase());
         });
     return props.items;
 });
@@ -53,11 +48,7 @@ const filteredItems = computed(() => {
                         >
                             Name
                         </th>
-                        <th
-                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
-                        >
-                            Description
-                        </th>
+
                         <th
                             class="px-4 py-4 font-medium text-black dark:text-white"
                         >
@@ -72,15 +63,12 @@ const filteredItems = computed(() => {
                                 {{ item.name }}
                             </h5>
                         </td>
-                        <td class="px-4 py-5">
-                            <p class="text-black dark:text-white">
-                                {{ item.description }}
-                            </p>
-                        </td>
 
                         <td class="px-4 py-5">
                             <div class="flex items-center space-x-3.5">
-                                <Edit :car_type="item">
+                                <!-- TODO: check on this editing of car types because if we give access to users to edit cartypes it will in effect affect others -->
+
+                                <!-- <Edit :car_type="item">
                                     <button class="hover:text-primary">
                                         <svg
                                             class="fill-current"
@@ -100,7 +88,7 @@ const filteredItems = computed(() => {
                                             />
                                         </svg>
                                     </button>
-                                </Edit>
+                                </Edit> -->
 
                                 <button
                                     class="hover:text-primary"

@@ -69,8 +69,9 @@ test('car types can be added to project', function () {
     $newCarTypes = CarType::factory(3)->create();
 
 
+    session()->put('project_id', $project->id);
 
-    $response = $this->post(route('project.cartype.add', $project->id), [
+    $response = $this->post(route('project.cartype.add'), [
         'car_type_ids' => $newCarTypes->pluck('id')->toArray(),
     ]);
 
