@@ -6,5 +6,11 @@ return [
         'user' => env('TENANT_USER_ROLE_ID', 2),   // Default to 2 if .env variable is not set
         // other roles...
     ],
+    'subscription_statuses' => [
+        'active' => 1,
+        'expired' => 2,
+        'cancelled' => 3,
+        // other statuses...
+    ],
     // other constants...
 ];

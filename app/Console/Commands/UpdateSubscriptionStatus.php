@@ -32,8 +32,8 @@ class UpdateSubscriptionStatus extends Command
 
         //update subscriptions where the end date has passed the current date
         Subscription::where('end_date', '<', $now)
-            ->where('status_id', 1)
-            ->update(['status_id' => 2]);
+            ->where('status_id', config('constants.subscription_status.active'))
+            ->update(['status_id' => config('constants.subscription_status.expired')]);
 
         $this->info('subscriptions updated successfully');
         return 0;
