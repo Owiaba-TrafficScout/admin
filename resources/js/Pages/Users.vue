@@ -5,13 +5,15 @@ import { provide } from 'vue';
 import { User } from './Trips.vue';
 
 const props = defineProps<{
-    users: User[];
+    users: User[] | null;
     roles: { id: number; name: string }[];
-    allUsers: User[];
+    allUsers: User[] | null;
 }>();
-const pageTitle = props.users[0].pivot.role_id
-    ? 'Project members'
-    : 'Organization members';
+const pageTitle = props.users
+    ? props.users[0].pivot.role_id
+        ? 'Project members'
+        : 'Organization members'
+    : 'Users';
 provide('roles', props.roles);
 </script>
 
