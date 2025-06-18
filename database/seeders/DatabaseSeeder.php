@@ -34,6 +34,18 @@ class DatabaseSeeder extends Seeder
             $this->call(RoleSeeder::class);
             $this->call(TenantRoleSeeder::class);
             $this->call(PaymentStatusSeeder::class);
+
+            $tenant = Tenant::create([
+                'name' => 'Centre for Transport Studies, UCT',
+                'email' => 'obiora.nnene@uct.ac.za'
+            ]);
+            $user =   User::factory()->create([
+                'name' => 'Obiora Nnene',
+                'email' => 'obiora.nnene@uct.ac.za',
+                'password' => 'password',
+            ]);
+
+            $tenant->users()->attach($user->id, ['tenant_role_id' => config('constants.tenant_roles.admin')]); // Assuming the first user is the tenant admin
         } else {
             $tenants = Tenant::factory(10)->create();
             $users = User::factory(10)->create();
