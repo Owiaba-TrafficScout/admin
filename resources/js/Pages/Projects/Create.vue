@@ -128,7 +128,7 @@ const submit = () => {
                         multiple
                         taggable
                         tagPosition="top"
-                        tagPlaceholder="Add this as new car type"
+                        tagPlaceholder="press enter to create new car type"
                         @tag="addCarType"
                         :show-labels="false"
                     >
