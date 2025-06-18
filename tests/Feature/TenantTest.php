@@ -90,8 +90,8 @@ test('can get all tenant admins', function () {
 
 
     // Create users for the tenant
-    $tenant->users()->attach($user1->id, ['tenant_role_id' => env('TENANT_ADMIN_ROLE_ID')]);
-    $tenant->users()->attach($user2->id, ['tenant_role_id' => env('TENANT_ADMIN_ROLE_ID')]);
+    $tenant->users()->attach($user1->id, ['tenant_role_id' => config('constants.tenant_roles.admin')]);
+    $tenant->users()->attach($user2->id, ['tenant_role_id' => config('constants.tenant_roles.admin')]);
 
     // Assert that the tenant admins relationship returns the correct users
     $admins = $tenant->admins;

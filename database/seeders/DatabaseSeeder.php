@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
                 'password' => 'password',
             ]);
 
-            $tenant->users()->attach($user->id, ['tenant_role_id' => config('constants.tenant_roles.admin')]); // Assuming the first user is the tenant admin
+            $tenant->users()->syncWithoutDetaching([$user->id => ['tenant_role_id' => config('constants.tenant_roles.admin')]]);
         } else {
             $tenants = Tenant::factory(10)->create();
             $users = User::factory(10)->create();
