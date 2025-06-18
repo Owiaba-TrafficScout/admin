@@ -9,11 +9,14 @@ const props = defineProps<{
     roles: { id: number; name: string }[];
     allUsers: User[] | null;
 }>();
-const pageTitle = props.users
-    ? props.users[0].pivot.role_id
-        ? 'Project members'
-        : 'Organization members'
-    : 'Users';
+const pageTitle = (() => {
+    if (!props.users?.length) return 'Users';
+
+    const firstUser = props.users[0];
+    if (!firstUser?.pivot) return 'Users';
+
+    return firstUser.pivot.role_id ? 'Project members' : 'Organization members';
+})();
 provide('roles', props.roles);
 </script>
 

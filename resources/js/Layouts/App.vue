@@ -122,7 +122,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                             ]"
                         >
                             <Users class="h-4 w-4" />
-                            Users
+                            Project Users
                         </Link>
 
                         <!-- HORIZONTAL RULE -->
@@ -202,7 +202,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                                 class="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
                             >
                                 <Users class="h-5 w-5" />
-                                Users
+                                Project Users
                             </Link>
                         </nav>
                     </SheetContent>
