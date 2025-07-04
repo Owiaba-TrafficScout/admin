@@ -29,6 +29,7 @@
         "vue-tsc": "^2.0.24"
     },
     "dependencies": {
+        "@langchain/langgraph-sdk": "^0.0.89",
         "@radix-icons/vue": "^1.0.0",
         "@suadelabs/vue3-multiselect": "^1.0.2",
         "@tanstack/vue-table": "^8.20.5",
