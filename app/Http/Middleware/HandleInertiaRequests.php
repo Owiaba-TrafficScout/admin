@@ -69,7 +69,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn() => $request->session()->get('error')
             ],
             'projects' => $isTenantAdmin
-                ? Tenant::find(session('tenant_id'))->projects
+                ? Tenant::find(session('tenant_id'))?->projects
                 : $user?->projects()
                 ->where('tenant_id', session('tenant_id'))
                 ->whereHas('users', function ($query) use ($user) {
