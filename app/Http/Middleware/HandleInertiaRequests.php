@@ -32,22 +32,29 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $isTenantAdmin = $user && $user->isAdminInTenant();
+        $isTenantAdmin = $user && ($user->isAdminInTenant() || $user->isSuperAdmin());
         $isProjectAdmin = $user && $user->isAdminInProject();
         $tenant = $user?->tenants()->find(session('tenant_id'));
         $projectId = session('project_id');
         $lastProjectId = $tenant?->projects->last()?->id;
-        $selectedProject = $isTenantAdmin
-            // For tenant admins:
-            ? $tenant?->projects()->find($projectId ?? $lastProjectId)
-            // For non-tenant admins:
-            : (
-                $user?->projects->find($projectId)
-                ?: $user?->adminProjects()
-                ->where('tenant_id', session('tenant_id'))
-                ->orderByDesc('created_at')
-                ->first()
-            );
+        $selectedProject = null;
+
+        if (!$request->user()->isSuperAdmin()) {
+            $selectedProject = $isTenantAdmin
+                // For tenant admins:
+                ? $tenant?->projects()->find($projectId ?? $lastProjectId)
+                // For non-tenant admins:
+                : (
+                    $user?->projects->find($projectId)
+                    ?: $user?->adminProjects()
+                    ->where('tenant_id', session('tenant_id'))
+                    ->orderByDesc('created_at')
+                    ->first()
+                );
+        } else {
+            // For super admins, we can just use the project ID from the session
+            $selectedProject = Project::find($projectId);
+        }
 
         return [
             ...parent::share($request),

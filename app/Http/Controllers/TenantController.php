@@ -13,8 +13,13 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        // Option A: all tenants
-        // $tenants = $user->tenants;
+        if ($user->isSuperAdmin()) {
+            // Option A: show all tenants
+            $tenants = Tenant::all();
+            return Inertia::render('SelectTenant', [
+                'tenants' => $tenants,
+            ]);
+        }
 
         // Option B: only tenants where the user is Admin on at least one project or is tenant admin
         $adminRoleId = \App\Models\Role::where('name', 'Admin')->value('id');
@@ -40,7 +45,7 @@ class TenantController extends Controller
         $request->session()->put('tenant_id', $request->tenant_id);
 
         //check if user is tenant admin
-        if ($request->user()->isAdminInTenant($request->tenant_id)) {
+        if ($request->user()->isAdminInTenant($request->tenant_id) || $request->user()->isSuperAdmin()) {
 
 
             $tenant = Tenant::find($request->tenant_id);
