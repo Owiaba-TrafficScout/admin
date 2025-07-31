@@ -32,6 +32,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $isSuperAdmin = $user && $user->isSuperAdmin();
         $isTenantAdmin = $user && ($user->isAdminInTenant() || $user->isSuperAdmin());
         $isProjectAdmin = $user && $user->isAdminInProject();
         $tenant = $user?->tenants()->find(session('tenant_id'));
@@ -39,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
 
-        if (!$request->user()->isSuperAdmin()) {
+        if (!$isSuperAdmin) {
             $selectedProject = $isTenantAdmin
                 // For tenant admins:
                 ? $tenant?->projects()->find($projectId ?? $lastProjectId)
