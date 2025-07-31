@@ -20,3 +20,46 @@ export interface Stop {
     passengers_alighting: number | null;
     is_traffic: boolean | null;
 }
+
+export interface chatMessage {
+    question: string;
+    tenant_id: number;
+    project_ids?: number[];
+}
+
+export interface ChartConfig {
+    type: string;
+    data: {
+        labels: string[];
+        datasets: Array<{
+            label: string;
+            data: number[];
+            backgroundColor: string[];
+        }>;
+    };
+}
+
+export interface FinalAnalysis {
+    question: string;
+    sql_query: string;
+    data_count: number;
+    chart_config: ChartConfig;
+    insights: string;
+    follow_up_questions: string[];
+    execution_time: string; // ISO 8601 timestamp
+    tenant_id: number;
+    project_ids: number[] | null;
+    exploration_depth: number;
+    analysis_type: 'single_analyst' | 'collaborative' | string;
+}
+
+export interface Conversation {
+    title: string;
+    preview: string;
+}
+
+export interface Message {
+    role: 'user' | 'assistant';
+    content: string | ChartConfig;
+    timestamp: Date;
+}

@@ -135,7 +135,7 @@
                                     class="max-w-md text-sm text-muted-foreground"
                                 >
                                     Ask me anything! I'm here to help with
-                                    questions, tasks, and creative projects.
+                                    questions and provide insights.
                                 </p>
                             </div>
                             <div class="flex flex-wrap justify-center gap-2">
@@ -153,8 +153,8 @@
 
                     <TransitionGroup name="message" tag="div">
                         <div
-                            v-for="message in messages"
-                            :key="message.id"
+                            v-for="(message, index) in messages"
+                            :key="index"
                             class="animate-fade-in flex items-start space-x-3"
                             :class="{
                                 'flex-row-reverse space-x-reverse':
@@ -197,7 +197,35 @@
                                                 : 'bg-muted'
                                         "
                                     >
-                                        {{ message.content }}
+                                        <div
+                                            v-if="
+                                                typeof message.content ===
+                                                'string'
+                                            "
+                                        >
+                                            {{ message.content }}
+                                        </div>
+                                        <div v-else>
+                                            <div
+                                                v-if="
+                                                    message.content.type ==
+                                                    'table'
+                                                "
+                                            >
+                                                Table Displayed
+                                            </div>
+                                            <component
+                                                v-else
+                                                :is="
+                                                    getChartComponent(
+                                                        message.content.type.toLowerCase(),
+                                                    )
+                                                "
+                                                :id="message.content.type"
+                                                :options="{ responsive: true }"
+                                                :data="message.content.data"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -208,7 +236,7 @@
                     <div
                         v-if="isTyping"
                         class="animate-fade-in flex items-start space-x-3"
-                     >
+                    >
                         <div
                             class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-muted"
                         >
@@ -273,17 +301,34 @@ import {
 } from 'lucide-vue-next';
 import { nextTick, onMounted, ref } from 'vue';
 
-interface Message {
-    id: string;
-    role: 'user' | 'assistant';
-    content: string;
-    timestamp: Date;
-}
+import { chatMessage, Conversation, FinalAnalysis, Message } from '@/interface';
+import App from '@/Layouts/App.vue';
+import axios from 'axios';
+import {
+    ArcElement,
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    LineElement,
+    PointElement,
+    Tooltip,
+} from 'chart.js';
+import { Bar, Line, Pie } from 'vue-chartjs';
 
-interface Conversation {
-    title: string;
-    preview: string;
-}
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Tooltip,
+    Legend,
+);
+
+const base_url = 'http://127.0.0.1:8000';
 
 const messages = ref<Message[]>([]);
 const inputMessage = ref('');
@@ -318,9 +363,8 @@ const sendMessage = async (content: string) => {
     if (!content.trim() || isTyping.value) return;
 
     const userMessage: Message = {
-        id: Date.now().toString(),
         role: 'user',
-        content: content.trim(),
+        content: content,
         timestamp: new Date(),
     };
 
@@ -331,38 +375,41 @@ const sendMessage = async (content: string) => {
     await nextTick();
     scrollToBottom();
 
-    // Simulate AI response
-    setTimeout(
-        () => {
-            const aiMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: generateAIResponse(content),
-                timestamp: new Date(),
-            };
-            messages.value.push(aiMessage);
-            isTyping.value = false;
-            nextTick(() => scrollToBottom());
-        },
-        1000 + Math.random() * 2000,
-    );
-};
+    let chatMessage: chatMessage = {
+        question: content,
+        tenant_id: 1,
+    };
 
-const generateAIResponse = (userMessage: string): string => {
-    const responses = [
-        "That's a great question! Let me help you with that.",
-        "I understand what you're looking for. Here's what I think...",
-        "Thanks for asking! I'd be happy to explain that concept.",
-        "That's an interesting point. Let me share some insights...",
-        "I can definitely help you with that. Here's my suggestion...",
-        'Great question! Let me break that down for you.',
-        "I see what you're asking about. Here's a detailed explanation...",
-        "That's a common question, and I'm glad you asked!",
-    ];
+    try {
+        const response = await axios.post(`${base_url}/chat`, chatMessage);
+        const finalAnalysis: FinalAnalysis = response.data.final_analysis;
 
-    const randomResponse =
-        responses[Math.floor(Math.random() * responses.length)];
-    return `${randomResponse} You asked: "${userMessage}"`;
+        const assistantMessage: Message = {
+            role: 'assistant',
+            content: finalAnalysis.insights,
+            timestamp: new Date(),
+        };
+
+        const assistantMessageGraph: Message = {
+            role: 'assistant',
+            content: finalAnalysis.chart_config,
+            timestamp: new Date(),
+        };
+
+        messages.value.push(assistantMessageGraph, assistantMessage);
+    } catch (error) {
+        const errorMessage: Message = {
+            role: 'assistant',
+            content: 'Sorry, I encountered an error. Please try again.',
+            timestamp: new Date(),
+        };
+
+        messages.value.push(errorMessage);
+    } finally {
+        isTyping.value = false;
+        await nextTick();
+        scrollToBottom();
+    }
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -394,6 +441,21 @@ const toggleTheme = () => {
 
 const formatTime = (date: Date): string => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+const getChartComponent = (type: string) => {
+    // Return appropriate chart component based on type
+    // You'll need to import and register your chart components
+    switch (type) {
+        case 'bar':
+            return Bar;
+        case 'line':
+            return Line;
+        case 'pie':
+            return Pie;
+        default:
+            return 'div';
+    }
 };
 
 onMounted(() => {
