@@ -23,7 +23,7 @@ class ProjectController extends Controller
         $tenant = Tenant::find($tenant_id);
         $roles = Role::all();
         $projects = [];
-        if (auth()->user()->isAdminInTenant($tenant_id)) {
+        if (auth()->user()->isAdminInTenant()) {
             $projects = $tenant->projects->load(['trips', 'users.pivot.role']);
         } else {
             $projects = auth()->user()->adminProjects->load(['trips', 'users.pivot.role']);
@@ -139,7 +139,7 @@ class ProjectController extends Controller
         ]);
 
         // Check if the user is an admin in the selected project
-        if (!$request->user()->isAdminInTenant() && !$request->user()->isAdminInProject($request->project_id)) {
+        if (!($request->user()->isAdminInTenant() || $request->user()->isAdminInProject($request->project_id))) {
             //unauthorized
             return redirect()->back()->with('error', 'You are not allowed to switch to this project.');
         }

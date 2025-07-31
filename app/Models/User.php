@@ -140,7 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdminInAnyTenant(): bool
     {
-        return $this->tenantsWhereAdmin()->exists();
+        return $this->tenantsWhereAdmin()->exists() || $this->isSuperAdmin();
     }
 
     /**
@@ -151,7 +151,17 @@ class User extends Authenticatable implements MustVerifyEmail
         if (is_null($tenant_id)) {
             $tenant_id = session('tenant_id');
         }
-        return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists();
+        return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists() ||
+            $this->isSuperAdmin();
+    }
+
+    /**
+     * Check if user is super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->where('email', config('constants.super_admin_email'))
+            ->exists();
     }
 
     /**
