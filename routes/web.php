@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\CarTypeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DataPilotController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PaymentController;
@@ -89,6 +90,10 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('payments.index');
         Route::patch('/{payment}', [PaymentController::class, 'update'])->name('payments.update');
         Route::delete('/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+    });
+
+    Route::group(['prefix' => '/data-pilot'], function () {
+        Route::get('/', [DataPilotController::class, 'index'])->name('data-pilot.index');
     });
 
     //Paystack payemnt routes

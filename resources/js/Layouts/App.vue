@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    BrainIcon,
     Car,
     CircleUser,
     Home,
@@ -140,6 +141,19 @@ const currentProject = computed(() => usePage().props.selected_project);
                         >
                             <Package class="h-4 w-4" />
                             Project Settings
+                        </Link>
+                        <Link
+                            :href="route('data-pilot.index')"
+                            :class="[
+                                {
+                                    'bg-muted text-primary':
+                                        route().current('data-pilot.index'),
+                                },
+                                classes,
+                            ]"
+                        >
+                            <BrainIcon class="h-4 w-4" />
+                            DataPilot
                         </Link>
                     </nav>
                 </div>
