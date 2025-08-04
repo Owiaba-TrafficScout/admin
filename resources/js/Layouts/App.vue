@@ -153,7 +153,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                             ]"
                         >
                             <BrainIcon class="h-4 w-4" />
-                            DataPilot
+                            Tripsense
                         </Link>
                     </nav>
                 </div>

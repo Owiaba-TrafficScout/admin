@@ -1,464 +1,309 @@
+<script setup lang="ts">
+import { Button } from '@/Components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/Components/ui/card';
+import Layout from '@/Layouts/App.vue';
+import { Head, usePage } from '@inertiajs/vue3';
+import axios from 'axios';
+import { computed, ref } from 'vue';
+
+/* ──────────────────────────
+   Chart.js + vue-chartjs setup
+   ────────────────────────── */
+import { Chart as ChartJS, registerables } from 'chart.js';
+import { Bar, Line, Pie } from 'vue-chartjs';
+ChartJS.register(...registerables);
+
+// ──────────────────────────
+const page = usePage();
+const tenantId = ref(page.props.selected_project.tenant_id);
+
+// --- Component State ---
+const query = ref('');
+const isLoading = ref(false);
+const statusMessage = ref('');
+const textInsight = ref('');
+const chartConfigBackend = ref<any>(null);
+const error = ref('');
+
+// Add chart type selection state
+const selectedChartType = ref('AI'); // Default to AI
+
+// --- Reactive props for <Chart /> ---
+const chartType = computed(() => {
+    if (selectedChartType.value === 'AI') {
+        return chartConfigBackend.value?.type ?? 'bar';
+    }
+    return selectedChartType.value.toLowerCase();
+});
+
+// Chart-specific computed properties
+const barChartData = computed(
+    () => chartConfigBackend.value?.data ?? { labels: [], datasets: [] },
+);
+
+const lineChartData = computed(
+    () => chartConfigBackend.value?.data ?? { labels: [], datasets: [] },
+);
+
+const pieChartData = computed(
+    () => chartConfigBackend.value?.data ?? { labels: [], datasets: [] },
+);
+
+function sanitiseOptions(raw?: any) {
+    const base = { responsive: true, maintainAspectRatio: false };
+    if (!raw) return base;
+    return {
+        ...base,
+        ...raw,
+        plugins: raw.plugins ?? {},
+        scales: raw.scales ?? {},
+    };
+}
+
+const barChartOptions = computed(() =>
+    sanitiseOptions(chartConfigBackend.value?.options),
+);
+
+const lineChartOptions = computed(() =>
+    sanitiseOptions(chartConfigBackend.value?.options),
+);
+
+const pieChartOptions = computed(() => {
+    const options = sanitiseOptions(chartConfigBackend.value?.options);
+    // Remove scales for pie chart as it doesn't use them
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { scales, ...pieOptions } = options;
+    return pieOptions;
+});
+
+// --- API Interaction ---
+const askDataPilot = async () => {
+    if (!query.value || isLoading.value) return;
+    if (!tenantId.value) {
+        error.value = 'Tenant ID is missing. Please refresh or re-login.';
+        return;
+    }
+
+    isLoading.value = true;
+    error.value = '';
+    textInsight.value = '';
+    chartConfigBackend.value = null;
+    statusMessage.value = 'Initializing agent...';
+
+    try {
+        console.log('Sending:', {
+            question: query.value,
+            tenant_id: tenantId.value,
+        });
+        const { data } = await axios.post(
+            'http://localhost:5000/api/query',
+            { question: query.value, tenant_id: tenantId.value },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+            },
+        );
+
+        if (data.error) {
+            error.value = data.error;
+            statusMessage.value = 'An error occurred.';
+        } else {
+            textInsight.value = data.text_insight || '';
+            chartConfigBackend.value = data.chart_config ?? null;
+            statusMessage.value = 'Analysis complete.';
+        }
+    } catch (e: any) {
+        error.value = e.message ?? 'Unknown connection error.';
+        statusMessage.value = 'Connection failed.';
+    } finally {
+        isLoading.value = false;
+    }
+};
+</script>
+
 <template>
-    <App page="DataPilot">
-        <div class="flex h-screen bg-background">
-            <!-- Sidebar -->
-            <div class="flex w-64 flex-col border-r border-border bg-muted/50">
-                <!-- Header -->
-                <div class="border-b border-border p-4">
-                    <div class="flex items-center space-x-2">
-                        <div
-                            class="flex h-8 w-8 items-center justify-center rounded-full bg-primary"
-                        >
-                            <Bot class="h-4 w-4 text-primary-foreground" />
-                        </div>
-                        <div>
-                            <h1 class="text-sm font-semibold">AI Assistant</h1>
-                            <p class="text-xs text-muted-foreground">
-                                Always ready to help
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <Head title="Tripsense" />
 
-                <!-- Conversation History -->
-                <div class="custom-scrollbar flex-1 overflow-y-auto">
-                    <div class="space-y-2 p-4">
-                        <div
-                            class="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                        >
-                            Recent Conversations
+    <Layout page="Tripsense">
+        <!-- header slot kept -->
+        <template #header>
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                Tripsense Analytics
+            </h2>
+        </template>
+
+        <div class="py-12">
+            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                <!-- Input Card (unchanged) -->
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Ask a Question</CardTitle>
+                        <CardDescription>
+                            Ask a question about your transportation data in
+                            plain English. Tripsense will analyze it and provide
+                            insights.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div class="grid w-full items-center gap-4">
+                            <div class="flex flex-col space-y-1.5">
+                                <textarea
+                                    id="query"
+                                    class="block w-full rounded-md border border-gray-300 p-2 text-base shadow-sm focus:border-primary focus:ring focus:ring-primary/20"
+                                    placeholder="e.g., What were the top 5 trip purposes last month?"
+                                    v-model="query"
+                                    @keyup.enter.prevent="askDataPilot"
+                                    :disabled="isLoading"
+                                    rows="3"
+                                ></textarea>
+                            </div>
                         </div>
-                        <div
-                            v-for="(conversation, index) in conversations"
-                            :key="index"
-                            class="group cursor-pointer rounded-md p-3 transition-colors hover:bg-accent"
-                            :class="{
-                                'bg-accent': activeConversation === index,
-                            }"
-                            @click="activeConversation = index"
-                        >
-                            <div class="flex items-start space-x-2">
-                                <MessageCircle
-                                    class="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground"
-                                />
-                                <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-medium">
-                                        {{ conversation.title }}
-                                    </p>
+                        <div class="mt-4 flex justify-end">
+                            <Button
+                                @click="askDataPilot"
+                                :disabled="isLoading || !query"
+                            >
+                                {{
+                                    isLoading ? 'Analyzing...' : 'Ask Tripsense'
+                                }}
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <!-- Results Section -->
+                <div v-if="isLoading || error || textInsight">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Analysis Result</CardTitle>
+                            <CardDescription v-if="isLoading">
+                                {{ statusMessage }}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <!-- Loading / Error / Success blocks unchanged except chart part -->
+                            <div
+                                v-if="isLoading"
+                                class="flex items-center justify-center p-8"
+                            >
+                                <!-- spinner svg unchanged -->
+                            </div>
+
+                            <div
+                                v-if="error"
+                                class="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+                                role="alert"
+                            >
+                                <strong class="font-bold">Error: </strong>
+                                <span class="block sm:inline">{{ error }}</span>
+                            </div>
+
+                            <div
+                                v-if="!isLoading && textInsight"
+                                class="space-y-6"
+                            >
+                                <div>
+                                    <h3 class="mb-2 text-lg font-semibold">
+                                        Text Insight
+                                    </h3>
                                     <p
-                                        class="truncate text-xs text-muted-foreground"
+                                        class="whitespace-pre-wrap text-gray-700"
                                     >
-                                        {{ conversation.preview }}
+                                        {{ textInsight }}
                                     </p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- New Chat Button -->
-                <div class="border-t border-border p-4">
-                    <button
-                        @click="startNewChat"
-                        class="flex w-full items-center justify-center space-x-2 rounded-md bg-primary p-3 text-primary-foreground transition-colors hover:bg-primary/90"
-                    >
-                        <Plus class="h-4 w-4" />
-                        <span class="text-sm font-medium">New Chat</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Main Chat Area -->
-            <div class="flex flex-1 flex-col">
-                <!-- Chat Header -->
-                <div class="border-b border-border bg-card p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80"
-                            >
-                                <Bot class="h-5 w-5 text-primary-foreground" />
-                            </div>
-                            <div>
-                                <h2 class="font-semibold">AI Assistant</h2>
-                                <div
-                                    class="flex items-center space-x-1 text-sm text-muted-foreground"
-                                >
+                                <div v-if="chartConfigBackend" class="mt-6">
                                     <div
-                                        class="h-2 w-2 rounded-full bg-green-500"
-                                    ></div>
-                                    <span>Online</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button
-                                @click="clearChat"
-                                class="rounded-md p-2 transition-colors hover:bg-accent"
-                                title="Clear chat"
-                            >
-                                <Trash2 class="h-4 w-4" />
-                            </button>
-                            <button
-                                @click="toggleTheme"
-                                class="rounded-md p-2 transition-colors hover:bg-accent"
-                                title="Toggle theme"
-                            >
-                                <Sun class="h-4 w-4" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Messages Container -->
-                <div
-                    class="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-4"
-                    ref="messagesContainer"
-                >
-                    <div
-                        v-if="messages.length === 0"
-                        class="flex flex-1 items-center justify-center"
-                    >
-                        <div class="space-y-4 text-center">
-                            <div
-                                class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted"
-                            >
-                                <MessageCircle
-                                    class="h-8 w-8 text-muted-foreground"
-                                />
-                            </div>
-                            <div class="space-y-2">
-                                <h3 class="font-semibold">
-                                    Start a conversation
-                                </h3>
-                                <p
-                                    class="max-w-md text-sm text-muted-foreground"
-                                >
-                                    Ask me anything! I'm here to help with
-                                    questions and provide insights.
-                                </p>
-                            </div>
-                            <div class="flex flex-wrap justify-center gap-2">
-                                <button
-                                    v-for="suggestion in suggestions"
-                                    :key="suggestion"
-                                    @click="sendMessage(suggestion)"
-                                    class="rounded-full bg-muted px-3 py-1.5 text-xs transition-colors hover:bg-accent"
-                                >
-                                    {{ suggestion }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <TransitionGroup name="message" tag="div">
-                        <div
-                            v-for="(message, index) in messages"
-                            :key="index"
-                            class="animate-fade-in flex items-start space-x-3"
-                            :class="{
-                                'flex-row-reverse space-x-reverse':
-                                    message.role === 'user',
-                            }"
-                        >
-                            <div
-                                class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full"
-                                :class="
-                                    message.role === 'user'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted'
-                                "
-                            >
-                                <User
-                                    v-if="message.role === 'user'"
-                                    class="h-4 w-4"
-                                />
-                                <Bot v-else class="h-4 w-4" />
-                            </div>
-                            <div class="flex-1 space-y-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-sm font-medium">
-                                        {{
-                                            message.role === 'user'
-                                                ? 'You'
-                                                : 'AI Assistant'
-                                        }}
-                                    </span>
-                                    <span class="text-xs text-muted-foreground">
-                                        {{ formatTime(message.timestamp) }}
-                                    </span>
-                                </div>
-                                <div class="prose prose-sm max-w-none">
-                                    <div
-                                        class="rounded-lg p-3"
-                                        :class="
-                                            message.role === 'user'
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'bg-muted'
-                                        "
+                                        class="mb-4 flex items-center justify-between"
                                     >
-                                        <div
-                                            v-if="
-                                                typeof message.content ===
-                                                'string'
-                                            "
-                                        >
-                                            {{ message.content }}
-                                        </div>
-                                        <div v-else>
-                                            <div
-                                                v-if="
-                                                    message.content.type ==
-                                                    'table'
-                                                "
+                                        <h3 class="text-lg font-semibold">
+                                            Visualization
+                                        </h3>
+
+                                        <!-- Chart Type Radio Buttons -->
+                                        <div class="flex gap-4">
+                                            <label
+                                                class="flex items-center gap-2"
                                             >
-                                                Table Displayed
-                                            </div>
-                                            <component
-                                                v-else
-                                                :is="
-                                                    getChartComponent(
-                                                        message.content.type.toLowerCase(),
-                                                    )
-                                                "
-                                                :id="message.content.type"
-                                                :options="{ responsive: true }"
-                                                :data="message.content.data"
-                                            />
+                                                <input
+                                                    type="radio"
+                                                    v-model="selectedChartType"
+                                                    value="AI"
+                                                    class="text-primary focus:ring-primary"
+                                                />
+                                                <span class="text-sm">AI</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center gap-2"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    v-model="selectedChartType"
+                                                    value="bar"
+                                                    class="text-primary focus:ring-primary"
+                                                />
+                                                <span class="text-sm">Bar</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center gap-2"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    v-model="selectedChartType"
+                                                    value="line"
+                                                    class="text-primary focus:ring-primary"
+                                                />
+                                                <span class="text-sm"
+                                                    >Line</span
+                                                >
+                                            </label>
+                                            <label
+                                                class="flex items-center gap-2"
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    v-model="selectedChartType"
+                                                    value="pie"
+                                                    class="text-primary focus:ring-primary"
+                                                />
+                                                <span class="text-sm">Pie</span>
+                                            </label>
                                         </div>
+                                    </div>
+
+                                    <div class="h-96">
+                                        <!-- Dynamic Chart Components -->
+                                        <Bar
+                                            v-if="chartType === 'bar'"
+                                            :data="barChartData"
+                                            :options="barChartOptions"
+                                        />
+                                        <Line
+                                            v-else-if="chartType === 'line'"
+                                            :data="lineChartData"
+                                            :options="lineChartOptions"
+                                        />
+                                        <Pie
+                                            v-else-if="chartType === 'pie'"
+                                            :data="pieChartData"
+                                            :options="pieChartOptions"
+                                        />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </TransitionGroup>
-
-                    <!-- Typing indicator -->
-                    <div
-                        v-if="isTyping"
-                        class="animate-fade-in flex items-start space-x-3"
-                    >
-                        <div
-                            class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-muted"
-                        >
-                            <Bot class="h-4 w-4" />
-                        </div>
-                        <div class="flex-1 space-y-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-sm font-medium"
-                                    >AI Assistant</span
-                                >
-                                <span class="text-xs text-muted-foreground"
-                                    >typing...</span
-                                >
-                            </div>
-                            <div class="rounded-lg bg-muted p-3">
-                                <div class="typing-dots"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Area -->
-                <div class="border-t border-border bg-card p-4">
-                    <div class="flex items-end space-x-2">
-                        <div class="relative flex-1">
-                            <textarea
-                                v-model="inputMessage"
-                                @keydown="handleKeydown"
-                                :disabled="isTyping"
-                                placeholder="Type your message..."
-                                class="w-full resize-none rounded-lg border border-input bg-background px-4 py-3 pr-12 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                                rows="1"
-                                ref="messageInput"
-                            ></textarea>
-                            <button
-                                @click="sendMessage(inputMessage)"
-                                :disabled="!inputMessage.trim() || isTyping"
-                                class="absolute bottom-2 right-2 rounded-md bg-primary p-2 text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                                <Send class="h-4 w-4" />
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-2 text-xs text-muted-foreground">
-                        Press Enter to send, Shift+Enter for new line
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
-    </App>
+    </Layout>
 </template>
-
-<script setup lang="ts">
-import {
-    Bot,
-    MessageCircle,
-    Plus,
-    Send,
-    Sun,
-    Trash2,
-    User,
-} from 'lucide-vue-next';
-import { nextTick, onMounted, ref } from 'vue';
-
-import { chatMessage, Conversation, FinalAnalysis, Message } from '@/interface';
-import App from '@/Layouts/App.vue';
-import axios from 'axios';
-import {
-    ArcElement,
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Tooltip,
-} from 'chart.js';
-import { Bar, Line, Pie } from 'vue-chartjs';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    PointElement,
-    LineElement,
-    ArcElement,
-    Tooltip,
-    Legend,
-);
-
-const base_url = 'http://127.0.0.1:8000';
-
-const messages = ref<Message[]>([]);
-const inputMessage = ref('');
-const isTyping = ref(false);
-const messagesContainer = ref<HTMLElement>();
-const messageInput = ref<HTMLTextAreaElement>();
-const activeConversation = ref(0);
-
-const conversations = ref<Conversation[]>([
-    {
-        title: 'Getting Started',
-        preview: 'How can I help you today?',
-    },
-    {
-        title: 'Vue.js Questions',
-        preview: 'Tell me about Vue 3 composition API',
-    },
-    {
-        title: 'Design Systems',
-        preview: 'What is Shadcn?',
-    },
-]);
-
-const suggestions = [
-    'What can you help me with?',
-    'Explain Vue 3 composition API',
-    'Help me write a function',
-    'Design tips for UI',
-];
-
-const sendMessage = async (content: string) => {
-    if (!content.trim() || isTyping.value) return;
-
-    const userMessage: Message = {
-        role: 'user',
-        content: content,
-        timestamp: new Date(),
-    };
-
-    messages.value.push(userMessage);
-    inputMessage.value = '';
-    isTyping.value = true;
-
-    await nextTick();
-    scrollToBottom();
-
-    let chatMessage: chatMessage = {
-        question: content,
-        tenant_id: 1,
-    };
-
-    try {
-        const response = await axios.post(`${base_url}/chat`, chatMessage);
-        const finalAnalysis: FinalAnalysis = response.data.final_analysis;
-
-        const assistantMessage: Message = {
-            role: 'assistant',
-            content: finalAnalysis.insights,
-            timestamp: new Date(),
-        };
-
-        const assistantMessageGraph: Message = {
-            role: 'assistant',
-            content: finalAnalysis.chart_config,
-            timestamp: new Date(),
-        };
-
-        messages.value.push(assistantMessageGraph, assistantMessage);
-    } catch (error) {
-        const errorMessage: Message = {
-            role: 'assistant',
-            content: 'Sorry, I encountered an error. Please try again.',
-            timestamp: new Date(),
-        };
-
-        messages.value.push(errorMessage);
-    } finally {
-        isTyping.value = false;
-        await nextTick();
-        scrollToBottom();
-    }
-};
-
-const handleKeydown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage(inputMessage.value);
-    }
-};
-
-const scrollToBottom = () => {
-    if (messagesContainer.value) {
-        messagesContainer.value.scrollTop =
-            messagesContainer.value.scrollHeight;
-    }
-};
-
-const clearChat = () => {
-    messages.value = [];
-};
-
-const startNewChat = () => {
-    messages.value = [];
-    inputMessage.value = '';
-};
-
-const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark');
-};
-
-const formatTime = (date: Date): string => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-};
-
-const getChartComponent = (type: string) => {
-    // Return appropriate chart component based on type
-    // You'll need to import and register your chart components
-    switch (type) {
-        case 'bar':
-            return Bar;
-        case 'line':
-            return Line;
-        case 'pie':
-            return Pie;
-        default:
-            return 'div';
-    }
-};
-
-onMounted(() => {
-    messageInput.value?.focus();
-});
-</script>

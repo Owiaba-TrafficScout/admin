@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback } from '@/Components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/ui/card';
+import { ChartConfig } from '@/interface';
 import Layout from '@/Layouts/App.vue';
+import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from 'chart.js';
 import { DollarSign, Map, Package, Users } from 'lucide-vue-next';
+import { Pie } from 'vue-chartjs';
 import { Trip } from './Trips.vue';
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 interface Total {
     name: string;
@@ -12,6 +17,8 @@ interface Total {
 defineProps<{
     totals: Total[];
     trips: Trip[];
+    dailyTripCount: number;
+    tripDistributionData: ChartConfig;
 }>();
 </script>
 
@@ -61,7 +68,7 @@ defineProps<{
                         </CardContent>
                     </Card>
                 </div>
-                <div class="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+                <div class="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-2">
                     <!-- TODO: fill out this table -->
                     <!-- <Card class="xl:col-span-2">
                         <CardHeader class="flex flex-row items-center">
@@ -162,6 +169,51 @@ defineProps<{
                             </div>
                         </CardContent>
                     </Card>
+                    <div class="flex flex-col gap-4">
+                        <!-- Daily Tripsense Analytics (black div) -->
+                        <div class="b w-full rounded-lg p-4">
+                            <h3
+                                class="mb-2 flex items-center gap-2 text-lg font-bold"
+                            >
+                                <div
+                                    class="h-5 w-5 rounded-full bg-green-800"
+                                ></div>
+                                <div>Daily Tripsense Analytics</div>
+                            </h3>
+                            <!-- Example: Show today's trip count -->
+                            <div>
+                                <span class="font-bold">{{
+                                    dailyTripCount
+                                }}</span>
+                                <span class="ml-2">trips today</span>
+                            </div>
+                            <div class="mt-2">
+                                <p>
+                                    Trip data shows "KNUST Shuttle Study" and
+                                    "Urban Transport Study 2024" have few but
+                                    long trips, while "Rural Transport Study
+                                    2024" has more, shorter trips. "Public
+                                    Transport Efficiency 2024" and "Freight
+                                    Transport Analysis 2024" have no trips yet,
+                                    indicating possible delays or ongoing
+                                    planning.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Pie Chart: Distribution of Trips Among Project Users (green div) -->
+                        <div
+                            class="flex h-[55%] flex-col items-center justify-center rounded-lg"
+                        >
+                            <h3 class="mb-2 text-lg font-bold">
+                                Trip Distribution by User
+                            </h3>
+                            <!-- Pie chart component (replace with your chart library) -->
+                            <Pie
+                                :data="tripDistributionData.data"
+                                :options="tripDistributionData.options"
+                            />
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

@@ -15,6 +15,7 @@ export interface Project {
     email: string;
     description: string;
     code: string;
+    tenant_id: number;
     start_date: string;
     end_date: string;
     trips: Trip[];
