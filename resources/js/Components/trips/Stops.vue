@@ -147,7 +147,7 @@ defineProps<{
                         <p
                             class="text-sm font-semibold text-black dark:text-white"
                         >
-                            {{ !!stop.is_traffic ? 'Yes' : 'No' }}
+                            {{ typeof stop.is_traffic }}
                         </p>
                     </div>
                 </div>
