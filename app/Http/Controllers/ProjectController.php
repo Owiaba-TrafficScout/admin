@@ -17,24 +17,25 @@ use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tenant_id = session('tenant_id');
+        $user = $request->user();
+        $tenant_id = $user->state?->tenant_id;
         $tenant = Tenant::find($tenant_id);
         $roles = Role::all();
         $projects = [];
-        if (auth()->user()->isAdminInTenant()) {
+        if ($user->isAdminInTenant()) {
             $projects = $tenant->projects->load(['trips', 'users.pivot.role']);
         } else {
-            $projects = auth()->user()->adminProjects->load(['trips', 'users.pivot.role']);
+            $projects = $user->adminProjects->load(['trips', 'users.pivot.role']);
         }
 
         return Inertia::render('Projects', ['projects' => $projects, 'roles' => $roles]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        if (!auth()->user()->isAdminInTenant()) {
+        if (!$request->user()->isAdminInTenant()) {
             return redirect()->back()->with('error', 'You are not allowed to create a project.');
         }
         $carTypes = CarType::orderByDesc('created_at')->get();
@@ -44,7 +45,7 @@ class ProjectController extends Controller
 
     public function store(ProjectRequest $request)
     {
-        if (!auth()->user()->isAdminInTenant()) {
+        if (!$request->user()->isAdminInTenant()) {
             return redirect()->back()->with('error', 'You are not allowed to create a project.');
         }
 
@@ -53,7 +54,7 @@ class ProjectController extends Controller
         $attributes = $request->validated();
         //generate project code which is unique in the projects table code column
         $attributes['code'] = uniqid();
-        $attributes['tenant_id'] = session('tenant_id');
+        $attributes['tenant_id'] = $request->user()->state?->tenant_id;
         $carTypeIds = $attributes['carTypeIds'];
         unset($attributes['carTypeIds']);
         $project = Project::create($attributes);
@@ -81,14 +82,14 @@ class ProjectController extends Controller
     public function removeUser(Request $request, Project $project, User $user)
     {
         $projectUser = $project->users()->where('user_id', $user->id)->first();
-        $authProjectUser = $project->users()->where('user_id', auth()->user()->id)->first();
-        if (auth()->user()->id == $user->id) {
+        $authProjectUser = $project->users()->where('user_id', $request->user()->id)->first();
+        if ($request->user()->id == $user->id) {
             return redirect()->back()->with('error', 'You can\'t remove yourself from the project.');
         } else if ($authProjectUser?->isProjectAdmin()) {
             if ($projectUser->isProjectAdmin()) {
                 return redirect()->back()->with('error', 'You can\'t remove an admin from the project.');
             }
-        } else if (!auth()->user()->isAdminInTenant()) {
+        } else if (!$request->user()->isAdminInTenant()) {
             return redirect()->back()->with('error', 'You are not allowed to remove a user from the project.');
         }
         $project->users()->detach($user);
@@ -101,7 +102,7 @@ class ProjectController extends Controller
             'userIds' => 'required|array',
         ]);
 
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()->state?->project_id);
 
         // Prepare the data for syncWithoutDetaching
         $syncData = [];
@@ -118,7 +119,7 @@ class ProjectController extends Controller
     public function updateUserRole(Request $request,  User $user)
     {
         $projectUser = ProjectUser::where('user_id', $user->id)
-            ->where('project_id', session('project_id'))
+            ->where('project_id', $request->user()->state?->project_id)
             ->first();
 
         //Make sure only Tenant Admins can change roles of Project Admins
@@ -144,7 +145,11 @@ class ProjectController extends Controller
             return redirect()->back()->with('error', 'You are not allowed to switch to this project.');
         }
 
-        $request->session()->put('project_id', $request->project_id);
+        // Store project_id in database state instead of session
+        $request->user()->state()->updateOrCreate(
+            [],
+            ['project_id' => $request->project_id]
+        );
 
         return redirect()->back()->with('success', 'Project switched!');
     }
