@@ -34,13 +34,13 @@ class HandleInertiaRequests extends Middleware
         $user = $request->user();
         $state = $user?->state;
         $isSuperAdmin = $user && $user->isSuperAdmin();
-        $isTenantAdmin = $user && ($user->isAdminInTenant() || $user->isSuperAdmin());
+        $isTenantAdmin = $user && $user->isAdminInTenant();
         $isProjectAdmin = $user && $user->isAdminInProject();
         $tenant = $user?->tenants()->find($state?->tenant_id);
         $projectId = $state?->project_id;
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
-        $selectedTenant = $user?->isSuperAdmin() ? $tenant : null;
+        $selectedTenant = $isSuperAdmin ? $tenant : null;
 
         if (!$isSuperAdmin) {
             $selectedProject = $isTenantAdmin
@@ -65,6 +65,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
                 'is_tenant_admin' => $isTenantAdmin,
                 'is_project_admin' => $isProjectAdmin,
+                'is_super_admin' => $isSuperAdmin,
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
@@ -78,7 +79,7 @@ class HandleInertiaRequests extends Middleware
                     $query->where('user_id', $user->id)
                         ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
                 })->get(),
-            'tenants' => $user?->isSuperAdmin()
+            'tenants' => $isSuperAdmin
                 ? Tenant::all() : null,
             'selected_project' => $selectedProject,
             'selected_tenant' => $selectedTenant

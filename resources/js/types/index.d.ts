@@ -20,6 +20,7 @@ export type PageProps<
         user: User;
         is_tenant_admin: boolean;
         is_project_admin: boolean;
+        is_super_admin: boolean;
     };
     flash: FlashMessage;
     selected_project: Project;

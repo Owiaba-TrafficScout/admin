@@ -29,19 +29,23 @@ import { Project } from '@/Pages/Projects.vue';
 import { useGlobalStore } from '@/Stores/global';
 import { Link, usePage } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed, ref } from 'vue';
+import { computed, ComputedRef, ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
 const globalStore = useGlobalStore();
-const projects = computed(() => usePage().props.projects);
-const tenants = computed(() => usePage().props.tenants);
+const pageProps = usePage().props;
+const projects = computed(() => pageProps.projects);
+const tenants = computed(() => pageProps.tenants);
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
 
-const currentProject = computed(() => usePage().props.selected_project);
+const currentProject = computed(() => pageProps.selected_project);
+const isSuperAdmin: ComputedRef<boolean> = computed(() =>
+    Boolean(pageProps.is_super_admin),
+);
 </script>
 
 <template>
@@ -144,6 +148,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                         </Link>
                         <div
                             class="mt-10 flex w-full items-center gap-2 font-semibold"
+                            v-if="isSuperAdmin"
                         >
                             <!-- <Package2 class="h-6 w-6" /> -->
                             <Multiselect
