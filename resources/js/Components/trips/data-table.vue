@@ -13,6 +13,7 @@ const props = defineProps<{
     items: Trip[];
 }>();
 const search = ref('');
+const filter = ref('all'); // Add filter state
 const selectedTrips = ref<number[]>([]); // store selected trip IDs
 const selectAll = ref(false); // store "select all" checkbox state
 
@@ -71,27 +72,38 @@ const handleDelete = (id: number) => {
 };
 
 const filteredItems = computed(() => {
+    let items = props.items;
+
+    // Apply search filter
     if (search.value !== '') {
-        return props.items.filter(
-            (item) =>
-                item.title.toLowerCase().includes(search.value.toLowerCase()) ||
-                item.description
-                    .toLowerCase()
-                    .includes(search.value.toLowerCase()) ||
-                item.group_code
-                    .toLowerCase()
-                    .includes(search.value.toLowerCase()),
-        );
+        const searchTerm = search.value.toLowerCase();
+        items = items.filter((item) => {
+            return (
+                item.title?.toLowerCase().includes(searchTerm) ||
+                item.group_code?.toLowerCase().includes(searchTerm) ||
+                item.project_user?.user?.name
+                    ?.toLowerCase()
+                    .includes(searchTerm) ||
+                item.project_user?.project?.name
+                    ?.toLowerCase()
+                    .includes(searchTerm) ||
+                item.car?.type?.name?.toLowerCase().includes(searchTerm) ||
+                item.car?.car_number?.toLowerCase().includes(searchTerm)
+            );
+        });
     }
-    return props.items;
+
+    return items;
 });
 
-const handleFilter = (filter: string) => {
-    if (filter === 'active') {
-        search.value = 'active';
-    } else if (filter === 'inactive') {
-        search.value = 'inactive';
+const handleFilter = (filterValue: string) => {
+    filter.value = filterValue;
+    // Clear search when applying filters, or implement custom filter logic
+    if (filterValue === 'all') {
+        search.value = '';
     } else {
+        // You can implement specific filtering logic here
+        // For now, we'll just clear the search
         search.value = '';
     }
 };
