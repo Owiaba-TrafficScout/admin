@@ -2,7 +2,7 @@ import { Tenant } from '@/interface';
 import { Project } from '@/Pages/Projects.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 
 export const useGlobalStore = defineStore('global', () => {
     const page = usePage();
@@ -11,6 +11,7 @@ export const useGlobalStore = defineStore('global', () => {
 
     // copy tenant from usepage
     const selected_tenant = ref<Tenant>(page.props.selected_tenant);
+    const projects = reactive<Project[]>(page.props.projects);
     // Whenever page props change, keep our store in sync
     watch(
         () => page.props.selected_project,
@@ -23,6 +24,12 @@ export const useGlobalStore = defineStore('global', () => {
         () => page.props.selected_tenant,
         (newVal) => {
             selected_tenant.value = newVal;
+        },
+    );
+    watch(
+        () => page.props.projects,
+        (newVal) => {
+            projects.splice(0, projects.length, ...newVal);
         },
     );
 
@@ -65,5 +72,6 @@ export const useGlobalStore = defineStore('global', () => {
         handleSelect,
         selected_tenant,
         handleTenantSelect,
+        projects,
     };
 });

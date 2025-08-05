@@ -9,9 +9,9 @@ use Inertia\Inertia;
 
 class CarTypeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $project = Project::find(session('project_id'))->load('carTypes');
+        $project = Project::find($request->user()->state?->project_id)->load('carTypes');
         return Inertia::render('CarTypes', ['car_types' => $project->carTypes]);
     }
 
@@ -24,9 +24,9 @@ class CarTypeController extends Controller
         return redirect()->back()->with('success', 'Car Type updated.');
     }
 
-    public function destroy(CarType $car_type)
+    public function destroy(Request $request, CarType $car_type)
     {
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()->state?->project_id);
         $project?->carTypes()->detach($car_type->id);
         return redirect()->back()->with('success', 'Car Type removed from project.');
     }
@@ -48,7 +48,7 @@ class CarTypeController extends Controller
             'car_type_ids.*' => 'integer|exists:car_types,id',
         ]);
 
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()->state?->project_id);
         $project?->carTypes()->syncWithoutDetaching($request->car_type_ids);
         return redirect()->route('car-types.index')->with('success', 'Car Types added to project.');
     }

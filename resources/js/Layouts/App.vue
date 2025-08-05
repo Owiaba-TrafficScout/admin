@@ -258,7 +258,7 @@ const isSuperAdmin: ComputedRef<boolean> = computed(() =>
                         <Multiselect
                             class="w-full"
                             v-model="globalStore.selected_project"
-                            :options="projects"
+                            :options="globalStore.projects"
                             :close-on-select="true"
                             :clear-on-select="false"
                             :preserve-search="true"

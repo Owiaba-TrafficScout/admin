@@ -36,7 +36,7 @@ class HandleInertiaRequests extends Middleware
         $isSuperAdmin = $user?->isSuperAdmin();
         $isTenantAdmin = $user && $user->isAdminInTenant();
         $isProjectAdmin = $user && $user->isAdminInProject();
-        $tenant = $user?->tenants()->find($state?->tenant_id);
+        $tenant = Tenant::find($state?->tenant_id);
         $projectId = $state?->project_id;
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
@@ -59,6 +59,24 @@ class HandleInertiaRequests extends Middleware
             $selectedProject = Project::find($projectId);
         }
 
+        // Fix: Update projects list to respect tenant selection for super admins
+        $projects = null;
+        if ($isSuperAdmin) {
+            // For super admins, show projects for the selected tenant
+            $projects = $tenant?->projects;
+        } elseif ($isTenantAdmin) {
+            // For tenant admins, show all tenant projects
+            $projects = Tenant::find($state?->tenant_id)?->projects;
+        } else {
+            // For regular users, show only their admin projects
+            $projects = $user?->projects()
+                ->where('tenant_id', $state?->tenant_id)
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
+                })->get();
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -71,16 +89,8 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error')
             ],
-            'projects' => $isTenantAdmin
-                ? Tenant::find($state?->tenant_id)?->projects
-                : $user?->projects()
-                ->where('tenant_id', $state?->tenant_id)
-                ->whereHas('users', function ($query) use ($user) {
-                    $query->where('user_id', $user->id)
-                        ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
-                })->get(),
-            'tenants' => $isSuperAdmin
-                ? Tenant::all() : null,
+            'projects' => $projects,
+            'tenants' => $isSuperAdmin ? Tenant::all() : null,
             'selected_project' => $selectedProject,
             'selected_tenant' => $selectedTenant
         ];

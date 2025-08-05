@@ -63,6 +63,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $with = ['state'];
 
+    /**
+     * Check if user is super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        // Check if THIS user's email matches the super admin email
+        return $this->email && $this->email === config('constants.super_admin_email');
+    }
 
     public function payments(): HasMany
     {
@@ -143,6 +151,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->tenantsWhereAdmin()->exists() || $this->isSuperAdmin();
     }
 
+
     /**
      * Check if the user is an admin in the given tenant.
      */
@@ -155,14 +164,6 @@ class User extends Authenticatable implements MustVerifyEmail
             $this->isSuperAdmin();
     }
 
-    /**
-     * Check if user is super admin.
-     */
-    public function isSuperAdmin(): bool
-    {
-        // Check if THIS user's email matches the super admin email
-        return $this->email && $this->email === config('constants.super_admin_email');
-    }
 
     /**
      * Get all of the trips for the user.

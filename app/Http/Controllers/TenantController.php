@@ -49,7 +49,7 @@ class TenantController extends Controller
         );
 
         //check if user is tenant admin
-        if ($request->user()->isAdminInTenant($request->tenant_id) || $request->user()->isSuperAdmin()) {
+        if ($request->user()->isAdminInTenant($request->tenant_id)) {
 
 
             $tenant = Tenant::find($request->tenant_id);
@@ -85,7 +85,6 @@ class TenantController extends Controller
             // unauthorized
             return back();
         }
-
         return redirect()->route('dashboard');
     }
 }
