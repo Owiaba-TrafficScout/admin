@@ -72,7 +72,7 @@ class TenantController extends Controller
                 $project = Project::where('tenant_id', $request->tenant_id)->where('name', 'Default Project')->first();
 
                 // Store project_id in database state instead of session
-                $request->user()->state()->update(['project_id' => $project->id]);
+                $request->user()->state()->updateOrCreate([], ['project_id' => $project->id]);
             }
         } elseif ($project = $request->user()->adminProjects()
             ->where('tenant_id', $request->tenant_id)
