@@ -27,4 +27,12 @@ class State extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    /**
+     * Get the tenant that owns the state.
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

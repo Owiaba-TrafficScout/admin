@@ -20,3 +20,11 @@ export interface Stop {
     passengers_alighting: number | null;
     is_traffic: boolean | null;
 }
+
+export interface Tenant {
+    id: number;
+    name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+}

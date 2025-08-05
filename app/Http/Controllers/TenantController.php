@@ -43,6 +43,10 @@ class TenantController extends Controller
         ]);
 
         $request->session()->put('tenant_id', $request->tenant_id);
+        $request->user()->state()->updateOrCreate(
+            [],
+            ['tenant_id' => $request->tenant_id]
+        );
 
         //check if user is tenant admin
         if ($request->user()->isAdminInTenant($request->tenant_id) || $request->user()->isSuperAdmin()) {

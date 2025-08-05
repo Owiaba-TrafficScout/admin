@@ -24,6 +24,7 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+import { Tenant } from '@/interface';
 import { Project } from '@/Pages/Projects.vue';
 import { useGlobalStore } from '@/Stores/global';
 import { Link, usePage } from '@inertiajs/vue3';
@@ -35,7 +36,7 @@ defineProps<{
 }>();
 const globalStore = useGlobalStore();
 const projects = computed(() => usePage().props.projects);
-
+const tenants = computed(() => usePage().props.tenants);
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
@@ -141,6 +142,40 @@ const currentProject = computed(() => usePage().props.selected_project);
                             <Package class="h-4 w-4" />
                             Project Settings
                         </Link>
+                        <div
+                            class="flex w-full items-center gap-2 font-semibold"
+                        >
+                            <!-- <Package2 class="h-6 w-6" /> -->
+                            <Multiselect
+                                class="w-full"
+                                v-model="globalStore.selected_tenant"
+                                :options="tenants"
+                                :close-on-select="true"
+                                :clear-on-select="false"
+                                :preserve-search="true"
+                                placeholder="Select Tenant"
+                                label="name"
+                                track-by="id"
+                                :allow-empty="false"
+                                @select="
+                                    (selected: Tenant) =>
+                                        globalStore.handleTenantSelect(
+                                            selected?.id ?? 0,
+                                        )
+                                "
+                                :show-labels="false"
+                            >
+                                <template #selection="{ values, isOpen }">
+                                    <span
+                                        class="multiselect__single"
+                                        v-if="values.length"
+                                        v-show="!isOpen"
+                                        >{{ values.length }} options
+                                        selected</span
+                                    >
+                                </template>
+                            </Multiselect>
+                        </div>
                     </nav>
                 </div>
             </div>

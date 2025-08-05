@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
         $projectId = session('project_id');
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
+        $selectedTenant = $user->isSuperAdmin() ? $tenant : null;
 
         if (!$isSuperAdmin) {
             $selectedProject = $isTenantAdmin
@@ -76,7 +77,10 @@ class HandleInertiaRequests extends Middleware
                     $query->where('user_id', $user->id)
                         ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
                 })->get(),
-            'selected_project' => $selectedProject
+            'tenants' => $user?->isSuperAdmin()
+                ? Tenant::all() : null,
+            'selected_project' => $selectedProject,
+            'selected_tenant' => $selectedTenant
         ];
     }
 }

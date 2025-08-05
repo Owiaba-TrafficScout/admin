@@ -1,3 +1,4 @@
+import { Tenant } from '@/interface';
 import { Project } from '@/Pages/Projects.vue';
 
 export interface User {
@@ -22,5 +23,7 @@ export type PageProps<
     };
     flash: FlashMessage;
     selected_project: Project;
+    selected_tenant: Tenant;
     projects: Project[];
+    tenants: Tenant[] | null;
 };
