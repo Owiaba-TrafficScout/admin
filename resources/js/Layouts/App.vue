@@ -143,7 +143,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                             Project Settings
                         </Link>
                         <div
-                            class="flex w-full items-center gap-2 font-semibold"
+                            class="mt-10 flex w-full items-center gap-2 font-semibold"
                         >
                             <!-- <Package2 class="h-6 w-6" /> -->
                             <Multiselect
