@@ -32,14 +32,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $state = $user?->state;
         $isSuperAdmin = $user && $user->isSuperAdmin();
         $isTenantAdmin = $user && ($user->isAdminInTenant() || $user->isSuperAdmin());
         $isProjectAdmin = $user && $user->isAdminInProject();
-        $tenant = $user?->tenants()->find(session('tenant_id'));
-        $projectId = session('project_id');
+        $tenant = $user?->tenants()->find($state?->tenant_id);
+        $projectId = $state?->project_id;
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
-        $selectedTenant = $user->isSuperAdmin() ? $tenant : null;
+        $selectedTenant = $user && $user->isSuperAdmin() ? $tenant : null;
 
         if (!$isSuperAdmin) {
             $selectedProject = $isTenantAdmin
@@ -49,7 +50,7 @@ class HandleInertiaRequests extends Middleware
                 : (
                     $user?->projects->find($projectId)
                     ?: $user?->adminProjects()
-                    ->where('tenant_id', session('tenant_id'))
+                    ->where('tenant_id', $state?->tenant_id)
                     ->orderByDesc('created_at')
                     ->first()
                 );
@@ -70,9 +71,9 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn() => $request->session()->get('error')
             ],
             'projects' => $isTenantAdmin
-                ? Tenant::find(session('tenant_id'))?->projects
+                ? Tenant::find($state?->tenant_id)?->projects
                 : $user?->projects()
-                ->where('tenant_id', session('tenant_id'))
+                ->where('tenant_id', $state?->tenant_id)
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('user_id', $user->id)
                         ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);

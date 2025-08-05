@@ -17,11 +17,11 @@ class UserController extends Controller
 {
     final const USER_TENANT_ROLE = 2; //tnenat user role id for user
     final const USER_SUCCESSFULLY_ADDED_TO_TENANT_MSG = 'Users added to your organization.';
-    public function index()
+    public function index(Request $request)
     {
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()->state?->project_id);
         $users = $project->users()->with('pivot.role')->get();
-        $allUsers = Tenant::find(session('tenant_id'))->users()->with('pivot.role')->get();
+        $allUsers = Tenant::find($request->user()->state?->tenant_id)->users()->with('pivot.role')->get();
 
         $roles = Role::all();
 
@@ -33,9 +33,9 @@ class UserController extends Controller
     }
 
 
-    public function getTenantUsers()
+    public function getTenantUsers(Request $request)
     {
-        $users = Tenant::find(session('tenant_id'))->users()->with('pivot.role')->get();
+        $users = Tenant::find($request->user()->state?->tenant_id)->users()->with('pivot.role')->get();
         $allUsers = User::all();
         $roles = TenantRole::all();
 
@@ -53,7 +53,7 @@ class UserController extends Controller
             'userIds.*' => 'required|exists:users,id',
         ]);
 
-        $tenant = Tenant::find(session('tenant_id'));
+        $tenant = Tenant::find($request->user()->state?->tenant_id);
 
         $syncData = [];
         foreach ($attributes['userIds'] as $userId) {
@@ -79,7 +79,7 @@ class UserController extends Controller
             return redirect()->back()->with("error", "You can't update the system admin");
         }
 
-        $tenantUser = TenantUser::where('user_id', $user->id)->where('tenant_id', session('tenant_id'))->first();
+        $tenantUser = TenantUser::where('user_id', $user->id)->where('tenant_id', $request->user()->state?->tenant_id)->first();
         $tenantUser->update([
             'tenant_role_id' => $request->tenant_role_id,
         ]);
@@ -88,13 +88,13 @@ class UserController extends Controller
         return redirect()->back()->with("success", "Role Updated");
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         if ($user->isAdminInProject()) {
             return redirect()->back()->with("error", "You can't remove admin");
         } else {
             //remove user from current project
-            $user->projects()->detach(session('project_id'));
+            $user->projects()->detach($request->user()->state?->project_id);
 
             return redirect()->back()->with("success", "User Removed from project!");
         }

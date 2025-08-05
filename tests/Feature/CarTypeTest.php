@@ -55,21 +55,19 @@ test('car types can be added to project', function () {
     $tenant->users()->attach($user->id, ['tenant_role_id' => 1]);
     $project = Project::factory()->for($tenant)->create();
 
-
-    //add tenant Id and project Id to session
-    session()->put('tenant_id', $tenant->id);
-    session()->put('project_id', $project->id);
-
     //authenticate user
     $this->actingAs($user);
+
+    //create user state with tenant and project
+    $user->state()->create([
+        'tenant_id' => $tenant->id,
+        'project_id' => $project->id,
+    ]);
 
 
     $carTypes = CarType::factory(3)->create();
     $project->carTypes()->attach($carTypes->pluck('id')->toArray());
     $newCarTypes = CarType::factory(3)->create();
-
-
-    session()->put('project_id', $project->id);
 
     $response = $this->post(route('project.cartype.add'), [
         'car_type_ids' => $newCarTypes->pluck('id')->toArray(),

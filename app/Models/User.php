@@ -61,7 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-
+    protected $with = ['state'];
 
 
     public function payments(): HasMany
@@ -107,7 +107,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdminInProject($project_id = null)
     {
         if (is_null($project_id)) {
-            $project_id = session('project_id');
+            $project_id = $this->state?->project_id;
         }
         return $this->adminProjects()->where('project_id', $project_id)->exists();
     }
@@ -149,7 +149,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdminInTenant($tenant_id = null): bool
     {
         if (is_null($tenant_id)) {
-            $tenant_id = session('tenant_id');
+            $tenant_id = $this->state?->tenant_id;
         }
         return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists() ||
             $this->isSuperAdmin();

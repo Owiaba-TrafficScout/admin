@@ -15,11 +15,11 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         //retrieve tenant
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()?->state?->project_id);
         $trips = [
             'name' => 'Trips',
             'value' => $project?->trips->count() ?? 0
@@ -28,7 +28,7 @@ class DashboardController extends Controller
             'name' => 'Users',
             'value' => $project?->users->count() ?? 0
         ];
-        $recentTrips = $project?->trips()->latest()->limit(5)->get()??[];
+        $recentTrips = $project?->trips()->latest()->limit(5)->get() ?? [];
 
         $totals = [$trips, $users];
         return Inertia::render('Dashboard2', [
