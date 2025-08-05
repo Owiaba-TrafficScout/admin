@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
         $projectId = session('project_id');
         $lastProjectId = $tenant?->projects->last()?->id;
         $selectedProject = null;
-        $selectedTenant = $user->isSuperAdmin() ? $tenant : null;
+        $selectedTenant = $user?->isSuperAdmin() ? $tenant : null;
 
         if (!$isSuperAdmin) {
             $selectedProject = $isTenantAdmin
