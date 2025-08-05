@@ -60,7 +60,7 @@ class TenantController extends Controller
                 $projectId = $userState?->project_id ?? $tenant->projects->last()->id;
 
                 // Update state with project_id
-                $request->user()->state()->update(['project_id' => $projectId]);
+                $request->user()->state()->updateOrCreate([], ['project_id' => $projectId]);
             } else {
                 Tenant::find($request->tenant_id)->projects()->create([
                     'name' => 'Default Project',
