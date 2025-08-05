@@ -33,7 +33,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
         $state = $user?->state;
-        $isSuperAdmin = $user && $user->isSuperAdmin();
+        $isSuperAdmin = $user?->isSuperAdmin();
         $isTenantAdmin = $user && $user->isAdminInTenant();
         $isProjectAdmin = $user && $user->isAdminInProject();
         $tenant = $user?->tenants()->find($state?->tenant_id);

@@ -160,8 +160,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isSuperAdmin(): bool
     {
-        return $this->where('email', config('constants.super_admin_email'))
-            ->exists();
+        // Check if THIS user's email matches the super admin email
+        return $this->email && $this->email === config('constants.super_admin_email');
     }
 
     /**

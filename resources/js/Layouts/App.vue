@@ -44,7 +44,7 @@ const classes = ref(
 
 const currentProject = computed(() => pageProps.selected_project);
 const isSuperAdmin: ComputedRef<boolean> = computed(() =>
-    Boolean(pageProps.is_super_admin),
+    Boolean(pageProps.auth.is_super_admin),
 );
 </script>
 
