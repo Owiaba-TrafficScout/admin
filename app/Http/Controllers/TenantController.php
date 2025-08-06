@@ -13,8 +13,13 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        // Option A: all tenants
-        // $tenants = $user->tenants;
+        if ($user->isSuperAdmin()) {
+            // Option A: show all tenants
+            $tenants = Tenant::all();
+            return Inertia::render('SelectTenant', [
+                'tenants' => $tenants,
+            ]);
+        }
 
         // Option B: only tenants where the user is Admin on at least one project or is tenant admin
         $adminRoleId = \App\Models\Role::where('name', 'Admin')->value('id');
@@ -37,7 +42,11 @@ class TenantController extends Controller
             'tenant_id' => 'required|exists:tenants,id',
         ]);
 
-        $request->session()->put('tenant_id', $request->tenant_id);
+        // Store tenant_id in database state instead of session
+        $request->user()->state()->updateOrCreate(
+            [],
+            ['tenant_id' => $request->tenant_id]
+        );
 
         //check if user is tenant admin
         if ($request->user()->isAdminInTenant($request->tenant_id)) {
@@ -46,7 +55,12 @@ class TenantController extends Controller
             $tenant = Tenant::find($request->tenant_id);
             //check if tenant has projects if yes access the last accessed project
             if ($tenant->projects->count() > 0) {
-                session('project_id') ?? $request->session()->put('project_id', $tenant->projects->last()->id);
+                // Get last accessed project from state or use the most recent project
+                $userState = $request->user()->state;
+                $projectId = $userState?->project_id ?? $tenant->projects->last()->id;
+
+                // Update state with project_id
+                $request->user()->state()->updateOrCreate([], ['project_id' => $projectId]);
             } else {
                 Tenant::find($request->tenant_id)->projects()->create([
                     'name' => 'Default Project',
@@ -57,19 +71,20 @@ class TenantController extends Controller
                 ]);
                 $project = Project::where('tenant_id', $request->tenant_id)->where('name', 'Default Project')->first();
 
-                $request->session()->put('project_id', $project->id);
+                // Store project_id in database state instead of session
+                $request->user()->state()->updateOrCreate([], ['project_id' => $project->id]);
             }
         } elseif ($project = $request->user()->adminProjects()
             ->where('tenant_id', $request->tenant_id)
             ->orderByDesc('created_at')
             ->first()
         ) {
-            $request->session()->put('project_id', $project->id);
+            // Store project_id in database state instead of session
+            $request->user()->state()->update(['project_id' => $project->id]);
         } else {
             // unauthorized
             return back();
         }
-
         return redirect()->route('dashboard');
     }
 }

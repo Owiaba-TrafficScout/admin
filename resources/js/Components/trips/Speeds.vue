@@ -96,7 +96,7 @@ defineProps<{
                         <p
                             class="text-sm font-medium text-black dark:text-white"
                         >
-                            {{ speed.is_traffic ? 'Yes' : 'No' }}
+                            {{ Number(speed.is_traffic) == 1 ? 'Yes' : 'No' }}
                         </p>
                     </div>
                 </div>

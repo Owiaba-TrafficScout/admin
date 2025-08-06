@@ -16,11 +16,11 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         //retrieve tenant
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()?->state?->project_id);
         $trips = [
             'name' => 'Trips',
             'value' => $project?->trips->count() ?? 0

@@ -21,3 +21,11 @@ export interface ChartConfig {
     options?: ChartOptions;
     metadata?: Record<string, any> | null;
 }
+
+export interface Tenant {
+    id: number;
+    name: string;
+    email: string;
+    created_at: string;
+    updated_at: string;
+}

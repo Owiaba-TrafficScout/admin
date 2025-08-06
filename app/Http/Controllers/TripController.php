@@ -14,9 +14,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class TripController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $trips = Project::find(session('project_id'))?->trips()->latest()->get() ?? [];
+        $trips = Project::find($request->user()->state?->project_id)?->trips()->latest()->get() ?? [];
         return Inertia::render('Trips', ['trips' => $trips]);
     }
 
@@ -51,7 +51,7 @@ class TripController extends Controller
 
     public function destroyBulk(DeleteMultipleTripsRequest $request)
     {
-        $project = Project::find(session('project_id'));
+        $project = Project::find($request->user()->state?->project_id);
         $attributes = $request->validated();
 
         // ensure we only delete trips belonging to current project

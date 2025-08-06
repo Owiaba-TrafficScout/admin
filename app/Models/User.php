@@ -61,8 +61,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
+    protected $with = ['state'];
 
-
+    /**
+     * Check if user is super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        // Check if THIS user's email matches the super admin email
+        return $this->email && $this->email === config('constants.super_admin_email');
+    }
 
     public function payments(): HasMany
     {
@@ -107,7 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdminInProject($project_id = null)
     {
         if (is_null($project_id)) {
-            $project_id = session('project_id');
+            $project_id = $this->state?->project_id;
         }
         return $this->adminProjects()->where('project_id', $project_id)->exists();
     }
@@ -140,8 +148,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdminInAnyTenant(): bool
     {
-        return $this->tenantsWhereAdmin()->exists();
+        return $this->tenantsWhereAdmin()->exists() || $this->isSuperAdmin();
     }
+
 
     /**
      * Check if the user is an admin in the given tenant.
@@ -149,10 +158,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdminInTenant($tenant_id = null): bool
     {
         if (is_null($tenant_id)) {
-            $tenant_id = session('tenant_id');
+            $tenant_id = $this->state?->tenant_id;
         }
-        return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists();
+        return $this->tenantsWhereAdmin()->where('tenant_id', $tenant_id)->exists() ||
+            $this->isSuperAdmin();
     }
+
 
     /**
      * Get all of the trips for the user.

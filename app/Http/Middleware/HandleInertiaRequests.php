@@ -32,22 +32,50 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
+        $state = $user?->state;
+        $isSuperAdmin = $user?->isSuperAdmin();
         $isTenantAdmin = $user && $user->isAdminInTenant();
         $isProjectAdmin = $user && $user->isAdminInProject();
-        $tenant = $user?->tenants()->find(session('tenant_id'));
-        $projectId = session('project_id');
+        $tenant = Tenant::find($state?->tenant_id);
+        $projectId = $state?->project_id;
         $lastProjectId = $tenant?->projects->last()?->id;
-        $selectedProject = $isTenantAdmin
-            // For tenant admins:
-            ? $tenant?->projects()->find($projectId ?? $lastProjectId)
-            // For non-tenant admins:
-            : (
-                $user?->projects->find($projectId)
-                ?: $user?->adminProjects()
-                ->where('tenant_id', session('tenant_id'))
-                ->orderByDesc('created_at')
-                ->first()
-            );
+        $selectedProject = null;
+        $selectedTenant = $isSuperAdmin ? $tenant : null;
+
+        if (!$isSuperAdmin) {
+            $selectedProject = $isTenantAdmin
+                // For tenant admins:
+                ? $tenant?->projects()->find($projectId ?? $lastProjectId)
+                // For non-tenant admins:
+                : (
+                    $user?->projects->find($projectId)
+                    ?: $user?->adminProjects()
+                    ->where('tenant_id', $state?->tenant_id)
+                    ->orderByDesc('created_at')
+                    ->first()
+                );
+        } else {
+            // For super admins, we can just use the project ID from the session
+            $selectedProject = Project::find($projectId);
+        }
+
+        // Fix: Update projects list to respect tenant selection for super admins
+        $projects = null;
+        if ($isSuperAdmin) {
+            // For super admins, show projects for the selected tenant
+            $projects = $tenant?->projects;
+        } elseif ($isTenantAdmin) {
+            // For tenant admins, show all tenant projects
+            $projects = Tenant::find($state?->tenant_id)?->projects;
+        } else {
+            // For regular users, show only their admin projects
+            $projects = $user?->projects()
+                ->where('tenant_id', $state?->tenant_id)
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
+                })->get();
+        }
 
         return [
             ...parent::share($request),
@@ -55,20 +83,16 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
                 'is_tenant_admin' => $isTenantAdmin,
                 'is_project_admin' => $isProjectAdmin,
+                'is_super_admin' => $isSuperAdmin,
             ],
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error')
             ],
-            'projects' => $isTenantAdmin
-                ? Tenant::find(session('tenant_id'))->projects
-                : $user?->projects()
-                ->where('tenant_id', session('tenant_id'))
-                ->whereHas('users', function ($query) use ($user) {
-                    $query->where('user_id', $user->id)
-                        ->where('role_id', \App\Models\Role::where('name', 'admin')->first()->id);
-                })->get(),
-            'selected_project' => $selectedProject
+            'projects' => $projects,
+            'tenants' => $isSuperAdmin ? Tenant::all() : null,
+            'selected_project' => $selectedProject,
+            'selected_tenant' => $selectedTenant
         ];
     }
 }

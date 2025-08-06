@@ -27,10 +27,16 @@ class TripStopsSheetExport implements FromCollection, WithHeadings, WithMapping,
         return [
             $tripStop->id,
             $tripStop->trip_id,
-            $tripStop->location_x,
-            $tripStop->location_y,
+            $tripStop->start_time,
+            $tripStop->start_location_x,
+            $tripStop->start_location_y,
             $tripStop->stop_time,
-            $tripStop->description,
+            $tripStop->stop_location_x,
+            $tripStop->stop_location_y,
+            $tripStop->passengers_count,
+            $tripStop->passengers_boarding,
+            $tripStop->passengers_alighting,
+            $tripStop->is_traffic,
         ];
     }
 
@@ -39,10 +45,16 @@ class TripStopsSheetExport implements FromCollection, WithHeadings, WithMapping,
         return [
             'ID',
             'Trip ID',
-            'Location X',
-            'Location Y',
+            'Start Time',
+            'Start Location X',
+            'Start Location Y',
             'Stop Time',
-            'Description',
+            'Stop Location X',
+            'Stop Location Y',
+            'Passengers Count',
+            'Passengers Boarding',
+            'Passengers Alighting',
+            'Is Traffic',
         ];
     }
 

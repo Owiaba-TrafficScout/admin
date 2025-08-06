@@ -25,23 +25,28 @@ import {
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+import { Tenant } from '@/interface';
 import { Project } from '@/Pages/Projects.vue';
 import { useGlobalStore } from '@/Stores/global';
 import { Link, usePage } from '@inertiajs/vue3';
 import Multiselect from '@suadelabs/vue3-multiselect';
-import { computed, ref } from 'vue';
+import { computed, ComputedRef, ref } from 'vue';
 
 defineProps<{
     page: string;
 }>();
 const globalStore = useGlobalStore();
-const projects = computed(() => usePage().props.projects);
-
+const pageProps = usePage().props;
+const projects = computed(() => pageProps.projects);
+const tenants = computed(() => pageProps.tenants);
 const classes = ref(
     'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
 );
 
-const currentProject = computed(() => usePage().props.selected_project);
+const currentProject = computed(() => pageProps.selected_project);
+const isSuperAdmin: ComputedRef<boolean> = computed(() =>
+    Boolean(pageProps.auth.is_super_admin),
+);
 </script>
 
 <template>
@@ -155,6 +160,41 @@ const currentProject = computed(() => usePage().props.selected_project);
                             <BrainIcon class="h-4 w-4" />
                             Tripsense
                         </Link>
+                        <div
+                            class="mt-10 flex w-full items-center gap-2 font-semibold"
+                            v-if="isSuperAdmin"
+                        >
+                            <!-- <Package2 class="h-6 w-6" /> -->
+                            <Multiselect
+                                class="w-full"
+                                v-model="globalStore.selected_tenant"
+                                :options="tenants"
+                                :close-on-select="true"
+                                :clear-on-select="false"
+                                :preserve-search="true"
+                                placeholder="Select Tenant"
+                                label="name"
+                                track-by="id"
+                                :allow-empty="false"
+                                @select="
+                                    (selected: Tenant) =>
+                                        globalStore.handleTenantSelect(
+                                            selected?.id ?? 0,
+                                        )
+                                "
+                                :show-labels="false"
+                            >
+                                <template #selection="{ values, isOpen }">
+                                    <span
+                                        class="multiselect__single"
+                                        v-if="values.length"
+                                        v-show="!isOpen"
+                                        >{{ values.length }} options
+                                        selected</span
+                                    >
+                                </template>
+                            </Multiselect>
+                        </div>
                     </nav>
                 </div>
             </div>
@@ -232,7 +272,7 @@ const currentProject = computed(() => usePage().props.selected_project);
                         <Multiselect
                             class="w-full"
                             v-model="globalStore.selected_project"
-                            :options="projects"
+                            :options="globalStore.projects"
                             :close-on-select="true"
                             :clear-on-select="false"
                             :preserve-search="true"
