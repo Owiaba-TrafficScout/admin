@@ -15,7 +15,8 @@ class SpeedsSheetExport implements FromCollection, WithHeadings, WithMapping, Wi
 {
     public function collection()
     {
-        $project = Project::find(session('project_id'));
+        $state = auth()->user()->state;
+        $project = Project::findorFail($state?->project_id);
         $trips = $project->trips;
         $speeds = TripSpeed::whereIn('trip_id', $trips->pluck('id'))->get();
         return $speeds;

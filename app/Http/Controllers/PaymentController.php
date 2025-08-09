@@ -21,7 +21,8 @@ class PaymentController extends Controller
     {
         $payments = [];
         $statuses = PaymentStatus::all();
-        $tenant = Tenant::find(session('tenant_id'));
+        $state = auth()->user()->state;
+        $tenant = Tenant::find($state?->tenant_id);
         if (auth()->user()->isAdminInTenant()) {
             $payments = $tenant->payments;
         } else {

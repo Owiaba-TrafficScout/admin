@@ -16,7 +16,8 @@ class StopsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
 {
     public function collection()
     {
-        $project = Project::find(session('project_id'));
+        $state = auth()->user()->state;
+        $project = Project::findOrFail($state?->project_id);
         $trips = $project->trips;
         $stops = TripStop::whereIn('trip_id', $trips->pluck('id'))->get();
         return $stops;
