@@ -57,7 +57,13 @@ class TenantController extends Controller
             if ($tenant->projects->count() > 0) {
                 // Get last accessed project from state or use the most recent project
                 $userState = $request->user()->state;
+
                 $projectId = $userState?->project_id ?? $tenant->projects->last()->id;
+
+                // if user is superAdmin acess tenant's last project
+                if ($request->user()->isSuperAdmin()) {
+                    $projectId = $tenant->projects->last()->id;
+                }
 
                 // Update state with project_id
                 $request->user()->state()->updateOrCreate([], ['project_id' => $projectId]);

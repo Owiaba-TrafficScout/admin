@@ -17,7 +17,8 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
     public function collection()
     {
         $trips = [];
-        $tenant = Tenant::find(session('tenant_id'));
+        $tenant_id = auth()->user()->state?->tenant_id;
+        $tenant = Tenant::findOrFail($tenant_id);
 
         if (auth()->user()->isAdminInTenant()) {
             $trips = $tenant->trips;
@@ -40,6 +41,8 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
             $trip->project->name,
             $trip->start_time,
             $trip->end_time,
+            $trip->stops->count(),
+            $trip->speeds->count()
         ];
     }
 
@@ -56,8 +59,8 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
             'Project',
             'Start Time',
             'End Time',
-            'Stops',
-            'Speeds',
+            'stops count',
+            'speeds count'
         ];
     }
     public function title(): string
