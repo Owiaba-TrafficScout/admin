@@ -11,6 +11,7 @@ export interface Trip {
     description: string;
     project_user: projectUser;
     group_code: string;
+    initial_passenger_count: number;
     car: Car;
     speeds: Speed[];
     stops: Stop[];

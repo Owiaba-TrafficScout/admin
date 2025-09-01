@@ -30,6 +30,7 @@ class UploadDataRequest extends FormRequest
             'trip.car_type_id' => 'required|exists:car_types,id',
             'trip.start_time' => 'required|date',
             'trip.end_time' => 'required|date',
+            'trip.initial_passenger_count' => 'nullable|integer',
             'stops' => 'array',
             'stops.*.start_time' => 'nullable|date',
             'stops.*.start_location_x' => 'nullable|numeric',

@@ -32,6 +32,7 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
         return [
             $trip->id,
             $trip->title,
+            $trip->initial_passenger_count,
             $trip->description,
             $trip->projectUser->user->name,
             $trip->group_code,
@@ -47,6 +48,7 @@ class TripsSheetExport implements FromCollection, WithHeadings, WithMapping, Wit
         return [
             'ID',
             'Title',
+            'Initial Passenger Count',
             'Description',
             'User',
             'Group Code',

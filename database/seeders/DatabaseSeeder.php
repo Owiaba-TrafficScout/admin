@@ -19,6 +19,7 @@ use App\Models\TripStop;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -61,6 +62,7 @@ class DatabaseSeeder extends Seeder
             $projectAdmin = User::factory()->create(['email' => 'project@gmail.com', 'password' => bcrypt('password')]);
             $tenantAdmin = User::factory()->create(['email' => 'system@gmail.com', 'password' => bcrypt('password')]);
             $enumerator = User::factory()->create(['email' => 'enumerator@gmail.com', 'password' => bcrypt('password')]);
+            $enumerator = User::factory()->create(['email' => 'owiaba@owiaba.com', 'password' => bcrypt('password')]);
 
             $this->call(SubscriptionStatusSeeder::class);
             $this->call(SubscriptionPlanSeeder::class);
@@ -202,6 +204,68 @@ class DatabaseSeeder extends Seeder
             $analysisProjects['freight']->users()->attach($analysisUsers['project_manager_2']->id, ['role_id' => 2]);
             $analysisProjects['freight']->users()->attach($analysisUsers['enumerator_8']->id, ['role_id' => 2]);
 
+            // Helper: generate realistic speeds and stops within a trip window
+            $generateTripDetails = function (Trip $trip, int $speedsCount, int $stopsCount) {
+                $start = Carbon::parse($trip->start_time);
+                $end = Carbon::parse($trip->end_time);
+                if ($end->lessThanOrEqualTo($start)) {
+                    $end = (clone $start)->addMinutes(30);
+                }
+
+                // Speeds: time-ordered, velocities vary with some traffic flags
+                $speeds = [];
+                $interval = max(1, floor($start->diffInMinutes($end) / max(1, $speedsCount)));
+                $t = (clone $start);
+                for ($i = 0; $i < $speedsCount; $i++) {
+                    $t = (clone $start)->addMinutes($i * $interval + rand(0, max(0, $interval - 1)));
+                    $speeds[] = [
+                        'trip_id' => $trip->id,
+                        'time' => $t,
+                        'location_x' => fake()->randomFloat(5, -180, 180),
+                        'location_y' => fake()->randomFloat(5, -90, 90),
+                        'velocity' => fake()->randomFloat(2, 5, 100),
+                        'is_traffic' => fake()->boolean(20),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                TripSpeed::insert($speeds);
+
+                // Stops: non-overlapping within window; random durations 1-10 minutes
+                $stops = [];
+                $cursor = (clone $start)->addMinutes(rand(1, 10));
+                for ($i = 0; $i < $stopsCount; $i++) {
+                    if ($cursor->greaterThanOrEqualTo($end)) break;
+                    $stopStart = (clone $cursor);
+                    $dur = rand(1, 10);
+                    $stopEnd = (clone $stopStart)->addMinutes($dur);
+                    if ($stopEnd->greaterThan($end)) {
+                        $stopEnd = (clone $end);
+                    }
+                    $boarding = rand(0, 10);
+                    $alighting = rand(0, 10);
+                    $stops[] = [
+                        'trip_id' => $trip->id,
+                        'start_time' => $stopStart,
+                        'start_location_x' => fake()->randomFloat(5, -180, 180),
+                        'start_location_y' => fake()->randomFloat(5, -90, 90),
+                        'stop_time' => $stopEnd,
+                        'stop_location_x' => fake()->randomFloat(5, -180, 180),
+                        'stop_location_y' => fake()->randomFloat(5, -90, 90),
+                        'passengers_count' => $boarding + $alighting + rand(0, 5),
+                        'passengers_boarding' => $boarding,
+                        'passengers_alighting' => $alighting,
+                        'is_traffic' => fake()->boolean(30),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                    $cursor = (clone $stopEnd)->addMinutes(rand(3, 15));
+                }
+                if ($stops) {
+                    TripStop::insert($stops);
+                }
+            };
+
             // Generate comprehensive trip data for analysis
             $analysisTrips = [];
 
@@ -221,8 +285,7 @@ class DatabaseSeeder extends Seeder
                     $analysisTrips[] = $trip;
 
                     // Urban trips: More speeds (frequent stops), moderate stops
-                    TripSpeed::factory(rand(8, 15))->create(['trip_id' => $trip->id]);
-                    TripStop::factory(rand(3, 8))->create(['trip_id' => $trip->id]);
+                    $generateTripDetails($trip, rand(20, 40), rand(3, 8));
                 }
             }
 
@@ -241,9 +304,8 @@ class DatabaseSeeder extends Seeder
                     ]);
                     $analysisTrips[] = $trip;
 
-                    // Rural trips: Fewer speeds (longer distances), fewer stops
-                    TripSpeed::factory(rand(5, 12))->create(['trip_id' => $trip->id]);
-                    TripStop::factory(rand(2, 5))->create(['trip_id' => $trip->id]);
+                    // Rural trips: Fewer speeds (longer segments), fewer stops
+                    $generateTripDetails($trip, rand(10, 20), rand(1, 4));
                 }
             }
 
@@ -263,8 +325,7 @@ class DatabaseSeeder extends Seeder
                     $analysisTrips[] = $trip;
 
                     // Public transport: Regular speed patterns, predictable stops
-                    TripSpeed::factory(rand(6, 10))->create(['trip_id' => $trip->id]);
-                    TripStop::factory(rand(4, 7))->create(['trip_id' => $trip->id]);
+                    $generateTripDetails($trip, rand(15, 25), rand(4, 7));
                 }
             }
 
@@ -284,8 +345,7 @@ class DatabaseSeeder extends Seeder
                     $analysisTrips[] = $trip;
 
                     // Freight trips: Consistent speeds, strategic stops
-                    TripSpeed::factory(rand(4, 8))->create(['trip_id' => $trip->id]);
-                    TripStop::factory(rand(2, 4))->create(['trip_id' => $trip->id]);
+                    $generateTripDetails($trip, rand(8, 16), rand(2, 4));
                 }
             }
 
@@ -366,11 +426,10 @@ class DatabaseSeeder extends Seeder
 
             // Create trip details for all existing trips
             foreach ($allTrips as $trip) {
-                if (!$trip->speeds()->exists()) {
-                    TripSpeed::factory(rand(3, 10))->create(['trip_id' => $trip->id]);
-                }
-                if (!$trip->stops()->exists()) {
-                    TripStop::factory(rand(2, 6))->create(['trip_id' => $trip->id]);
+                $hasSpeeds = $trip->speeds()->exists();
+                $hasStops = $trip->stops()->exists();
+                if (!$hasSpeeds || !$hasStops) {
+                    $generateTripDetails($trip, $hasSpeeds ? 0 : rand(6, 15), $hasStops ? 0 : rand(2, 6));
                 }
             }
         }

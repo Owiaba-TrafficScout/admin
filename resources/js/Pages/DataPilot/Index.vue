@@ -15,6 +15,7 @@ import { computed, ref } from 'vue';
 /* ──────────────────────────
    Chart.js + vue-chartjs setup
    ────────────────────────── */
+import { BASE_URL } from '@/constants';
 import { Chart as ChartJS, registerables } from 'chart.js';
 import { Bar, Line, Pie } from 'vue-chartjs';
 ChartJS.register(...registerables);
@@ -100,10 +101,15 @@ const askDataPilot = async () => {
         console.log('Sending:', {
             question: query.value,
             tenant_id: tenantId.value,
+            user_id: page.props.auth.user.id,
         });
         const { data } = await axios.post(
-            'http://localhost:5000/api/query',
-            { question: query.value, tenant_id: tenantId.value },
+            BASE_URL.production + '/api/query',
+            {
+                question: query.value,
+                tenant_id: tenantId.value,
+                user_id: page.props.auth.user.id,
+            },
             {
                 headers: {
                     'Content-Type': 'application/json',

@@ -148,6 +148,11 @@ const handleFilter = (filterValue: string) => {
                         <th
                             class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
                         >
+                            Initial Passenger Count
+                        </th>
+                        <th
+                            class="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white"
+                        >
                             Project
                         </th>
                         <th
@@ -203,6 +208,11 @@ const handleFilter = (filterValue: string) => {
                                 {{ item.title }}
                             </h5>
                             <p class="text-sm">{{ item.group_code }}</p>
+                        </td>
+                        <td class="px-4 py-5">
+                            <p class="text-sm">
+                                {{ item.initial_passenger_count }}
+                            </p>
                         </td>
                         <td class="px-4 py-5">
                             <p class="text-black dark:text-white">

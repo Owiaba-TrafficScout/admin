@@ -18,5 +18,10 @@ return [
         'cancelled' => 3,
         // other statuses...
     ],
+    'api' => [
+        'production' => 'https://gen-q3dlby820-anamboijohns-projects.vercel.app/',
+        'local' => 'http://localhost:5000/',
+
+    ]
     // other constants...
 ];
