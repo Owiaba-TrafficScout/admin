@@ -188,16 +188,7 @@ defineProps<{
                                 <span class="ml-2">trips today</span>
                             </div>
                             <div class="mt-2">
-                                <p>
-                                    Trip data shows "KNUST Shuttle Study" and
-                                    "Urban Transport Study 2024" have few but
-                                    long trips, while "Rural Transport Study
-                                    2024" has more, shorter trips. "Public
-                                    Transport Efficiency 2024" and "Freight
-                                    Transport Analysis 2024" have no trips yet,
-                                    indicating possible delays or ongoing
-                                    planning.
-                                </p>
+                                <p>AI Analytics are coming soon...</p>
                             </div>
                         </div>
                         <!-- Pie Chart: Distribution of Trips Among Project Users (green div) -->
